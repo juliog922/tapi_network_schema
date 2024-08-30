@@ -1,0 +1,12 @@
+[package]
+name = "actix_api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reqwest = { version = "0.12.4", features = ["json", "gzip", "brotli", "deflate"]}
+serde_json = "1.0.117"
+actix-web = "4.7.0"
+actix-cors = "0.7.0"
+serde = { version = "1.0.204", features = ["derive"] }
+ipaddress = "0.1.3"

@@ -1,0 +1,124 @@
+// add_device.scss
+
+$form-background-color: #ffffff; // White background for the form
+$form-border-color: #d1d1d1; // Light grey border color
+$form-border-radius: 8px; // Rounded corners
+$form-padding: 50px; // Padding inside the form
+$form-margin-top: 80px; // Space above the form container
+
+$input-border-color: #ced4da; // Border color for input fields
+$input-focus-border-color: #007bff; // Blue color for focus state
+$input-padding: 10px; // Padding inside input fields
+$input-border-radius: 4px; // Rounded corners for input fields
+
+$button-background-color: #007bff; // Blue background for button
+$button-text-color: #ffffff; // White text color for button
+$button-border-radius: 4px; // Rounded corners for button
+$button-hover-background-color: #0056b3; // Darker blue for hover state
+$button-padding: 12px 24px; // Padding inside button
+$button-font-size: 1rem; // Font size for button
+
+$alert-danger-background-color: #f8d7da; // Light red background for error alerts
+$alert-danger-border-color: #f5c6cb; // Light red border color for error alerts
+$alert-danger-text-color: #721c24; // Dark red text color for error alerts
+$alert-padding: 15px; // Padding inside alert
+$alert-margin-bottom: 1rem; // Margin below the alert
+
+.form-container {
+    background-color: $form-background-color;
+    border: 1px solid $form-border-color;
+    border-radius: $form-border-radius;
+    padding: $form-padding;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: $form-margin-top auto; // Center the form and add space above
+    animation: fadeIn 1.5s ease-out;
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    input {
+        width: 100%;
+        border: 1px solid $input-border-color;
+        border-radius: $input-border-radius;
+        padding: $input-padding;
+        transition: border-color 0.3s ease;
+
+        &:focus {
+            border-color: $input-focus-border-color;
+            outline: none;
+        }
+    }
+}
+
+.button {
+    display: inline-block;
+    background-color: $button-background-color;
+    color: $button-text-color;
+    border: none;
+    border-radius: $button-border-radius;
+    padding: $button-padding;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font-size: $button-font-size;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem; // Space above the button
+
+    &:hover {
+        background-color: $button-hover-background-color;
+    }
+}
+
+// Alert Styles
+.alert {
+    padding: $alert-padding;
+    border-radius: $form-border-radius;
+    margin-bottom: $alert-margin-bottom;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out; // Smooth transition for fading out
+}
+
+.alert-danger {
+    background-color: $alert-danger-background-color;
+    border: 1px solid $alert-danger-border-color;
+    color: $alert-danger-text-color;
+    animation: fadeInOut 2s ease-out;
+}
+
+// Keyframes for the fade-in and fade-out animation
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,415 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items to the start to ensure content starts from the top */
+    background-color: #f0f8ff; /* Very light blue */
+    font-family: Arial, sans-serif;
+}
+
+#app {
+    display: flex;
+    width: 100%;
+}
+
+.main-content {
+    flex: 1; /* Take up remaining space after sidebar */
+    margin-left: 150px;
+    margin-right: 50px; /* Adjust based on the width of your sidebar */
+    padding: 20px; /* Add padding to avoid content touching the edges */
+    position: relative;
+}
+
+.intro {
+    margin-top: 100px; /* Adjust if necessary */
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeIn 1.5s ease-out forwards;
+}
+
+.fade-in {
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeIn 1.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Expandable section header */
+.expandable-header {
+    cursor: pointer;
+    font-size: 1.5em;
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Expand icon */
+.expand-icon {
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+}
+
+/* Animation for the expanded section */
+section {
+    transition: max-height 0.3s ease;
+    overflow: hidden;
+}
+
+section h2 {
+    font-size: 1.5em;
+    color: #333;
+    border-bottom: 2px solid #007bff; /* Blue underline for section titles */
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+section p {
+    line-height: 1.6;
+    color: #555;
+}
+
+section ul, section ol {
+    text-align: left;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 800px;
+}
+
+section ul li, section ol li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+/* General container and layout */
+.container {
+    margin-top: 100px;
+    display: flex;
+    width: 87%;
+    height: 87%;
+    border: 1px solid #ccc;
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.left-pane {
+    flex: 1;
+    background-color: #e6f2ff; /* Azul más claro */
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto; /* Barra de desplazamiento vertical */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrar contenido horizontalmente */
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrar botones horizontalmente */
+}
+
+.button-container button {
+    padding: 10px 20px;
+    margin: 10px 0; /* Espaciado entre botones */
+    border: none;
+    background-color: #007bff; /* Color de fondo azul */
+    color: white; /* Color de texto blanco */
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.right-pane {
+    flex: 3;
+    background-color: #ffffff; /* Fondo blanco */
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: auto; /* Barras de desplazamiento vertical y horizontal */
+    display: flex;
+    flex-direction: column;
+}
+
+.nodes-container {
+    display: flex;
+    flex-direction: row; /* Alinea los nodos horizontalmente */
+    overflow-x: auto; /* Barra de desplazamiento horizontal */
+}
+
+.node-section {
+    margin-right: 20px; /* Espaciado entre secciones de nodos */
+    min-width: 280px; /* Ancho mínimo de cada nodo */
+    box-sizing: border-box;
+    background-color: #ffffe0; /* Color amarillo suave */
+    padding: 10px; /* Añadir un poco de espacio interno */
+    border-radius: 8px; /* Bordes redondeados */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Asegura que cubra toda la altura */
+}
+
+.node-section h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.node-content {
+    display: flex;
+    flex-direction: column; /* Alinea los nodos verticalmente */
+    gap: 10px; /* Espacio entre elementos */
+    flex-grow: 1;
+}
+
+.node-item {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    position: relative;
+}
+
+.node-item .item-key {
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #e6e6e6; /* Color por defecto más suave */
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap; /* Evita que el texto se envuelva */
+    text-overflow: ellipsis; /* Añade puntos suspensivos si el texto es demasiado largo */
+    cursor: pointer; /* Añade un puntero para indicar que es clicable */
+}
+
+.node-item .item-key:hover::after {
+    content: attr(title);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 1;
+    font-size: 12px; /* Tamaño de fuente más pequeño */
+}
+
+.item-key.highlighted {
+    background-color: #1e90ff !important; /* Azul eléctrico fuerte */
+    color: #fff; /* Color del texto blanco */
+    border: 1px solid #333; /* Borde */
+}
+
+/* Estilos para los diferentes IDs con colores más suaves */
+#key-owned-node-edge-point-uuid {
+    background-color: #dda0dd; /* Morado suave */
+}
+
+#key-link-uuid {
+    background-color: #cd853f; /* Marrón suave */
+}
+
+#key-client-node-edge-point-uuid {
+    background-color: #ffb74d; /* Naranja suave */
+}
+
+#key-connection-end-point-uuid {
+    background-color: #98fb98; /* Verde suave */
+}
+
+#key-connection-uuid {
+    background-color: #ffea00; /* Amarillo más fuerte */
+}
+
+/* Nuevos estilos para la barra de navegación y el menú de hamburguesa */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: transparent; /* Elimina el fondo de la barra de navegación */
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+/* Estilo para la hamburguesa */
+.hamburger {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 20px;
+    position: relative;
+    transition: transform 0.5s ease; /* Transición para rotación */
+}
+
+.hamburger div {
+    background-color: black;
+    height: 3px;
+    width: 100%;
+    transition: transform 0.5s ease, opacity 0.5s ease; /* Transiciones para animaciones */
+}
+
+.hamburger.expanded div:nth-child(1) {
+    transform: rotate(45deg); /* Primera barra rota */
+    position: absolute;
+}
+
+.hamburger.expanded div:nth-child(2) {
+    opacity: 0; /* Segunda barra oculta */
+}
+
+.hamburger.expanded div:nth-child(3) {
+    transform: rotate(-45deg); /* Tercera barra rota */
+    position: absolute;
+}
+
+.menu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row; /* Cambiar a fila para disposición horizontal */
+    justify-content: space-around; /* Distribuir elementos horizontalmente */
+    align-items: center;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff; /* Fondo blanco para el menú */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para el menú */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.menu.expanded {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Estilos para los elementos del menú */
+.nav-item {
+    padding: 10px 20px;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.menu.expanded .nav-item {
+    opacity: 1;
+}
+
+.nav-link {
+    color: black;
+    text-decoration: none;
+}
+
+.nav-link.active {
+    font-weight: bold;
+}
+
+/* Ensure that the devices container allows for absolute positioning of child elements */
+.devices-container {
+    position: relative; /* Make sure this container is positioned relatively */
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+    gap: 20px; /* Space between device cards */
+    padding-bottom: 40px; /* Add padding at the bottom to make space for the text */
+}
+
+/* Ensure the device card container is a flexbox container and handles the layout */
+.device-card {
+    background-color: #ffffff; /* Background color for the card */
+    border: 1px solid #ddd; /* Border around the card */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Padding inside the card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    display: flex;
+    flex-direction: column;
+    width: 300px; /* Fixed width for consistency */
+    opacity: 0; /* Initially hidden for fade-in animation */
+    animation: fadeIn 1s ease-out forwards; /* Fade-in animation */
+}
+
+/* Header of the device card */
+.device-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Icon for the device */
+.device-icon {
+    font-size: 28px; /* Larger font size for the icon */
+    margin-right: 15px; /* Space between the icon and the info */
+}
+
+/* Information about the device */
+.device-info {
+    flex: 1; /* Allow the info to take up available space */
+}
+
+/* Button for checking API schema */
+.check-api-button {
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 8px 15px; /* Padding inside the button */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.check-api-text {
+    color: white;
+    text-decoration: none;
+}
+
+/* Container for action buttons (Edit and Delete) */
+.device-actions {
+    display: flex;
+    justify-content: space-between; /* Space out the buttons */
+    margin-top: 15px; /* Space above the action buttons */
+}
+
+/* Add new device text container */
+.add-device-text {
+    position: absolute; /* Position it absolutely within the devices container */
+    bottom: 10px; /* Distance from the bottom of the container */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust to truly center it */
+    font-size: 20px; /* Font size */
+    color: black; /* Black text color */
+    cursor: pointer; /* Pointer cursor on hover */
+    text-decoration: underline; /* Underline text */
+}
+
+/* Animation for fading in device cards */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px); /* Start slightly lower */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* End at the normal position */
+    }
+}
