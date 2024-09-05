@@ -1,0 +1,86 @@
+/* Ensure that the devices container allows for absolute positioning of child elements */
+.devices-container {
+  position: relative; /* Make sure this container is positioned relatively */
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+  gap: 20px; /* Space between device cards */
+  padding-bottom: 40px; /* Add padding at the bottom to make space for the text */
+}
+
+/* Ensure the device card container is a flexbox container and handles the layout */
+.device-card {
+  background-color: #ffffff; /* Background color for the card */
+  border: 1px solid #ddd; /* Border around the card */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Padding inside the card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  display: flex;
+  flex-direction: column;
+  width: 300px; /* Fixed width for consistency */
+  opacity: 0; /* Initially hidden for fade-in animation */
+  animation: fadeIn 1s ease-out forwards; /* Fade-in animation */
+}
+
+/* Header of the device card */
+.device-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Icon for the device */
+.device-icon {
+  font-size: 28px; /* Larger font size for the icon */
+  margin-right: 15px; /* Space between the icon and the info */
+}
+
+/* Information about the device */
+.device-info {
+  flex: 1; /* Allow the info to take up available space */
+}
+
+/* Button for checking API schema */
+.check-api-button {
+  background-color: #007bff; /* Blue background */
+  color: white; /* White text */
+  border: none; /* Remove border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 8px 15px; /* Padding inside the button */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+.check-api-text {
+  color: white;
+  text-decoration: none;
+}
+
+/* Container for action buttons (Edit and Delete) */
+.device-actions {
+  display: flex;
+  justify-content: space-between; /* Space out the buttons */
+  margin-top: 15px; /* Space above the action buttons */
+}
+
+/* Add new device text container */
+.add-device-text {
+  position: absolute; /* Position it absolutely within the devices container */
+  bottom: 10px; /* Distance from the bottom of the container */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust to truly center it */
+  font-size: 20px; /* Font size */
+  color: black; /* Black text color */
+  cursor: pointer; /* Pointer cursor on hover */
+  text-decoration: underline; /* Underline text */
+}
+
+/* Animation for fading in device cards */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px); /* Start slightly lower */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0); /* End at the normal position */
+  }
+}

@@ -1,0 +1,144 @@
+/* Container for the entire section including title and services */
+.services-section {
+  margin-top: 100px; /* Space for menu bar */
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Title styling */
+.services-title {
+  font-size: 2.5em; /* Larger font size for the title */
+  color: #333;
+  margin-bottom: 40px; /* Increased space between title and container */
+  font-family: "Arial", sans-serif;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Container for services items with grid layout */
+.services-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three columns */
+  grid-auto-rows: minmax(150px, auto); /* Rows auto size but at least 150px high */
+  gap: 20px; /* Gap between items */
+  justify-content: center; /* Center items horizontally */
+  width: 100%;
+  max-width: 1200px; /* Max width to prevent too wide layout */
+}
+
+/* Styling for each service item */
+.service-item {
+  background: linear-gradient(90deg, #e0e0e0, #ffffff); /* Gradient background */
+  padding: 20px; /* Increased padding for a more spacious look */
+  border-radius: 12px; /* Larger border radius */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow for depth */
+  cursor: pointer;
+  transition: transform 0.6s ease, box-shadow 0.6s ease, filter 0.6s ease, background 0.6s ease; /* Slower transitions */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  color: #333;
+  font-family: "Arial", sans-serif;
+  border: 2px solid #ddd; /* Border for better visibility */
+  font-size: 1em; /* Adjusted font size */
+  text-align: center; /* Center text inside items */
+  overflow: hidden; /* Hide overflow to keep gradient inside borders */
+  opacity: 0; /* Initially hidden for fade-in animation */
+  animation: fadeIn 1s ease-out forwards; /* Fade-in animation */
+}
+
+/* Expanded state styling */
+.service-item.expanded {
+  transform: scale(1.05); /* Slightly enlarged scale for expanded state */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* Enhanced shadow for emphasis */
+  z-index: 2;
+  border-color: #007bff; /* Highlight border color */
+}
+
+/* Hover effect when not expanded */
+.service-item:hover:not(.expanded) {
+  filter: blur(2px); /* Subtle blur effect */
+  background: linear-gradient(90deg, #c0c0c0, #e0e0e0); /* Gradient change on hover */
+}
+
+/* Hover effect for expanded state */
+.service-item.expanded:hover {
+  background: linear-gradient(90deg, #b0b0b0, #e0e0e0); /* Gradient change on hover for expanded items */
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px); /* Start slightly lower */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0); /* End at the normal position */
+  }
+}
+/* Content within each item */
+.service-content {
+  text-align: center;
+}
+
+/* Service name styling */
+.service-name {
+  margin: 0;
+  font-size: 1.2em; /* Slightly larger font size */
+  font-weight: bold;
+  color: #007bff; /* Vibrant color for service name */
+  text-transform: uppercase; /* Uppercase text for a modern look */
+  letter-spacing: 1px; /* Spacing between letters */
+}
+
+/* UUID styling */
+.service-uuid {
+  margin: 10px 0 0;
+  font-size: 0.9em; /* Slightly larger font size for UUID */
+  color: #555; /* Lighter color for UUID */
+  font-style: italic; /* Italic style for UUID */
+}
+
+/* Custom positioning for the pattern */
+.service-item:nth-child(1) {
+  grid-column: 2/3; /* Center item */
+  grid-row: 1/2;
+}
+
+.service-item:nth-child(2) {
+  grid-column: 1/2; /* Left item */
+  grid-row: 2/3;
+}
+
+.service-item:nth-child(3) {
+  grid-column: 3/4; /* Right item */
+  grid-row: 2/3;
+}
+
+.service-item:nth-child(4) {
+  grid-column: 2/3; /* Center item */
+  grid-row: 3/4;
+}
+
+.service-item:nth-child(5) {
+  grid-column: 1/2; /* Left item */
+  grid-row: 4/5;
+}
+
+.service-item:nth-child(6) {
+  grid-column: 3/4; /* Right item */
+  grid-row: 4/5;
+}
+
+.service-item:nth-child(7) {
+  grid-column: 2/3; /* Center item */
+  grid-row: 5/6;
+}

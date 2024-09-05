@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  yew_front:
+    build:
+      context: ./yew_front
+    ports:
+      - "8092:8092"
+    volumes:
+      - ./yew_front:/app
+    command: trunk serve --release
+
+  actix_api:
+    build:
+      context: ./actix_api
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./actix_api:/app
+    command: cargo run --release
