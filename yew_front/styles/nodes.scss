@@ -7,35 +7,39 @@
     height: 100vh; /* Full height of the viewport */
     width: 100vw; /* Full width of the viewport */
     position: relative;
-    overflow: hidden; /* Ensure content doesn't overflow the container */
+    overflow: auto; /* Ensure content doesn't overflow the container */
+    padding: 20px;
 }
-
-
 
 /* Info text container */
 .info-text-wrapper {
-    width: 100%;
-    max-width: 900px; /* Increase the maximum width for a larger text block */
-    margin-bottom: 20px;
+    position: relative;
+    height: 235px;
+    width: 900px; /* Increase the maximum width for a larger text block */
     text-align: center; /* Center the text inside the info-text */
+    align-items: flex-start;
+    justify-content: center;
+    display: flex;
+    margin-top: 140px;
 }
 
 /* Info text block */
 .info-text {
+    position: relative;
+    height: 100%;
     display: inline-block; /* Inline-block to keep text centered */
     width: 100%;
-    max-width: 900px; /* Match the wrapper's max-width */
-    height: 150px; /* Increase the fixed height */
     padding: 15px; /* Increase padding for better readability */
     background-color: #f0f0f0;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     font-size: 16px; /* Slightly larger font size for better readability */
+    line-height: 1.4;
     white-space: pre-wrap;
-    overflow: auto;
     opacity: 0.8;
     transition: opacity 0.3s ease;
+    overflow: auto;
 }
 
 /* Adjust appearance when showing detailed information */
@@ -48,6 +52,7 @@
 .new-container-good {
     display: flex;
     gap: 20px;
+    height: auto;
     align-items: flex-start;
     justify-content: center;
     flex-wrap: wrap;
@@ -60,10 +65,13 @@
     background-color: #fff7d1;
     padding: 20px;
     border-radius: 8px;
-    width: 200px; /* Adjust width as needed */
+    width: 100%;
+    flex-basis: 100px;
+    max-width: 200px; /* Adjust width as needed */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     position: relative;
 }
+
 
 /* Title for each node (UUID) */
 .node-item-good h2 {
@@ -90,6 +98,9 @@
 .endpoint-square {
     cursor: pointer;
     background-color: #ffe4b5;
+    background-size: contain; /* Ensure the image fits within the square */
+    background-repeat: no-repeat;
+    background-position: center;
     width: 40px;
     height: 40px;
     border-radius: 4px;
@@ -103,6 +114,14 @@
     transition: background-color 0.3s ease, border-color 0.3s ease; /* Adds transition for border */
     border: 2px solid transparent; /* Makes the border initially transparent */
     margin-right: 10px; /* Adds some space between the square and details */
+}
+
+.endpoint-square.first {
+    background-image: url('images/first.png'); /* Set your image here */
+}
+
+.endpoint-square.second {
+    background-image: url('images/second.png'); /* Set your image here */
 }
 
 .endpoint-details {
@@ -132,6 +151,12 @@
 
 .endpoint-square.client-highlighted {
     background-color: pink; /* Bright pink color for lower connection matches */
+    color: black; /* Text color for better visibility */
+    border-color: green;
+}
+
+.endpoint-square.service-highlighted {
+    background-color: red; /* Bright red color for lower connection matches */
     color: black; /* Text color for better visibility */
     border-color: green;
 }
@@ -179,7 +204,12 @@
     background-color: #0000ff;
 }
 
+.color-box.red {
+    background-color: red;
+}
+
 .service-uuid-title {
+    display: flex;
     position: relative;
     align-items: center;
     top: 2%; /* Center items vertically */

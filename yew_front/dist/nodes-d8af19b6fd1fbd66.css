@@ -1,0 +1,221 @@
+/* Wrapper for the entire component */
+.component-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center items vertically */
+  height: 100vh; /* Full height of the viewport */
+  width: 100vw; /* Full width of the viewport */
+  position: relative;
+  overflow: auto; /* Ensure content doesn't overflow the container */
+  padding: 20px;
+}
+
+/* Info text container */
+.info-text-wrapper {
+  position: relative;
+  height: 235px;
+  width: 900px; /* Increase the maximum width for a larger text block */
+  text-align: center; /* Center the text inside the info-text */
+  align-items: flex-start;
+  justify-content: center;
+  display: flex;
+  margin-top: 140px;
+}
+
+/* Info text block */
+.info-text {
+  position: relative;
+  height: 100%;
+  display: inline-block; /* Inline-block to keep text centered */
+  width: 100%;
+  padding: 15px; /* Increase padding for better readability */
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 16px; /* Slightly larger font size for better readability */
+  line-height: 1.4;
+  white-space: pre-wrap;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+  overflow: auto;
+}
+
+/* Adjust appearance when showing detailed information */
+.show-info {
+  opacity: 1;
+  background-color: #fff;
+}
+
+/* Container for all nodes */
+.new-container-good {
+  display: flex;
+  gap: 20px;
+  height: auto;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 100%;
+  position: relative;
+}
+
+/* Each node container (column) */
+.node-item-good {
+  background-color: #fff7d1;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  flex-basis: 100px;
+  max-width: 200px; /* Adjust width as needed */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Title for each node (UUID) */
+.node-item-good h2 {
+  font-size: 16px;
+  margin-bottom: 15px;
+  text-align: center; /* Center the text inside the node */
+}
+
+/* Container for the endpoint squares */
+.endpoints-container-good {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 150px;
+}
+
+/* Wrap the square and details together */
+.endpoint-wrapper {
+  display: flex; /* Aligns the square and details next to each other */
+  align-items: center; /* Aligns them vertically centered */
+  height: 60px;
+}
+
+.endpoint-square {
+  cursor: pointer;
+  background-color: #ffe4b5;
+  background-size: contain; /* Ensure the image fits within the square */
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  font-size: 10px; /* Adjust the font size for visibility */
+  color: #333;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: background-color 0.3s ease, border-color 0.3s ease; /* Adds transition for border */
+  border: 2px solid transparent; /* Makes the border initially transparent */
+  margin-right: 10px; /* Adds some space between the square and details */
+}
+
+.endpoint-square.first {
+  background-image: url("images/first.png"); /* Set your image here */
+}
+
+.endpoint-square.second {
+  background-image: url("images/second.png"); /* Set your image here */
+}
+
+.endpoint-details {
+  justify-content: right;
+  font-size: x-small;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.endpoint-square.selected {
+  background-color: #0000ff; /* Blue color for selected squares */
+  color: white; /* Text color for better visibility */
+}
+
+.endpoint-square.highlighted {
+  background-color: brown; /* Brown color for endpoints with matching link_uuid */
+  color: white; /* Text color for better visibility */
+  border-color: green;
+}
+
+.endpoint-square.lower-highlighted {
+  background-color: yellow; /* Bright yellow color for lower connection matches */
+  color: black; /* Text color for better visibility */
+  border-color: green;
+}
+
+.endpoint-square.client-highlighted {
+  background-color: pink; /* Bright pink color for lower connection matches */
+  color: black; /* Text color for better visibility */
+  border-color: green;
+}
+
+.endpoint-square.service-highlighted {
+  background-color: red; /* Bright red color for lower connection matches */
+  color: black; /* Text color for better visibility */
+  border-color: green;
+}
+
+.legend {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.color-box.yellow {
+  background-color: yellow;
+}
+
+.color-box.pink {
+  background-color: pink;
+}
+
+.color-box.brown {
+  background-color: brown;
+}
+
+.color-box.blue {
+  background-color: #0000ff;
+}
+
+.color-box.red {
+  background-color: red;
+}
+
+.service-uuid-title {
+  display: flex;
+  position: relative;
+  align-items: center;
+  top: 2%; /* Center items vertically */
+  background-color: #4eb8ff;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22../../styles/nodes.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAA;AACA;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGJ;AACA;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGJ;AACA;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGJ;AACA;EACI;EACA;;;AAGJ;AACA;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGJ;AACA;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;;AAIJ;AACA;EACI;EACA;EACA;;;AAGJ;AACA;EACI;EACA;EACA;EACA;;;AAGJ;AACA;EACI;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGJ;EACI;;;AAGJ;EACI;;;AAGJ;EACI;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;;;AAGJ;EACI;EACA;EACA;;;AAGJ;EACI;EACA;EACA;;;AAGJ;EACI;EACA;EACA;;;AAGJ;EACI;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;;;AAGJ;EACI;EACA;EACA;;;AAGJ;EACI;;;AAGJ;EACI;;;AAGJ;EACI;;;AAGJ;EACI;;;AAGJ;EACI;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA%22,%22file%22:%22nodes.css%22%7D */

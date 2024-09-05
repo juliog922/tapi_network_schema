@@ -1,0 +1,65 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Service {
+    +uuid: Value
+    +name: Option<Value>
+    +nodes: Vec<Node>
+}
+
+class Node {
+    +node_uuid: String
+    +endpoints: Vec<Endpoint>
+    +id: Value
+}
+
+class Endpoint {
+    +connection_end_point_uuid: Value
+    +node_edge_point_uuid: Value
+    +layer_protocol_qualifier: Value
+    +client_node_edge_point_uuid: Option<Value>
+    +service_interface_point_uuid: Option<Value>
+    +lower_connections: Option<Value>
+    +link_uuid: Option<Value>
+    +id: Value
+}
+
+Service "1" -- "*" Node: contains
+Node "1" -- "*" Endpoint: contains
+
+skinparam classAttributeIconSize 0
+
+' Representation of Data Sources
+class ConnectivityServices {
+    + get_json_from_file(file_name: &str) : Result<Value, Error>
+}
+
+class Connections {
+    + get_json_from_file(file_name: &str) : Result<Value, Error>
+}
+
+class Topology {
+    + get_json_from_file(file_name: &str) : Result<Value, Error>
+}
+
+' Class for the Final Schema
+class Schema {
+    + services_vector(services_json: &Vec<Value>) : Result<Value, Error>
+}
+
+' Representation of Utility Functions
+class Utils {
+    + matching(pointer: bool, json: &Value, path: &'static str) : Result<Value, Error>
+    + to_list(value: Value) : Result<Vec<Value>, Error>
+    + find_value_with_parent_value(json: &Value, target: &Value, levels_up: usize, parent_key: &str) : Result<Value, Error>
+}
+
+' Relationships between Data Sources and the Schema
+Schema --> ConnectivityServices : uses
+Schema --> Connections : uses
+Schema --> Topology : uses
+
+' Dependencies on Utility Functions
+Schema ..> Utils : uses
+
+@enduml

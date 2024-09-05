@@ -28,6 +28,7 @@ pub fn nodes(props: &NodesProps) -> Html {
     let highlighted_connections_uuid = use_state(|| HashSet::<String>::new());
     let highlighted_edge_uuid = use_state(|| HashSet::<String>::new());
     let highlighted_client_uuid = use_state(|| HashSet::<String>::new());
+    let highlighted_service_uuid = use_state(|| HashSet::<String>::new());
 
     // Callback to handle mouseover events and update hover data
     let onmouseover = {
@@ -53,6 +54,7 @@ pub fn nodes(props: &NodesProps) -> Html {
         let highlighted_connections_uuid = highlighted_connections_uuid.clone();
         let highlighted_edge_uuid = highlighted_edge_uuid.clone();
         let highlighted_client_uuid = highlighted_client_uuid.clone();
+        let highlighted_service_uuid = highlighted_service_uuid.clone();
         let nodes = props.nodes.clone();
         
         Callback::from(move |ep: Value| {
@@ -62,6 +64,11 @@ pub fn nodes(props: &NodesProps) -> Html {
             let mut new_highlighted_connections_uuid: HashSet<String> = HashSet::new();
             let mut new_highlighted_edge_uuid: HashSet<String> = HashSet::new();
             let mut new_highlighted_client_uuid: HashSet<String> = HashSet::new();
+                let mut new_highlighted_service_uuid: HashSet<String> = HashSet::new();
+
+            if let Some(_) = ep["service_interface_point_uuid"].as_str() {
+                new_highlighted_service_uuid.insert("service_interface_point_uuid".to_string());
+            }
 
             // Highlight nodes with the same link_uuid as the selected endpoint
             if let Some(link_uuid) = ep["link_uuid"].as_str() {
@@ -165,6 +172,7 @@ pub fn nodes(props: &NodesProps) -> Html {
             highlighted_connections_uuid.set(new_highlighted_connections_uuid);
             highlighted_client_uuid.set(new_highlighted_client_uuid);
             highlighted_edge_uuid.set(new_highlighted_edge_uuid);
+            highlighted_service_uuid.set(new_highlighted_service_uuid);
         })
     };
 
@@ -214,6 +222,17 @@ pub fn nodes(props: &NodesProps) -> Html {
                                             let is_selected = {
                                                 if let Some(ref selected) = *selected_value {
                                                     *selected == ep.clone()
+                                                } else {
+                                                    false
+                                                }
+                                            };
+
+                                            let mut service_flag = false;
+
+                                            let is_service = {
+                                                if let Some(_) = ep["service_interface_point_uuid"].as_str() {
+                                                    service_flag = true;
+                                                    highlighted_service_uuid.contains("service_interface_point_uuid") && !is_selected
                                                 } else {
                                                     false
                                                 }
@@ -296,12 +315,14 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                     <div
                                                         class={classes!(
                                                             "endpoint-square",
+                                                            if is_service { "service-highlighted" } else { "" },
                                                             if is_client_highlighted { "client-highlighted" } else { "" },
                                                             if is_edge_highlighted { "client-highlighted" } else { "" },
                                                             if is_lower_highlighted { "lower-highlighted" } else { "" },
                                                             if is_connection_highlighted { "lower-highlighted" } else { "" },
                                                             if is_highlighted { "highlighted" } else { "" },
                                                             if is_selected { "selected" } else { "" },
+                                                            if service_flag { "first" } else { "second" }
                                                         )}
                                                         onmouseover={onmouseover}
                                                         onmouseout={onmouseout}
@@ -321,6 +342,10 @@ pub fn nodes(props: &NodesProps) -> Html {
                 }
             </div>
             <div class="legend">
+                <div class="legend-item">
+                    <div class="color-box red"></div>
+                    <span>{ "service interface points" }</span>
+                </div>
                 <div class="legend-item">
                     <div class="color-box yellow"></div>
                     <span>{ "lower-connection" }</span>

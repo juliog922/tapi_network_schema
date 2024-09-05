@@ -239,11 +239,11 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                         0, 
                                         "node-edge-point-uuid"
                                     ) {
-                                        client_node_edge_point_uuid = Some(conn_end_point.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone());
+                                        client_node_edge_point_uuid = Some(conn_end_point.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone()); // topology_uuid
                                     }
 
-                                    option_node_edge_point = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-edge-point-uuid")?);
-                                    option_node_uuid = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-uuid")?)
+                                    option_node_edge_point = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-edge-point-uuid")?); ////////////////////
+                                    option_node_uuid = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-uuid")?) ///////////////////////////
                                 }
 
                                 if let Some(node_edge_point) = option_node_edge_point.clone() {
