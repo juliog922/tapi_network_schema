@@ -54,11 +54,12 @@ pub fn services_vector(services_json: &Vec<Value>) -> Result<Value, Error> {
                 // Extract the node UUID from the connection end point
                 let node_uuid = matching(false, &conn_end_point, "node-uuid")?;
                 let node_uuid_str = node_uuid.as_str().unwrap().to_string();
-
+                let inventory_id = Value::String("".to_string());
                 // Create a new Endpoint instance
                 let endpoint = Endpoint::new(
                     connection_end_point_uuid,
                     node_edge_point_uuid,
+                    inventory_id,
                     layer_protocol_qualifier,
                     None,
                     service_interface_uuid.clone(),

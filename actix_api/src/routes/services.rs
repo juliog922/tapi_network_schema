@@ -14,6 +14,12 @@ use crate::pross::{
     conn_services::services_vector,
     build_endpoints::endpoints_creation,
     lower_transform::lower_conn_transformation,
+    token_src::{
+        get_token,
+        get_topology,
+        get_connections,
+        get_services,
+    },
 };
 
 fn get_json_from_file(file_name: &str) -> Result<Value, Error> {
@@ -70,14 +76,33 @@ async fn connectivity_services(
         if let Some(current_host) = new_host_dictionary.clone().get(&host) {
             let _host_parameters = current_host.clone();
 
-            let response = Client::builder()
+            let port = {
+                if let Some(some_port) = current_host.port.clone() {
+                    ":".to_string() + &some_port
+                } else {
+                    "".to_string()
+                }
+            };
+
+            let connectivity_services: Vec<Value>;
+            let connections: Vec<Value>;
+            let topology: Value;
+
+            if let Ok(token) = get_token(&host, &port, &current_host.user, &current_host.password, &current_host.tenant.clone().unwrap_or_default()).await {
+
+                connectivity_services = to_list(get_services(&token, &host, &port).await?)?;
+                connections = to_list(get_connections(&token, &host, &port).await?)?;
+                topology = get_topology(&token, &host, &port).await?;
+
+            } else {
+                let response = Client::builder()
                 .danger_accept_invalid_certs(true)
                 .gzip(true)
                 .brotli(true)
                 .deflate(true)
                 .build()
                 .unwrap()
-                .get(format!("https://{}:{}/restconf/data/tapi-common:context", host, current_host.port))
+                .get(format!("https://{}{}/restconf/data/tapi-common:context", host, port))
                 .header("Accept", "application/yang-data+json")
                 .header("Accept-Encoding", "gzip, deflate, br")
                 .basic_auth(format!("{}", current_host.user), Some(format!("{}", current_host.password)))
@@ -85,13 +110,13 @@ async fn connectivity_services(
                 .await
                 .map_err(|_| error::ErrorNotFound("Request Error"))?;
 
-            let json: Value = response.json().await.map_err(|_| error::ErrorNotFound("Empty Response."))?;
+                let json: Value = response.json().await.map_err(|_| error::ErrorNotFound("Empty Response."))?;
 
-            let connectivity_services = to_list(matching(true, &json, "/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")?)?;
-            let connections = to_list(matching(true, &json, "/tapi-common:context/tapi-connectivity:connectivity-context/connection")?)?;
-            let _services_interface_point = to_list(matching(true, &json, "/tapi-common:context/service-interface-point")?)?;
-            let topology = matching(true, &json, "/tapi-common:context/tapi-topology:topology-context/topology")?;
-            
+                connectivity_services = to_list(matching(true, &json, "/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")?)?;
+                connections = to_list(matching(true, &json, "/tapi-common:context/tapi-connectivity:connectivity-context/connection")?)?;
+                //let _services_interface_point = to_list(matching(true, &json, "/tapi-common:context/service-interface-point")?)?;
+                topology = matching(true, &json, "/tapi-common:context/tapi-topology:topology-context/topology")?;
+            }
 
             let mut schema = services_vector(&connectivity_services)?;
             endpoints_creation(&topology, &connections, &mut schema)?;

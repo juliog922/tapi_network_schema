@@ -22,13 +22,15 @@ pub fn add_device_form() -> Html {
     // State hooks to manage form input values and error messages
     let error_message_handle = use_state(String::default);
     let host_handle = use_state(String::default);
-    let port_handle = use_state(|| "0".to_string());
+    let port_handle = use_state(|| None);
+    let tenant_handle = use_state(|| None);
     let user_handle = use_state(String::default);
     let password_handle = use_state(String::default);
 
     // Cloning state values for use in async tasks and callbacks
     let host = (*host_handle).clone();
     let port = (*port_handle).clone();
+    let tenant = (*tenant_handle).clone();
     let user = (*user_handle).clone();
     let password = (*password_handle).clone();
     let error_message = (*error_message_handle).clone();
@@ -47,7 +49,16 @@ pub fn add_device_form() -> Html {
         Callback::from(move |e: Event| {
             let target = e.target_dyn_into::<HtmlInputElement>();
             if let Some(input) = target {
-                port_handle.set(input.value());
+                port_handle.set(Some(input.value()));
+            }
+        })
+    };
+
+    let on_change_tenant = {
+        Callback::from(move |e: Event| {
+            let target = e.target_dyn_into::<HtmlInputElement>();
+            if let Some(input) = target {
+                tenant_handle.set(Some(input.value()));
             }
         })
     };
@@ -72,7 +83,8 @@ pub fn add_device_form() -> Html {
 
     // Cloning values for use in async code
     let cloned_host = host.clone();
-    let cloned_port = port.clone().parse::<i32>().unwrap_or_default();
+    let cloned_port = port.clone();
+    let cloned_tenant = tenant.clone();
     let cloned_user = user.clone();
     let cloned_password = password.clone();
 
@@ -84,6 +96,7 @@ pub fn add_device_form() -> Html {
         let cloned_navigator = navigator.clone();
         let cloned_host = cloned_host.clone();
         let cloned_port = cloned_port.clone();
+        let cloned_tenant = cloned_tenant.clone();
         let cloned_user = cloned_user.clone();
         let cloned_password = cloned_password.clone();
         let cloned_error_message_handle = error_message_handle.clone();
@@ -91,7 +104,7 @@ pub fn add_device_form() -> Html {
         // Asynchronous task to handle form submission
         spawn_local(async move {
             // Call the API to add the device
-            let result = add_device(cloned_host, cloned_port, cloned_user, cloned_password).await;
+            let result = add_device(cloned_host, cloned_port, cloned_tenant, cloned_user, cloned_password).await;
 
             // Handle the result of the API call
             if let Ok(_) = result {
@@ -127,8 +140,17 @@ pub fn add_device_form() -> Html {
                     input_type="port" 
                     name="port" 
                     label="Port"
-                    value={port}
+                    value={port.unwrap_or_default()}
                     onchange={on_change_port}
+                />
+            </div>
+            <div class="input-group">
+                <Input 
+                    input_type="tenant" 
+                    name="tenant" 
+                    label="Tenant"
+                    value={tenant.unwrap_or_default()}
+                    onchange={on_change_tenant}
                 />
             </div>
             <div class="input-group">

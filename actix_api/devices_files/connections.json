@@ -1,0 +1,2378 @@
+[
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "3f4be3c5-b8c3-3d2f-941b-d89e6acab3d7",
+                "node-edge-point-uuid": "8daaa783-a498-3cef-abb7-5da755d80427",
+                "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "4b4c60f5-51f9-376d-b6e4-1266b8c845ad",
+                "node-edge-point-uuid": "cbe061d7-e53f-31a5-8d88-dd1bc4ad8410",
+                "node-uuid": "8f03fc9d-a641-3e72-ab5c-e0f39aff24ac",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "OMS-Testbed_A_1_Testbed_C_1-12",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "932a2af2-e2a7-4b7d-9d4f-328611d2a69a",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "oms_top_conn_add/000105be_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "3f4be3c5-b8c3-3d2f-941b-d89e6acab3d7",
+                        "node-edge-point-uuid": "8daaa783-a498-3cef-abb7-5da755d80427",
+                        "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "4b4c60f5-51f9-376d-b6e4-1266b8c845ad",
+                        "node-edge-point-uuid": "cbe061d7-e53f-31a5-8d88-dd1bc4ad8410",
+                        "node-uuid": "8f03fc9d-a641-3e72-ab5c-e0f39aff24ac",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000001",
+                "name": [
+                    {
+                        "value": "route_00000001",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000001",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "supported-client-link": [
+            {
+                "link-uuid": "0358dbd2-f4be-313b-a442-e6ddac29ad03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "tapi-plus-eqp:physical-route-list": {
+            "physical-route": [
+                {
+                    "local-id": "00000001",
+                    "name": [
+                        {
+                            "value": "WORK",
+                            "value-name": "PHYSICAL_PATH_ROLE"
+                        },
+                        {
+                            "value": "route_00000001",
+                            "value-name": "PHYSICAL_ROUTE_NAME"
+                        }
+                    ],
+                    "physical-route-element": [
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "1e6bec71-41b9-3acf-9219-be87425cc8ab",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "59e951df-f976-31fd-bb9f-f8e28714d32b",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "b533714c-a5b6-3c02-90cf-43760eb2e7f3",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "7b085eb9-3149-388e-b731-e81d87075dae",
+                                "device-uuid": "1d60d1ab-d2aa-4b47-970e-779138280a5d"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "4479c32f-565c-3278-85cc-36306b0fa07b",
+                                "device-uuid": "1d60d1ab-d2aa-4b47-970e-779138280a5d"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "491ab8ed-95b4-3ff0-8dfb-9928d6697783",
+                                "device-uuid": "2407509c-6e48-4ca1-8ea8-ece6816b7909"
+                            }
+                        }
+                    ],
+                    "physical-route-state": "tapi-plus-eqp:PHYSICAL_ROUTE_STATE_CURRENT"
+                }
+            ]
+        },
+        "uuid": "557d5978-5894-3dc9-883c-9ec00774780e"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "d4860733-c8d0-3d9d-b71f-0bdb4b57ca99",
+                "node-edge-point-uuid": "92d10a7a-10c8-3442-a871-52fd6a42dfae",
+                "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "c8427d7b-b283-35fc-9b19-58bea048a235",
+                "node-edge-point-uuid": "f0b082f5-5f68-316d-a23d-bb86999c9e09",
+                "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "ODU",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "oduj_xc_conn/0001070c_00000002",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "uuid": "58d11744-540c-3e76-8adc-f972bc108be1"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "bb0af06d-0899-3f77-a924-1c2879069a43",
+                "node-edge-point-uuid": "0b219f1d-d857-3685-bf4c-6206ac693ace",
+                "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "249cbc2f-1856-30e1-9243-a9a3d1caecbf",
+                "node-edge-point-uuid": "2278928f-b193-3275-9511-3c93b1d15211",
+                "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "ODU",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "ODU4-Testbed_A_2_Testbed_D_2-46",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "ed6caf54-fc97-4113-81e3-0faeb5dde714",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "hoodu_top_conn/00010707_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "bb0af06d-0899-3f77-a924-1c2879069a43",
+                        "node-edge-point-uuid": "0b219f1d-d857-3685-bf4c-6206ac693ace",
+                        "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "249cbc2f-1856-30e1-9243-a9a3d1caecbf",
+                        "node-edge-point-uuid": "2278928f-b193-3275-9511-3c93b1d15211",
+                        "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000001",
+                "name": [
+                    {
+                        "value": "route_00000001",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000001",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "uuid": "3314a1c9-1433-3731-b627-175e290bd419"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "ffc1ec38-1376-3dea-b64e-07ab2e5e739f",
+                "node-edge-point-uuid": "333687ac-3228-37e0-b183-ba0bd7c9ab00",
+                "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "976f02e7-ed60-39b3-9f12-1ed5db837f20",
+                "node-edge-point-uuid": "16b76ed3-9a84-3f2a-9098-6e4d46de2168",
+                "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "mc_xc_conn_work_add/00010708_00000002",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "uuid": "a1b4cc33-ae52-3513-9db4-6b3b05ba80ee"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "94efeb39-08ca-3c57-9c47-524d07abd0aa",
+                "node-edge-point-uuid": "61959b3d-693f-34ee-ba7e-9aa4d6ae6380",
+                "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "aafd8e95-200c-30b0-9955-eaabc6aba9f1",
+                "node-edge-point-uuid": "4989f2ae-070f-30a4-8b28-029c4c9d2d89",
+                "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "mc_xc_conn_work_drop/00010708_00000001",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "uuid": "4a95e031-2c6c-3630-946b-4a0685839dd9"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "7c1214ce-be55-352d-985c-9936befa0012",
+                "node-edge-point-uuid": "21202107-19c5-31d9-b570-d2ce29f05d1b",
+                "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "809b649c-2a01-3078-b970-bb5e356cc443",
+                "node-edge-point-uuid": "ce316397-41dd-3422-899d-69a47304c071",
+                "node-uuid": "d101d8ce-91c1-39ad-b7d4-f5776ee20fab",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "OMS-Testbed_D_1_Testbed_B_1-4",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "c27d61a4-4f5f-4742-a56b-a8c99b204119",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "oms_top_conn_add/0001036e_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "7c1214ce-be55-352d-985c-9936befa0012",
+                        "node-edge-point-uuid": "21202107-19c5-31d9-b570-d2ce29f05d1b",
+                        "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "809b649c-2a01-3078-b970-bb5e356cc443",
+                        "node-edge-point-uuid": "ce316397-41dd-3422-899d-69a47304c071",
+                        "node-uuid": "d101d8ce-91c1-39ad-b7d4-f5776ee20fab",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000001",
+                "name": [
+                    {
+                        "value": "route_00000001",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000001",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "supported-client-link": [
+            {
+                "link-uuid": "849ca134-b0dd-3cb8-a054-b71fb1117657",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "tapi-plus-eqp:physical-route-list": {
+            "physical-route": [
+                {
+                    "local-id": "00000001",
+                    "name": [
+                        {
+                            "value": "WORK",
+                            "value-name": "PHYSICAL_PATH_ROLE"
+                        },
+                        {
+                            "value": "route_00000001",
+                            "value-name": "PHYSICAL_ROUTE_NAME"
+                        }
+                    ],
+                    "physical-route-element": [
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "2e978c75-4d3e-3634-a9b7-5741158e6b60",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "faa524c3-7c8a-3f4a-80bb-1a273afdcbc7",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "ccb76f30-00f0-3736-a30e-2bd646cc9520",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "a7e47376-3861-35ba-8b1e-b6341f1dd170",
+                                "device-uuid": "17b293eb-826a-457a-bfed-de394feb809a"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "a2d88393-52f3-331a-8b8c-9256c4cffb95",
+                                "device-uuid": "17b293eb-826a-457a-bfed-de394feb809a"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "e9699dbb-29b7-38bc-b30f-9f3454b2de7e",
+                                "device-uuid": "8d88f1ef-c9dc-48ab-9fae-0ddd79350e16"
+                            }
+                        }
+                    ],
+                    "physical-route-state": "tapi-plus-eqp:PHYSICAL_ROUTE_STATE_CURRENT"
+                }
+            ]
+        },
+        "uuid": "d036c60c-47f1-3a20-ae83-d916d1e57dee"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "4ce23cbd-d90c-37df-921a-e00a7668fa5e",
+                "node-edge-point-uuid": "a993cf20-5fd3-3642-b505-48d4ddfc7853",
+                "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "aafd8e95-200c-30b0-9955-eaabc6aba9f1",
+                "node-edge-point-uuid": "4989f2ae-070f-30a4-8b28-029c4c9d2d89",
+                "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "lower-connection": [
+            {
+                "connection-uuid": "f3363393-2872-3f51-9737-631c8940891a"
+            },
+            {
+                "connection-uuid": "4a95e031-2c6c-3630-946b-4a0685839dd9"
+            }
+        ],
+        "name": [
+            {
+                "value": "mc_top_conn_drop/00010708_00000000",
+                "value-name": "CONNECTION_NAME"
+            },
+            {
+                "value": "ebe79eb1-ad8d-486b-8dcd-da59e03bbd38",
+                "value-name": "TRAFFIC_UUID"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "4ce23cbd-d90c-37df-921a-e00a7668fa5e",
+                        "node-edge-point-uuid": "a993cf20-5fd3-3642-b505-48d4ddfc7853",
+                        "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "4bc7ef15-7f5b-30fb-b8f2-d8e9677224a7",
+                        "node-edge-point-uuid": "6204f356-0baa-3605-982a-fbbe0861f6f1",
+                        "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "94efeb39-08ca-3c57-9c47-524d07abd0aa",
+                        "node-edge-point-uuid": "61959b3d-693f-34ee-ba7e-9aa4d6ae6380",
+                        "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "aafd8e95-200c-30b0-9955-eaabc6aba9f1",
+                        "node-edge-point-uuid": "4989f2ae-070f-30a4-8b28-029c4c9d2d89",
+                        "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000002",
+                "name": [
+                    {
+                        "value": "route_00000002",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000002",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "tapi-plus-eqp:physical-route-list": {
+            "physical-route": [
+                {
+                    "local-id": "00000002",
+                    "name": [
+                        {
+                            "value": "WORK",
+                            "value-name": "PHYSICAL_PATH_ROLE"
+                        },
+                        {
+                            "value": "route_00000002",
+                            "value-name": "PHYSICAL_ROUTE_NAME"
+                        }
+                    ],
+                    "physical-route-element": [
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "edfdf431-ea00-3dcf-bfcc-014abe7b3cef",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "1bf0a4ac-3b67-38b1-a3ae-836e2b03d82d",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "6b9224a0-79b8-3c16-8103-03fc6c654007",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "5763484c-e6ed-3c76-ad88-56ebad907307",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "c9925d28-7271-3448-b19e-dfe28ad0d1e1",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "88bde415-f657-3388-821d-a31c9462afc5",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "1a9fbd76-0219-3e37-bf2c-4b297858e7ec",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "4422456c-7601-3a01-bb1a-a60cfc4b00e9",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "c1688e53-1b57-3c09-a91e-00b59038927c",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "a4bb49f4-c858-3a13-bfaa-d78a7cda38a5",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "ed13c793-5614-3af0-8707-95733556cbcf",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "e67eee0f-4c53-312a-9944-4f00fed30983",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "5b44a7d8-0bec-33d0-8364-7f67810f17cf",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "48753a39-db42-3a9d-b4df-a63a3cc8c3f0",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        }
+                    ],
+                    "physical-route-state": "tapi-plus-eqp:PHYSICAL_ROUTE_STATE_CURRENT"
+                }
+            ]
+        },
+        "uuid": "17f3bef3-cf72-3c5b-9059-06cc791c239e"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "09087cf2-1453-316b-bd04-ee41b6904c53",
+                "node-edge-point-uuid": "cce07734-c499-393f-8b92-a90ea9a5d105",
+                "node-uuid": "d101d8ce-91c1-39ad-b7d4-f5776ee20fab",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "b3c452a2-1365-3b6e-a952-46a72ab7989b",
+                "node-edge-point-uuid": "e68a38ae-1c67-34bd-aa6c-bad328b205e6",
+                "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "OMS-Testbed_A_1_Testbed_B_1-11",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "66768a0e-1efd-4175-b6d1-8c75a05be0da",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "oms_top_conn_drop/000105bb_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "09087cf2-1453-316b-bd04-ee41b6904c53",
+                        "node-edge-point-uuid": "cce07734-c499-393f-8b92-a90ea9a5d105",
+                        "node-uuid": "d101d8ce-91c1-39ad-b7d4-f5776ee20fab",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "b3c452a2-1365-3b6e-a952-46a72ab7989b",
+                        "node-edge-point-uuid": "e68a38ae-1c67-34bd-aa6c-bad328b205e6",
+                        "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000002",
+                "name": [
+                    {
+                        "value": "route_00000002",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000002",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "supported-client-link": [
+            {
+                "link-uuid": "faf64dfb-3246-38ae-9a7d-2a3649b05792",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "tapi-plus-eqp:physical-route-list": {
+            "physical-route": [
+                {
+                    "local-id": "00000002",
+                    "name": [
+                        {
+                            "value": "WORK",
+                            "value-name": "PHYSICAL_PATH_ROLE"
+                        },
+                        {
+                            "value": "route_00000002",
+                            "value-name": "PHYSICAL_ROUTE_NAME"
+                        }
+                    ],
+                    "physical-route-element": [
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "89954230-4ccf-3f6f-9831-0130d90df0a3",
+                                "device-uuid": "8d88f1ef-c9dc-48ab-9fae-0ddd79350e16"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "7e1293b0-ae23-312c-8e8f-47776190db4b",
+                                "device-uuid": "17b293eb-826a-457a-bfed-de394feb809a"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "004fbf60-ae6b-3f8f-9b5e-78a7fc390905",
+                                "device-uuid": "17b293eb-826a-457a-bfed-de394feb809a"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "4a8976dc-7bcc-3500-a456-077d923bc76f",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "b9e7bc8e-5ee2-3b61-b480-bd1ce8bc7e58",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "777c218f-fd31-39bb-b642-e9bcfffb7e47",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        }
+                    ],
+                    "physical-route-state": "tapi-plus-eqp:PHYSICAL_ROUTE_STATE_CURRENT"
+                }
+            ]
+        },
+        "uuid": "5e1e1d17-d51f-3aef-87b9-ccc313d4bd46"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "33a5c53b-317b-3ce6-8f2a-1746b09cf58a",
+                "node-edge-point-uuid": "2e89ce18-7ee3-3a6a-8d81-8b7bf4b5bf05",
+                "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "2a6db452-1d48-32dc-9685-4f8ff5514259",
+                "node-edge-point-uuid": "43a582aa-9cf1-3a50-ab30-d17a8f0857b6",
+                "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "OMS-Testbed_A_1_Testbed_D_1-13",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "31c9e45b-fe6d-4821-a312-2d10c749be6c",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "oms_top_conn_drop/000105c0_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "33a5c53b-317b-3ce6-8f2a-1746b09cf58a",
+                        "node-edge-point-uuid": "2e89ce18-7ee3-3a6a-8d81-8b7bf4b5bf05",
+                        "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "2a6db452-1d48-32dc-9685-4f8ff5514259",
+                        "node-edge-point-uuid": "43a582aa-9cf1-3a50-ab30-d17a8f0857b6",
+                        "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000002",
+                "name": [
+                    {
+                        "value": "route_00000002",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000002",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "supported-client-link": [
+            {
+                "link-uuid": "053bc3ae-6a9e-3913-b828-aa54c74b18cd",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "tapi-plus-eqp:physical-route-list": {
+            "physical-route": [
+                {
+                    "local-id": "00000002",
+                    "name": [
+                        {
+                            "value": "WORK",
+                            "value-name": "PHYSICAL_PATH_ROLE"
+                        },
+                        {
+                            "value": "route_00000002",
+                            "value-name": "PHYSICAL_ROUTE_NAME"
+                        }
+                    ],
+                    "physical-route-element": [
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "1a9fbd76-0219-3e37-bf2c-4b297858e7ec",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "f8718c11-219b-3d62-bbaa-1dbe87832595",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "6e862fc9-3269-379f-b28a-d2c21703bc5b",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "fae58829-3cf5-3c7b-a6cd-cb0b359b0219",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "4d163b7a-4b5e-3998-9927-2b90f6a57222",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "4422456c-7601-3a01-bb1a-a60cfc4b00e9",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        }
+                    ],
+                    "physical-route-state": "tapi-plus-eqp:PHYSICAL_ROUTE_STATE_CURRENT"
+                }
+            ]
+        },
+        "uuid": "cee6367f-7a0f-3b94-b166-937f36319c29"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "4ce23cbd-d90c-37df-921a-e00a7668fa5e",
+                "node-edge-point-uuid": "a993cf20-5fd3-3642-b505-48d4ddfc7853",
+                "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "4bc7ef15-7f5b-30fb-b8f2-d8e9677224a7",
+                "node-edge-point-uuid": "6204f356-0baa-3605-982a-fbbe0861f6f1",
+                "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "mc_xc_conn_work_drop/00010708_00000002",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "uuid": "f3363393-2872-3f51-9737-631c8940891a"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "5a506e2b-076c-371a-9455-456341000b49",
+                "node-edge-point-uuid": "e515544b-b1aa-3841-a785-2d83135ecfdf",
+                "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "c8427d7b-b283-35fc-9b19-58bea048a235",
+                "node-edge-point-uuid": "f0b082f5-5f68-316d-a23d-bb86999c9e09",
+                "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "ODU",
+        "lifecycle-state": "INSTALLED",
+        "lower-connection": [
+            {
+                "connection-uuid": "58d11744-540c-3e76-8adc-f972bc108be1"
+            },
+            {
+                "connection-uuid": "5cc86e4b-d045-34e5-858e-04551a46e71a"
+            }
+        ],
+        "name": [
+            {
+                "value": "ODU2e-Testbed_A_2_Testbed_D_2-100",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "10223ac1-41cb-4dd7-b667-cb8b34d65a0f",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "oduj_top_conn/0001070c_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "5a506e2b-076c-371a-9455-456341000b49",
+                        "node-edge-point-uuid": "e515544b-b1aa-3841-a785-2d83135ecfdf",
+                        "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "2e0e8b43-e07d-3d64-ad56-d0760ccee9cb",
+                        "node-edge-point-uuid": "1c6c29cb-c227-3e38-afb4-4c8727e2b8ca",
+                        "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "d4860733-c8d0-3d9d-b71f-0bdb4b57ca99",
+                        "node-edge-point-uuid": "92d10a7a-10c8-3442-a871-52fd6a42dfae",
+                        "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "c8427d7b-b283-35fc-9b19-58bea048a235",
+                        "node-edge-point-uuid": "f0b082f5-5f68-316d-a23d-bb86999c9e09",
+                        "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000001",
+                "name": [
+                    {
+                        "value": "route_00000001",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000001",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "uuid": "238e582d-6838-3584-966b-269cb4ab9dd3"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "5a506e2b-076c-371a-9455-456341000b49",
+                "node-edge-point-uuid": "e515544b-b1aa-3841-a785-2d83135ecfdf",
+                "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "2e0e8b43-e07d-3d64-ad56-d0760ccee9cb",
+                "node-edge-point-uuid": "1c6c29cb-c227-3e38-afb4-4c8727e2b8ca",
+                "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "ODU",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "oduj_xc_conn/0001070c_00000001",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "uuid": "5cc86e4b-d045-34e5-858e-04551a46e71a"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "a65a32a4-355a-3ebd-8af3-66099dafb9d4",
+                "node-edge-point-uuid": "b231345f-8e0e-363d-b5ce-bde7761d268e",
+                "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "53a61566-e375-3a21-b952-0a6c85f591df",
+                "node-edge-point-uuid": "6450ae66-cb18-3fd5-ad8a-db1136fc1bae",
+                "node-uuid": "d101d8ce-91c1-39ad-b7d4-f5776ee20fab",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "OMS-Testbed_A_1_Testbed_B_1-11",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "66768a0e-1efd-4175-b6d1-8c75a05be0da",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "oms_top_conn_add/000105bb_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "a65a32a4-355a-3ebd-8af3-66099dafb9d4",
+                        "node-edge-point-uuid": "b231345f-8e0e-363d-b5ce-bde7761d268e",
+                        "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "53a61566-e375-3a21-b952-0a6c85f591df",
+                        "node-edge-point-uuid": "6450ae66-cb18-3fd5-ad8a-db1136fc1bae",
+                        "node-uuid": "d101d8ce-91c1-39ad-b7d4-f5776ee20fab",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000001",
+                "name": [
+                    {
+                        "value": "route_00000001",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000001",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "supported-client-link": [
+            {
+                "link-uuid": "9102c3d9-1f7c-3072-a3d9-3ecc84a0daad",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "tapi-plus-eqp:physical-route-list": {
+            "physical-route": [
+                {
+                    "local-id": "00000001",
+                    "name": [
+                        {
+                            "value": "WORK",
+                            "value-name": "PHYSICAL_PATH_ROLE"
+                        },
+                        {
+                            "value": "route_00000001",
+                            "value-name": "PHYSICAL_ROUTE_NAME"
+                        }
+                    ],
+                    "physical-route-element": [
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "2200ba5b-52e0-3c59-bbe6-a466f0cec62b",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "5c7f3ce0-d912-3d3b-9cf2-5829ee55a0a0",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "a83f8a4e-0cfc-3b7b-bd7d-06d424fe41fd",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "29db8b83-64e1-3f82-989f-2870a5f6d4d0",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "155bfae6-9d50-3cc5-8d3c-bc215ed58e9a",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "578f9cde-cc08-364a-afae-e17b847ab800",
+                                "device-uuid": "17b293eb-826a-457a-bfed-de394feb809a"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "6c6dd1ea-f247-398f-b385-28d1f7793e1d",
+                                "device-uuid": "17b293eb-826a-457a-bfed-de394feb809a"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "4f1f2642-8a96-3903-b520-d0e1213e578f",
+                                "device-uuid": "8d88f1ef-c9dc-48ab-9fae-0ddd79350e16"
+                            }
+                        }
+                    ],
+                    "physical-route-state": "tapi-plus-eqp:PHYSICAL_ROUTE_STATE_CURRENT"
+                }
+            ]
+        },
+        "uuid": "0481db40-481a-3270-a379-fce3affe1939"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "3d591cb1-6c6b-3c5e-b948-73a50894ef09",
+                "node-edge-point-uuid": "cfe62f2e-560f-3706-a465-0c00250e6f53",
+                "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "43582310-693d-37e4-8afc-8d2a98a2f5a9",
+                "node-edge-point-uuid": "21e6efa8-b1eb-3573-b179-186567c1729d",
+                "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "ODU",
+        "lifecycle-state": "INSTALLED",
+        "lower-connection": [
+            {
+                "connection-uuid": "2425217e-2f34-3ab1-91e3-f6834dac1264"
+            },
+            {
+                "connection-uuid": "811c33f5-e9bc-319f-a12d-4447d174fc9f"
+            }
+        ],
+        "name": [
+            {
+                "value": "ODU2e-Testbed_A_2_Testbed_D_2-96",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "c4bcc81e-203c-4522-98ac-232e13472ece",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "oduj_top_conn/00010706_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "3d591cb1-6c6b-3c5e-b948-73a50894ef09",
+                        "node-edge-point-uuid": "cfe62f2e-560f-3706-a465-0c00250e6f53",
+                        "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "b3d1ad65-175b-381c-85ea-34dec44aa6ac",
+                        "node-edge-point-uuid": "1c6c29cb-c227-3e38-afb4-4c8727e2b8ca",
+                        "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "ae7451f0-c203-30cd-9f62-d3c1fccc71b8",
+                        "node-edge-point-uuid": "92d10a7a-10c8-3442-a871-52fd6a42dfae",
+                        "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "43582310-693d-37e4-8afc-8d2a98a2f5a9",
+                        "node-edge-point-uuid": "21e6efa8-b1eb-3573-b179-186567c1729d",
+                        "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000001",
+                "name": [
+                    {
+                        "value": "route_00000001",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000001",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "uuid": "fea09298-e285-30a1-92f9-5fdcdfac7325"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "47f1952c-d5ee-3319-8a80-576bb498456c",
+                "node-edge-point-uuid": "8c7a1344-7f66-3fb6-b0cb-5dacd71917b0",
+                "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "3de33204-bedc-3b02-a21e-2156d1e42a08",
+                "node-edge-point-uuid": "8e5d893c-2245-3934-b350-d8ee1e9e3558",
+                "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "DSR",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "1c-OAC-10GigE-ODU2E_(02-07-2024)",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "0be290d9-dd87-4096-9790-21a68c5d2e1d",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "dsr_top_conn/0001070b_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "47f1952c-d5ee-3319-8a80-576bb498456c",
+                        "node-edge-point-uuid": "8c7a1344-7f66-3fb6-b0cb-5dacd71917b0",
+                        "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "3de33204-bedc-3b02-a21e-2156d1e42a08",
+                        "node-edge-point-uuid": "8e5d893c-2245-3934-b350-d8ee1e9e3558",
+                        "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000001",
+                "name": [
+                    {
+                        "value": "route_00000001",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000001",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "uuid": "42b4efe6-a607-365b-a19e-323aaac4c210"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "2ea7b3e4-2c2f-3106-b8ae-aaa59acbb981",
+                "node-edge-point-uuid": "679c2ee1-5b1d-3cd8-b38c-d682075938ee",
+                "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "f600552d-f75e-3e16-84f9-8ec8fddf93ad",
+                "node-edge-point-uuid": "8aa535ae-2179-3d11-ac0f-24c95756c5d0",
+                "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "OMS-Testbed_A_1_Testbed_D_1-13",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "31c9e45b-fe6d-4821-a312-2d10c749be6c",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "oms_top_conn_add/000105c0_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "2ea7b3e4-2c2f-3106-b8ae-aaa59acbb981",
+                        "node-edge-point-uuid": "679c2ee1-5b1d-3cd8-b38c-d682075938ee",
+                        "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "f600552d-f75e-3e16-84f9-8ec8fddf93ad",
+                        "node-edge-point-uuid": "8aa535ae-2179-3d11-ac0f-24c95756c5d0",
+                        "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000001",
+                "name": [
+                    {
+                        "value": "route_00000001",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000001",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "supported-client-link": [
+            {
+                "link-uuid": "aeb69e57-dade-3963-af6d-c028d0bc96d0",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "tapi-plus-eqp:physical-route-list": {
+            "physical-route": [
+                {
+                    "local-id": "00000001",
+                    "name": [
+                        {
+                            "value": "WORK",
+                            "value-name": "PHYSICAL_PATH_ROLE"
+                        },
+                        {
+                            "value": "route_00000001",
+                            "value-name": "PHYSICAL_ROUTE_NAME"
+                        }
+                    ],
+                    "physical-route-element": [
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "86cfff7b-2e5a-33cd-8b2a-f8bd06a9d947",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "9c92872c-3469-39bd-a5fa-e5d97c0b1561",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "cd5be78d-7348-3a3b-b388-a73750fa5a82",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "7a1e005c-cfa6-3d15-90f6-e644a5d2c2a0",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "e0f33c0f-a63b-3681-a135-51099dbaccc1",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "95992399-ecb3-380b-9b48-4732041ef042",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        }
+                    ],
+                    "physical-route-state": "tapi-plus-eqp:PHYSICAL_ROUTE_STATE_CURRENT"
+                }
+            ]
+        },
+        "uuid": "3d00d125-3c57-3801-9f54-ffd15c1b2eee"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "ae7451f0-c203-30cd-9f62-d3c1fccc71b8",
+                "node-edge-point-uuid": "92d10a7a-10c8-3442-a871-52fd6a42dfae",
+                "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "43582310-693d-37e4-8afc-8d2a98a2f5a9",
+                "node-edge-point-uuid": "21e6efa8-b1eb-3573-b179-186567c1729d",
+                "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "ODU",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "oduj_xc_conn/00010706_00000002",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "uuid": "2425217e-2f34-3ab1-91e3-f6834dac1264"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "b2411d62-11e7-3697-9331-45f6fc9d1c9b",
+                "node-edge-point-uuid": "46e6d1c5-8b7b-3956-b424-0c7e0a5a9093",
+                "node-uuid": "8f03fc9d-a641-3e72-ab5c-e0f39aff24ac",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "2232ac8c-afb4-333b-a1fc-d71fa1d3818c",
+                "node-edge-point-uuid": "d00be891-23dc-3586-b76b-d2a5b8140101",
+                "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "OMS-Testbed_D_1_Testbed_C_1-6",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "b1554ba7-55bd-40a8-b96b-8382eb33d7a4",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "oms_top_conn_drop/00010371_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "b2411d62-11e7-3697-9331-45f6fc9d1c9b",
+                        "node-edge-point-uuid": "46e6d1c5-8b7b-3956-b424-0c7e0a5a9093",
+                        "node-uuid": "8f03fc9d-a641-3e72-ab5c-e0f39aff24ac",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "2232ac8c-afb4-333b-a1fc-d71fa1d3818c",
+                        "node-edge-point-uuid": "d00be891-23dc-3586-b76b-d2a5b8140101",
+                        "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000002",
+                "name": [
+                    {
+                        "value": "route_00000002",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000002",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "supported-client-link": [
+            {
+                "link-uuid": "e9b48dc2-73dd-32c5-b49a-8c92cbcaec0d",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "tapi-plus-eqp:physical-route-list": {
+            "physical-route": [
+                {
+                    "local-id": "00000002",
+                    "name": [
+                        {
+                            "value": "WORK",
+                            "value-name": "PHYSICAL_PATH_ROLE"
+                        },
+                        {
+                            "value": "route_00000002",
+                            "value-name": "PHYSICAL_ROUTE_NAME"
+                        }
+                    ],
+                    "physical-route-element": [
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "d9ffdc93-7a48-3a30-af75-d96989e667c6",
+                                "device-uuid": "2407509c-6e48-4ca1-8ea8-ece6816b7909"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "18108f50-47fa-3cc5-9bf8-e420ab84a895",
+                                "device-uuid": "1d60d1ab-d2aa-4b47-970e-779138280a5d"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "e9c1f41c-c3a0-3245-ac10-7e1f1d84201a",
+                                "device-uuid": "1d60d1ab-d2aa-4b47-970e-779138280a5d"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "85af6ec1-59d7-3aa2-8605-72d9a4cb3ca7",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "ee29294b-d5f7-3ee2-91ad-4662c798df5f",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "25da251b-eadc-3f6a-acca-5db75bdea864",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        }
+                    ],
+                    "physical-route-state": "tapi-plus-eqp:PHYSICAL_ROUTE_STATE_CURRENT"
+                }
+            ]
+        },
+        "uuid": "0456d843-4928-382b-b723-0d93617bbcf4"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "a1381fa8-9018-3c2a-be38-6bed4ff1429a",
+                "node-edge-point-uuid": "03da5f59-bdd8-31a3-ae1d-f839d159ef3a",
+                "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "ead801e5-3d1a-3fc0-86d7-f05d918596e2",
+                "node-edge-point-uuid": "9a5f72f1-8987-3823-b9fe-08509e6fc62b",
+                "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "DSR",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "DSR-10GE",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "64eab2e1-9f03-406e-8109-91924bd96586",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "dsr_top_conn/00010705_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "a1381fa8-9018-3c2a-be38-6bed4ff1429a",
+                        "node-edge-point-uuid": "03da5f59-bdd8-31a3-ae1d-f839d159ef3a",
+                        "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "ead801e5-3d1a-3fc0-86d7-f05d918596e2",
+                        "node-edge-point-uuid": "9a5f72f1-8987-3823-b9fe-08509e6fc62b",
+                        "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000001",
+                "name": [
+                    {
+                        "value": "route_00000001",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000001",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "uuid": "3bef8069-f2c7-3159-b21a-72d51596cf51"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "bba74541-d7ad-3d20-92e0-87415b320619",
+                "node-edge-point-uuid": "48e06b25-7cd5-3580-8487-20c887313ac3",
+                "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "976f02e7-ed60-39b3-9f12-1ed5db837f20",
+                "node-edge-point-uuid": "16b76ed3-9a84-3f2a-9098-6e4d46de2168",
+                "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "lower-connection": [
+            {
+                "connection-uuid": "041ec01e-715c-3078-a12c-a73ccaa0f312"
+            },
+            {
+                "connection-uuid": "a1b4cc33-ae52-3513-9db4-6b3b05ba80ee"
+            }
+        ],
+        "name": [
+            {
+                "value": "mc_top_conn_add/00010708_00000000",
+                "value-name": "CONNECTION_NAME"
+            },
+            {
+                "value": "ebe79eb1-ad8d-486b-8dcd-da59e03bbd38",
+                "value-name": "TRAFFIC_UUID"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "bba74541-d7ad-3d20-92e0-87415b320619",
+                        "node-edge-point-uuid": "48e06b25-7cd5-3580-8487-20c887313ac3",
+                        "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "281740aa-e66f-389b-9685-33c90168bbd3",
+                        "node-edge-point-uuid": "9e0016b7-9a9c-3b42-b2f2-fe330624165b",
+                        "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "ffc1ec38-1376-3dea-b64e-07ab2e5e739f",
+                        "node-edge-point-uuid": "333687ac-3228-37e0-b183-ba0bd7c9ab00",
+                        "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "976f02e7-ed60-39b3-9f12-1ed5db837f20",
+                        "node-edge-point-uuid": "16b76ed3-9a84-3f2a-9098-6e4d46de2168",
+                        "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000001",
+                "name": [
+                    {
+                        "value": "route_00000001",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000001",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "tapi-plus-eqp:physical-route-list": {
+            "physical-route": [
+                {
+                    "local-id": "00000001",
+                    "name": [
+                        {
+                            "value": "WORK",
+                            "value-name": "PHYSICAL_PATH_ROLE"
+                        },
+                        {
+                            "value": "route_00000001",
+                            "value-name": "PHYSICAL_ROUTE_NAME"
+                        }
+                    ],
+                    "physical-route-element": [
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "99459070-ebe2-3e1b-985a-abe0d44a5410",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "3a1d7261-80d2-39be-be60-0b3a129f8714",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "0944957e-8dd1-3414-a8ee-0f0216852fc6",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "71684a7b-b34f-3acb-9ca6-ebab8f288aaa",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "94f5924d-92d5-3220-8830-3c97751366eb",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "e4c9556e-d500-33c0-986d-05ca9172d767",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "86cfff7b-2e5a-33cd-8b2a-f8bd06a9d947",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "95992399-ecb3-380b-9b48-4732041ef042",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "c2e33abb-5fc0-3b14-b280-3de5a6c18fcc",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "6dffd119-2b90-3a65-bec7-a8557809a3c4",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "a666fd7e-d2d0-36af-bece-de1d228cd4e0",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "7ced8bd9-aaa2-360c-b68f-b4f089a4dfd6",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "e46b91a9-4b2f-3e7f-ab1f-44b886141550",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "e7dd8aba-c814-3035-8d02-fda752d99f5c",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        }
+                    ],
+                    "physical-route-state": "tapi-plus-eqp:PHYSICAL_ROUTE_STATE_CURRENT"
+                }
+            ]
+        },
+        "uuid": "eb592970-8a8b-3b96-a060-cd171160f44d"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "7758f948-e342-383f-b357-e3d39e5aeaa9",
+                "node-edge-point-uuid": "bbd8d714-2a76-31ea-85e1-76d06f9dbf71",
+                "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "05fb206d-636f-3e78-88a9-022caa7df0af",
+                "node-edge-point-uuid": "117340a6-22a0-3d76-91dd-3c10b71c2487",
+                "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "OCH-Testbed_A_2_Testbed_D_2-192.06875-59",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "ebe79eb1-ad8d-486b-8dcd-da59e03bbd38",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "otsi_top_conn/00010708_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "7758f948-e342-383f-b357-e3d39e5aeaa9",
+                        "node-edge-point-uuid": "bbd8d714-2a76-31ea-85e1-76d06f9dbf71",
+                        "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "05fb206d-636f-3e78-88a9-022caa7df0af",
+                        "node-edge-point-uuid": "117340a6-22a0-3d76-91dd-3c10b71c2487",
+                        "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000001",
+                "name": [
+                    {
+                        "value": "route_00000001",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000001",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "supported-client-link": [
+            {
+                "link-uuid": "10e84fc7-0c12-3b8d-bb3b-9f9779a8c317",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "uuid": "5a0c4089-2bad-3aed-8398-5e9426f21ac6"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "bba74541-d7ad-3d20-92e0-87415b320619",
+                "node-edge-point-uuid": "48e06b25-7cd5-3580-8487-20c887313ac3",
+                "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "281740aa-e66f-389b-9685-33c90168bbd3",
+                "node-edge-point-uuid": "9e0016b7-9a9c-3b42-b2f2-fe330624165b",
+                "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "mc_xc_conn_work_add/00010708_00000001",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "uuid": "041ec01e-715c-3078-a12c-a73ccaa0f312"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "ef7a7408-37ca-3f86-acd1-4a9080eb2462",
+                "node-edge-point-uuid": "6bb3aec9-233d-34bf-84a9-04d9aa75fd5b",
+                "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "177b7374-76ee-336c-8ee7-9da51ae1544c",
+                "node-edge-point-uuid": "ceb8de8a-2be0-3d58-8a70-f8177e924763",
+                "node-uuid": "8f03fc9d-a641-3e72-ab5c-e0f39aff24ac",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "OMS-Testbed_D_1_Testbed_C_1-6",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "b1554ba7-55bd-40a8-b96b-8382eb33d7a4",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "oms_top_conn_add/00010371_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "ef7a7408-37ca-3f86-acd1-4a9080eb2462",
+                        "node-edge-point-uuid": "6bb3aec9-233d-34bf-84a9-04d9aa75fd5b",
+                        "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "177b7374-76ee-336c-8ee7-9da51ae1544c",
+                        "node-edge-point-uuid": "ceb8de8a-2be0-3d58-8a70-f8177e924763",
+                        "node-uuid": "8f03fc9d-a641-3e72-ab5c-e0f39aff24ac",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000001",
+                "name": [
+                    {
+                        "value": "route_00000001",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000001",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "supported-client-link": [
+            {
+                "link-uuid": "9be036dc-6409-32ab-8ebb-e89cb3d9c43e",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "tapi-plus-eqp:physical-route-list": {
+            "physical-route": [
+                {
+                    "local-id": "00000001",
+                    "name": [
+                        {
+                            "value": "WORK",
+                            "value-name": "PHYSICAL_PATH_ROLE"
+                        },
+                        {
+                            "value": "route_00000001",
+                            "value-name": "PHYSICAL_ROUTE_NAME"
+                        }
+                    ],
+                    "physical-route-element": [
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "52143d5d-55dc-3fdf-bedb-75fac791fb92",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "c32c52bf-ab78-32b4-b4ea-9c312e9fe74c",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "218fa9b2-d1fb-31bf-b98d-e535a904fe23",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "7177e1d6-2427-3c50-94fb-3d2385e72bc6",
+                                "device-uuid": "1d60d1ab-d2aa-4b47-970e-779138280a5d"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "f4bce86c-208e-3750-8298-fe679f20cbb9",
+                                "device-uuid": "1d60d1ab-d2aa-4b47-970e-779138280a5d"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "0ac1348a-e56b-32d1-8ff8-c6be35c8795a",
+                                "device-uuid": "2407509c-6e48-4ca1-8ea8-ece6816b7909"
+                            }
+                        }
+                    ],
+                    "physical-route-state": "tapi-plus-eqp:PHYSICAL_ROUTE_STATE_CURRENT"
+                }
+            ]
+        },
+        "uuid": "10e9b2b2-249e-3b03-b81f-dd09cfd6cf89"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "a1691c4f-81f3-3181-ae39-e44a5fc8d280",
+                "node-edge-point-uuid": "6001f771-0ff4-344f-870d-79f88b63a5f3",
+                "node-uuid": "d101d8ce-91c1-39ad-b7d4-f5776ee20fab",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "6e4c124d-3487-3c23-91f0-655d4a22db70",
+                "node-edge-point-uuid": "7bee6461-5231-3853-a964-5ce99d096d3d",
+                "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "OMS-Testbed_D_1_Testbed_B_1-4",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "c27d61a4-4f5f-4742-a56b-a8c99b204119",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "oms_top_conn_drop/0001036e_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "a1691c4f-81f3-3181-ae39-e44a5fc8d280",
+                        "node-edge-point-uuid": "6001f771-0ff4-344f-870d-79f88b63a5f3",
+                        "node-uuid": "d101d8ce-91c1-39ad-b7d4-f5776ee20fab",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "6e4c124d-3487-3c23-91f0-655d4a22db70",
+                        "node-edge-point-uuid": "7bee6461-5231-3853-a964-5ce99d096d3d",
+                        "node-uuid": "6d0e9a7a-d861-3173-924f-4537a204c649",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000002",
+                "name": [
+                    {
+                        "value": "route_00000002",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000002",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "supported-client-link": [
+            {
+                "link-uuid": "371e1130-d16a-32fc-970f-cc1463983b2d",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "tapi-plus-eqp:physical-route-list": {
+            "physical-route": [
+                {
+                    "local-id": "00000002",
+                    "name": [
+                        {
+                            "value": "WORK",
+                            "value-name": "PHYSICAL_PATH_ROLE"
+                        },
+                        {
+                            "value": "route_00000002",
+                            "value-name": "PHYSICAL_ROUTE_NAME"
+                        }
+                    ],
+                    "physical-route-element": [
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "3ff430d8-187a-37f0-a2f9-a3d2844abc87",
+                                "device-uuid": "8d88f1ef-c9dc-48ab-9fae-0ddd79350e16"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "55a9f6c2-e705-3a4d-8b59-185202b120da",
+                                "device-uuid": "17b293eb-826a-457a-bfed-de394feb809a"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "a095fa2a-7257-381e-8c99-a4d228219dcb",
+                                "device-uuid": "17b293eb-826a-457a-bfed-de394feb809a"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "68774a39-0883-3ac9-83a6-cbac26d07ae6",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "ee22cde3-d2fe-3e75-8540-1730c508e432",
+                                "device-uuid": "b15a8949-02c9-419f-90c5-9bfbd427574f"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "40a82743-6a63-3722-9e53-8ac93ff16fd6",
+                                "device-uuid": "5cad8a30-cdfc-4349-b06f-cffed7b9bedb"
+                            }
+                        }
+                    ],
+                    "physical-route-state": "tapi-plus-eqp:PHYSICAL_ROUTE_STATE_CURRENT"
+                }
+            ]
+        },
+        "uuid": "94662167-bcb3-3459-b323-da66365537e7"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "3d591cb1-6c6b-3c5e-b948-73a50894ef09",
+                "node-edge-point-uuid": "cfe62f2e-560f-3706-a465-0c00250e6f53",
+                "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "b3d1ad65-175b-381c-85ea-34dec44aa6ac",
+                "node-edge-point-uuid": "1c6c29cb-c227-3e38-afb4-4c8727e2b8ca",
+                "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "ODU",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "oduj_xc_conn/00010706_00000001",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "uuid": "811c33f5-e9bc-319f-a12d-4447d174fc9f"
+    },
+    {
+        "connection-end-point": [
+            {
+                "connection-end-point-uuid": "07e42869-c884-305f-b050-a9469a9cc8ea",
+                "node-edge-point-uuid": "f408e144-92cb-333b-9e06-ef4315797820",
+                "node-uuid": "8f03fc9d-a641-3e72-ab5c-e0f39aff24ac",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            },
+            {
+                "connection-end-point-uuid": "0180dd9e-e677-3382-b7f6-0d5e7050b07c",
+                "node-edge-point-uuid": "d2e2ae5f-8d46-3bc6-9ede-7515da3378be",
+                "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "direction": "UNIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "OMS-Testbed_A_1_Testbed_C_1-12",
+                "value-name": "USER_LABEL"
+            },
+            {
+                "value": "932a2af2-e2a7-4b7d-9d4f-328611d2a69a",
+                "value-name": "TRAFFIC_UUID"
+            },
+            {
+                "value": "oms_top_conn_drop/000105be_00000000",
+                "value-name": "CONNECTION_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "route": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "07e42869-c884-305f-b050-a9469a9cc8ea",
+                        "node-edge-point-uuid": "f408e144-92cb-333b-9e06-ef4315797820",
+                        "node-uuid": "8f03fc9d-a641-3e72-ab5c-e0f39aff24ac",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    },
+                    {
+                        "connection-end-point-uuid": "0180dd9e-e677-3382-b7f6-0d5e7050b07c",
+                        "node-edge-point-uuid": "d2e2ae5f-8d46-3bc6-9ede-7515da3378be",
+                        "node-uuid": "ed33b35b-4430-3ded-bed6-8fa9e8986b03",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "local-id": "00000002",
+                "name": [
+                    {
+                        "value": "route_00000002",
+                        "value-name": "ROUTE_NAME"
+                    },
+                    {
+                        "value": "WORK",
+                        "value-name": "PATH_ROLE"
+                    }
+                ],
+                "resilience-route-pac": {
+                    "local-id": "00000002",
+                    "priority": 1,
+                    "route-state": "tapi-connectivity:ROUTE_STATE_CURRENT"
+                }
+            }
+        ],
+        "supported-client-link": [
+            {
+                "link-uuid": "76050400-5fd2-34ba-a3de-67492054b69f",
+                "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+            }
+        ],
+        "tapi-plus-eqp:physical-route-list": {
+            "physical-route": [
+                {
+                    "local-id": "00000002",
+                    "name": [
+                        {
+                            "value": "WORK",
+                            "value-name": "PHYSICAL_PATH_ROLE"
+                        },
+                        {
+                            "value": "route_00000002",
+                            "value-name": "PHYSICAL_ROUTE_NAME"
+                        }
+                    ],
+                    "physical-route-element": [
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "3113ee7c-a24e-34b6-be36-6f1414ce1f02",
+                                "device-uuid": "2407509c-6e48-4ca1-8ea8-ece6816b7909"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "380b3ba3-0585-3c6d-a66f-ef25fa01a1db",
+                                "device-uuid": "1d60d1ab-d2aa-4b47-970e-779138280a5d"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "ea0a7c23-5953-3cd0-85bc-ceff218ec696",
+                                "device-uuid": "1d60d1ab-d2aa-4b47-970e-779138280a5d"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "02138e6d-e5f2-366f-8cd8-3b6b9cf164e0",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "8589a5ae-5a4c-3912-b1a1-d4069d89b228",
+                                "device-uuid": "cbaa7e1d-4569-45ff-ab21-41d2e5de2a92"
+                            }
+                        },
+                        {
+                            "access-port-in-route": {
+                                "access-port-uuid": "b43fc758-f467-3ff9-8465-f6f4babf841f",
+                                "device-uuid": "7c9b8c56-1068-4793-bcaf-153ec3b368f4"
+                            }
+                        }
+                    ],
+                    "physical-route-state": "tapi-plus-eqp:PHYSICAL_ROUTE_STATE_CURRENT"
+                }
+            ]
+        },
+        "uuid": "23e7d6ad-9c15-3fd8-ba21-2bd92f20dfdb"
+    }
+]

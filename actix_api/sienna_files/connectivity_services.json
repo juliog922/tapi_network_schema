@@ -1,0 +1,395 @@
+[
+    {
+        "administrative-state": "UNLOCKED",
+        "connection": [
+            {
+                "connection-uuid": "93dbd4f0-3e45-3dbb-bb31-9112bfbd3f5c"
+            }
+        ],
+        "end-point": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "6ef5ce7a-604c-3054-86dc-2e810cfaf7f0",
+                        "node-edge-point-uuid": "29a3d7c4-1087-39c8-83b0-86f00c5523ba",
+                        "node-uuid": "37410637-8298-3799-b8f5-261b39ce2e72",
+                        "topology-uuid": "4e537278-79f8-39ad-804b-f0b553cb2ffb"
+                    }
+                ],
+                "direction": "BIDIRECTIONAL",
+                "layer-protocol-name": "ODU",
+                "layer-protocol-qualifier": "tapi-odu:ODU_TYPE_ODU_CN",
+                "local-id": "e4a8caeb-4177-3e17-94d7-7f0936e8ea70",
+                "name": [
+                    {
+                        "value": "node:TAPIA-shelf:2-slot:5-port:1",
+                        "value-name": "CSEP_NAME"
+                    },
+                    {
+                        "value": "node:TAPIA-shelf:2-slot:5-port:1",
+                        "value-name": "location"
+                    }
+                ],
+                "odu-connectivity-service-end-point-spec": {
+                    "odu-csep-common-pac": {
+                        "odu-rate": 1,
+                        "odu-type": "ODU_TYPE_ODU_CN",
+                        "opu-tributary-slot-size": "2G5"
+                    },
+                    "odu-csep-ctp-pac": {
+                        "tributary-port-number": 1,
+                        "tributary-slot-list": [
+                            1
+                        ]
+                    },
+                    "odu-csep-ttp-pac": {
+                        "configured-client-type": "ODU_TYPE_ODU_CN"
+                    }
+                },
+                "otsia-connectivity-service-end-point-spec": {
+                    "number-of-otsi": 1,
+                    "otsi-config": [
+                        {
+                            "application-identifier": {
+                                "application-code": "",
+                                "application-identifier-type": "PROPRIETARY"
+                            },
+                            "central-frequency": {
+                                "central-frequency": 194362500,
+                                "frequency-constraint": {
+                                    "adjustment-granularity": "UNCONSTRAINED",
+                                    "grid-type": "UNSPECIFIED"
+                                }
+                            },
+                            "laser-control": "FORCED-ON",
+                            "local-id": "b8084f0b-a17a-3d5e-be93-5e4b99631b6e",
+                            "modulation": "UNSPECIFIED",
+                            "name": [
+                                {
+                                    "value": "node:TAPIA-shelf:2-slot:5-port:1-otsi-connectivity-spec",
+                                    "value-name": "name"
+                                }
+                            ],
+                            "spectrum": {
+                                "frequency-constraint": {
+                                    "adjustment-granularity": "UNCONSTRAINED",
+                                    "grid-type": "UNSPECIFIED"
+                                }
+                            },
+                            "total-power-warn-threshold-lower": "",
+                            "total-power-warn-threshold-upper": "",
+                            "transmit-power": {
+                                "power-spectral-density": 0.0,
+                                "total-power": ""
+                            }
+                        }
+                    ]
+                },
+                "service-interface-point": {
+                    "service-interface-point-uuid": "c12f7051-cbc4-3818-88f2-f616b94a91b8"
+                }
+            },
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "02fadfcc-c7fd-3187-92fc-77396521f443",
+                        "node-edge-point-uuid": "ff875455-e52d-31d5-9c81-f26ecd949c9e",
+                        "node-uuid": "7b0c973a-996a-3409-ad2f-d173354bfdb7",
+                        "topology-uuid": "4e537278-79f8-39ad-804b-f0b553cb2ffb"
+                    }
+                ],
+                "direction": "BIDIRECTIONAL",
+                "layer-protocol-name": "ODU",
+                "layer-protocol-qualifier": "tapi-odu:ODU_TYPE_ODU_CN",
+                "local-id": "140a450c-9d71-3dd1-909b-b704bdc0c854",
+                "name": [
+                    {
+                        "value": "node:PALOMA-shelf:2-slot:5-port:1",
+                        "value-name": "CSEP_NAME"
+                    },
+                    {
+                        "value": "node:PALOMA-shelf:2-slot:5-port:1",
+                        "value-name": "location"
+                    }
+                ],
+                "odu-connectivity-service-end-point-spec": {
+                    "odu-csep-common-pac": {
+                        "odu-rate": 1,
+                        "odu-type": "ODU_TYPE_ODU_CN",
+                        "opu-tributary-slot-size": "2G5"
+                    },
+                    "odu-csep-ctp-pac": {
+                        "tributary-port-number": 1,
+                        "tributary-slot-list": [
+                            1
+                        ]
+                    },
+                    "odu-csep-ttp-pac": {
+                        "configured-client-type": "ODU_TYPE_ODU_CN"
+                    }
+                },
+                "otsia-connectivity-service-end-point-spec": {
+                    "number-of-otsi": 1,
+                    "otsi-config": [
+                        {
+                            "application-identifier": {
+                                "application-code": "",
+                                "application-identifier-type": "PROPRIETARY"
+                            },
+                            "central-frequency": {
+                                "central-frequency": 194362500,
+                                "frequency-constraint": {
+                                    "adjustment-granularity": "UNCONSTRAINED",
+                                    "grid-type": "UNSPECIFIED"
+                                }
+                            },
+                            "laser-control": "FORCED-ON",
+                            "local-id": "1e5d28d8-5c7c-3176-ace5-596f10136c5f",
+                            "modulation": "UNSPECIFIED",
+                            "name": [
+                                {
+                                    "value": "node:PALOMA-shelf:2-slot:5-port:1-otsi-connectivity-spec",
+                                    "value-name": "name"
+                                }
+                            ],
+                            "spectrum": {
+                                "frequency-constraint": {
+                                    "adjustment-granularity": "UNCONSTRAINED",
+                                    "grid-type": "UNSPECIFIED"
+                                }
+                            },
+                            "total-power-warn-threshold-lower": "",
+                            "total-power-warn-threshold-upper": "",
+                            "transmit-power": {
+                                "power-spectral-density": 0.0,
+                                "total-power": ""
+                            }
+                        }
+                    ]
+                },
+                "service-interface-point": {
+                    "service-interface-point-uuid": "e234cd59-1879-397e-8046-d7f38588a8ae"
+                }
+            }
+        ],
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "TAPI_1E_(2024-08-29)",
+                "value-name": "SERVICE_NAME"
+            },
+            {
+                "value": "TAPI_1E_(2024-08-29)",
+                "value-name": "name"
+            }
+        ],
+        "operational-state": "DISABLED",
+        "preferred-restoration-layer": [
+            "PHOTONIC_MEDIA"
+        ],
+        "requested-capacity": {
+            "otu-rate": "OTUC8",
+            "total-size": {
+                "unit": "MBPS",
+                "value": 400000
+            }
+        },
+        "resilience-type": {
+            "protection-type": "NO_PROTECTON",
+            "restoration-policy": "NA"
+        },
+        "reversion-mode": "NON-REVERTIVE",
+        "route-objective-function": "MIN_WORK_ROUTE_HOP",
+        "service-layer": "PHOTONIC_MEDIA",
+        "service-type": "POINT_TO_POINT_CONNECTIVITY",
+        "tapi-ciena-connectivity-service-extensions:capacity-extensions": {
+            "baud-rate": "56GBAUD",
+            "is-for-multiple-routes": false
+        },
+        "tapi-ciena-connectivity-service-extensions:deployment-state": "COMPLETE_FULLY_READY",
+        "tapi-ciena-connectivity-service-extensions:last-error-msg": "",
+        "tapi-ciena-connectivity-service-extensions:maximize-capacity": false,
+        "uuid": "cf10b34b-65ec-11ef-8e76-1ff58d551ae1"
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "connection": [
+            {
+                "connection-uuid": "a9a03219-2c92-3a03-a894-a03273abb937"
+            }
+        ],
+        "end-point": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "a9bb2664-5955-326b-8059-ecc608fc5981",
+                        "node-edge-point-uuid": "d40f9d8f-cede-3340-9952-0b7bfd0e58d8",
+                        "node-uuid": "37410637-8298-3799-b8f5-261b39ce2e72",
+                        "topology-uuid": "4e537278-79f8-39ad-804b-f0b553cb2ffb"
+                    }
+                ],
+                "direction": "BIDIRECTIONAL",
+                "layer-protocol-name": "PHOTONIC_MEDIA",
+                "layer-protocol-qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi",
+                "local-id": "f8ab25d3-aa84-31a1-967a-dd8d235eb01c",
+                "name": [
+                    {
+                        "value": "node:TAPIA-shelf:2-slot:4-port:1",
+                        "value-name": "CSEP_NAME"
+                    },
+                    {
+                        "value": "node:TAPIA-shelf:2-slot:4-port:1",
+                        "value-name": "location"
+                    }
+                ],
+                "otsia-connectivity-service-end-point-spec": {
+                    "number-of-otsi": 1,
+                    "otsi-config": [
+                        {
+                            "application-identifier": {
+                                "application-code": "",
+                                "application-identifier-type": "PROPRIETARY"
+                            },
+                            "central-frequency": {
+                                "central-frequency": 195700000,
+                                "frequency-constraint": {
+                                    "adjustment-granularity": "UNCONSTRAINED",
+                                    "grid-type": "UNSPECIFIED"
+                                }
+                            },
+                            "laser-control": "FORCED-ON",
+                            "local-id": "5350a3a1-7de6-3074-a3d1-96bf2eb28787",
+                            "modulation": "UNSPECIFIED",
+                            "name": [
+                                {
+                                    "value": "node:TAPIA-shelf:2-slot:4-port:1-otsi-connectivity-spec",
+                                    "value-name": "name"
+                                }
+                            ],
+                            "spectrum": {
+                                "frequency-constraint": {
+                                    "adjustment-granularity": "UNCONSTRAINED",
+                                    "grid-type": "UNSPECIFIED"
+                                }
+                            },
+                            "total-power-warn-threshold-lower": "",
+                            "total-power-warn-threshold-upper": "",
+                            "transmit-power": {
+                                "power-spectral-density": 0.0,
+                                "total-power": ""
+                            }
+                        }
+                    ]
+                },
+                "service-interface-point": {
+                    "service-interface-point-uuid": "33e13b48-ed8e-30d7-9440-74039beaf7a2"
+                }
+            },
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "ae10f3cd-dbd1-3ff9-bb63-2a6029d57dd4",
+                        "node-edge-point-uuid": "1ea14d58-12a8-31ff-ad7c-3d664278f463",
+                        "node-uuid": "7b0c973a-996a-3409-ad2f-d173354bfdb7",
+                        "topology-uuid": "4e537278-79f8-39ad-804b-f0b553cb2ffb"
+                    }
+                ],
+                "direction": "BIDIRECTIONAL",
+                "layer-protocol-name": "PHOTONIC_MEDIA",
+                "layer-protocol-qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi",
+                "local-id": "f6abe6b6-7dc8-348e-94f5-1993548d43f6",
+                "name": [
+                    {
+                        "value": "node:PALOMA-shelf:2-slot:4-port:1",
+                        "value-name": "CSEP_NAME"
+                    },
+                    {
+                        "value": "node:PALOMA-shelf:2-slot:4-port:1",
+                        "value-name": "location"
+                    }
+                ],
+                "otsia-connectivity-service-end-point-spec": {
+                    "number-of-otsi": 1,
+                    "otsi-config": [
+                        {
+                            "application-identifier": {
+                                "application-code": "",
+                                "application-identifier-type": "PROPRIETARY"
+                            },
+                            "central-frequency": {
+                                "central-frequency": 195700000,
+                                "frequency-constraint": {
+                                    "adjustment-granularity": "UNCONSTRAINED",
+                                    "grid-type": "UNSPECIFIED"
+                                }
+                            },
+                            "laser-control": "FORCED-ON",
+                            "local-id": "eee9fcda-2126-3207-b79e-ce09cc1e7669",
+                            "modulation": "UNSPECIFIED",
+                            "name": [
+                                {
+                                    "value": "node:PALOMA-shelf:2-slot:4-port:1-otsi-connectivity-spec",
+                                    "value-name": "name"
+                                }
+                            ],
+                            "spectrum": {
+                                "frequency-constraint": {
+                                    "adjustment-granularity": "UNCONSTRAINED",
+                                    "grid-type": "UNSPECIFIED"
+                                }
+                            },
+                            "total-power-warn-threshold-lower": "",
+                            "total-power-warn-threshold-upper": "",
+                            "transmit-power": {
+                                "power-spectral-density": 0.0,
+                                "total-power": ""
+                            }
+                        }
+                    ]
+                },
+                "service-interface-point": {
+                    "service-interface-point-uuid": "4d683bdd-f9e3-36c9-bfa4-0768063fa7ce"
+                }
+            }
+        ],
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "TEST_2A_TAPI(11-09-24)",
+                "value-name": "SERVICE_NAME"
+            },
+            {
+                "value": "TEST_2A_TAPI(11-09-24)",
+                "value-name": "name"
+            }
+        ],
+        "operational-state": "DISABLED",
+        "preferred-restoration-layer": [
+            "PHOTONIC_MEDIA"
+        ],
+        "requested-capacity": {
+            "otu-rate": "OTUC4",
+            "total-size": {
+                "unit": "MBPS",
+                "value": 400000
+            }
+        },
+        "resilience-type": {
+            "protection-type": "NO_PROTECTON",
+            "restoration-policy": "NA"
+        },
+        "reversion-mode": "NON-REVERTIVE",
+        "route-objective-function": "MIN_WORK_ROUTE_HOP",
+        "service-layer": "PHOTONIC_MEDIA",
+        "service-type": "POINT_TO_POINT_CONNECTIVITY",
+        "tapi-ciena-connectivity-service-extensions:capacity-extensions": {
+            "baud-rate": "56GBAUD",
+            "is-for-multiple-routes": false
+        },
+        "tapi-ciena-connectivity-service-extensions:center-frequency": 195.7,
+        "tapi-ciena-connectivity-service-extensions:deployment-state": "COMPLETE_FULLY_READY",
+        "tapi-ciena-connectivity-service-extensions:last-error-msg": "",
+        "tapi-ciena-connectivity-service-extensions:maximize-capacity": false,
+        "uuid": "06ce0049-7021-11ef-8e76-d349d2f9b74e"
+    }
+]

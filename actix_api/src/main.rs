@@ -13,7 +13,9 @@ use std::sync::{Arc, Mutex};
 #[derive(Clone, Debug)]
 pub struct HostParameters {
     /// The port number for the host.
-    port: isize,
+    port: Option<String>,
+    /// The tenant for the host.
+    tenant: Option<String>,
     /// The username for the host.
     user: String,
     /// The password for the host.

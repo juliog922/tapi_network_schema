@@ -52,12 +52,14 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                         
                         // Iterate over each endpoint in the endpoints array
                         while endpoint_index < endpoints_array.len() {
+                            
 
                             let mut endpoint_node_uuid: Vec<(Option<Endpoint>, Option<Value>)> = vec![];
 
                             let mut option_node_uuid: Option<Value> = None;
 
                             let mut connection_uuid: Value = Value::String("".to_string());
+                            let mut inventory_id: Value = Value::String("".to_string());
                             let mut protocol_qualifier: Value = Value::String("".to_string());
                             let mut option_node_edge_point: Option<Value> = None;
                             let mut client_node_edge_point_uuid: Option<Value> = None;
@@ -77,7 +79,7 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                         if let Some(node_edge_points) = link_section.as_object().unwrap().get(&"node-edge-point".to_string()) {
                                             // Iterate over node edge points to find connections
                                             for node_edge_point in node_edge_points.as_array().unwrap() {
-                                                if node_edge_point.as_object().unwrap().get(&"node-uuid".to_string()).unwrap() != &current_node_uuid {
+                                                //if node_edge_point.as_object().unwrap().get(&"node-uuid".to_string()).unwrap() != &current_node_uuid {
 
                                                     option_node_uuid = Some(node_edge_point.as_object().unwrap().get(&"node-uuid".to_string()).unwrap().clone());
 
@@ -89,6 +91,23 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                         1, 
                                                         "parent-node-edge-point"){
                                                             connection_uuid = parent_topology.as_object().unwrap().get(&"uuid".to_string()).unwrap().clone();
+                                                            
+                                                            if let Ok(onep) =  find_value_with_parent_value(
+                                                                topology_json, 
+                                                                &connection_uuid, 
+                                                                2, 
+                                                                "tapi-connectivity:cep-list"){
+                                                                    let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
+                                                                    
+                                                                    if let Ok(name) = find_value_with_parent_value(
+                                                                        names, 
+                                                                        &Value::String("INVENTORY_ID".to_string()), 
+                                                                        0, 
+                                                                        "value-name"){
+                                                                            inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+
+                                                                    }
+                                                            }
                                                             
                                                             // Check connections to find lower connections
                                                             for connection in connections_json {
@@ -136,6 +155,7 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                                 Endpoint::new(
                                                                     connection_uuid.clone(),
                                                                     node_edge_point_uuid,
+                                                                    inventory_id.clone(),
                                                                     protocol_qualifier.clone(),
                                                                     client_node_edge_point_uuid.clone(),
                                                                     None,
@@ -147,7 +167,7 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                             option_node_uuid.clone()
                                                         )
                                                     );
-                                                }
+                                                //}
                                             }
                                         }
                                 }
@@ -158,6 +178,23 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                 for lower_conn in lower_conns.as_array().unwrap() {
 
                                     let connection_uuid = lower_conn.as_object().unwrap().get("connection-uuid").unwrap();
+
+                                    if let Ok(onep) =  find_value_with_parent_value(
+                                        topology_json, 
+                                        &connection_uuid, 
+                                        2, 
+                                        "tapi-connectivity:cep-list"){
+                                            let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
+                                            
+                                            if let Ok(name) = find_value_with_parent_value(
+                                                names, 
+                                                &Value::String("INVENTORY_ID".to_string()), 
+                                                0, 
+                                                "value-name"){
+                                                    inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+
+                                            }
+                                    }
 
                                     for connection in connections_json {
                                         if let Ok(endpoints) = find_value_with_parent_value(
@@ -206,6 +243,7 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                                 Endpoint::new(
                                                                     connection_uuid.clone(),
                                                                     node_edge_point_uuid,
+                                                                    inventory_id.clone(),
                                                                     protocol_qualifier.clone(),
                                                                     client_node_edge_point_uuid.clone(),
                                                                     None,
@@ -222,7 +260,8 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                     }
                                     
                                 }
-                            } else if let Some(endpoint_nepu) = endpoints_array[endpoint_index].as_object().unwrap().get(&"node_edge_point_uuid".to_string()) {
+                            } 
+                            if let Some(endpoint_nepu) = endpoints_array[endpoint_index].as_object().unwrap().get(&"node_edge_point_uuid".to_string()) {
 
                                 if let Ok(client_endpoint) = find_value_with_parent_value(
                                     topology_json, 
@@ -231,15 +270,35 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                     "client-node-edge-point"
                                 ) {
                                     connection_uuid = client_endpoint.as_object().unwrap().get(&"uuid".to_string()).unwrap().clone();
-                                    protocol_qualifier = client_endpoint.as_object().unwrap().get(&"layer-protocol-qualifier".to_string()).unwrap().clone();
 
+                                    if let Ok(onep) =  find_value_with_parent_value(
+                                        topology_json, 
+                                        &connection_uuid, 
+                                        2, 
+                                        "tapi-connectivity:cep-list"){
+                                            let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
+                                            
+                                            if let Ok(name) = find_value_with_parent_value(
+                                                names, 
+                                                &Value::String("INVENTORY_ID".to_string()), 
+                                                0, 
+                                                "value-name"){
+                                                    inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+
+                                            }
+                                    }
+
+                                    protocol_qualifier = client_endpoint.as_object().unwrap().get(&"layer-protocol-qualifier".to_string()).unwrap().clone();
+                                    
                                     if let Ok(conn_end_point) = find_value_with_parent_value(
                                         &client_endpoint, 
                                         endpoint_nepu, 
                                         0, 
                                         "node-edge-point-uuid"
                                     ) {
+
                                         client_node_edge_point_uuid = Some(conn_end_point.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone()); // topology_uuid
+
                                     }
 
                                     option_node_edge_point = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-edge-point-uuid")?); ////////////////////
@@ -276,6 +335,7 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                 Endpoint::new(
                                                     connection_uuid.clone(),
                                                     node_edge_point.clone(),
+                                                    inventory_id.clone(),
                                                     protocol_qualifier.clone(),
                                                     client_node_edge_point_uuid.clone(),
                                                     None,
@@ -314,6 +374,23 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                 let node_edge_point_uuid = connection_end_point.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone();
                                                 connection_uuid = connection_end_point.as_object().unwrap().get(&"connection-end-point-uuid".to_string()).unwrap().clone();
 
+                                                if let Ok(onep) =  find_value_with_parent_value(
+                                                    topology_json, 
+                                                    &connection_uuid, 
+                                                    2, 
+                                                    "tapi-connectivity:cep-list"){
+                                                        let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
+                                                        
+                                                        if let Ok(name) = find_value_with_parent_value(
+                                                            names, 
+                                                            &Value::String("INVENTORY_ID".to_string()), 
+                                                            0, 
+                                                            "value-name"){
+                                                                inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+
+                                                        }
+                                                }
+
                                                 if let Ok(client_endpoint) = find_value_with_parent_value(
                                                     topology_json, 
                                                     &node_edge_point_uuid, 
@@ -350,6 +427,7 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                                 Endpoint::new(
                                                                     connection_uuid.clone(),
                                                                     node_edge_point_uuid.clone(),
+                                                                    inventory_id.clone(),
                                                                     protocol_qualifier.clone(),
                                                                     client_node_edge_point_uuid.clone(),
                                                                     None,
@@ -375,6 +453,24 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                     "parent-node-edge-point"
                                 ) {
                                     connection_uuid = client_endpoint.as_object().unwrap().get(&"uuid".to_string()).unwrap().clone();
+
+                                    if let Ok(onep) =  find_value_with_parent_value(
+                                        topology_json, 
+                                        &connection_uuid, 
+                                        2, 
+                                        "tapi-connectivity:cep-list"){
+                                            let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
+                                            
+                                            if let Ok(name) = find_value_with_parent_value(
+                                                names, 
+                                                &Value::String("INVENTORY_ID".to_string()), 
+                                                0, 
+                                                "value-name"){
+                                                    inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+
+                                            }
+                                    }
+
                                     protocol_qualifier = client_endpoint.as_object().unwrap().get(&"layer-protocol-qualifier".to_string()).unwrap().clone();
 
                                     option_node_edge_point = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-edge-point-uuid")?);
@@ -410,6 +506,7 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                 Endpoint::new(
                                                     connection_uuid,
                                                     node_edge_point,
+                                                    inventory_id.clone(),
                                                     protocol_qualifier,
                                                     client_node_edge_point_uuid,
                                                     None,

@@ -6,3 +6,7 @@ Cargo.lock
 *.rs.bk
 *.swp
 .DS_Store
+
+
+# Trunk
+yew_front/dist

@@ -11,7 +11,8 @@ use crate::HostParameters;
 #[derive(Debug, Clone, Deserialize)]
 struct AddHostRequest {
     host: String,
-    port: isize,
+    port: Option<String>,
+    tenant: Option<String>,
     user: String,
     password: String,
 }
@@ -40,7 +41,8 @@ pub async fn add_host(
     let mut host_dictionary = host_dictionary.lock().unwrap();
     // Create a new HostParameters instance from the request data.
     let host_parameters = HostParameters {
-        port: request.port,
+        port: request.port.clone(),
+        tenant: request.tenant.clone(),
         user: request.user.clone(),
         password: request.password.clone(),
     };

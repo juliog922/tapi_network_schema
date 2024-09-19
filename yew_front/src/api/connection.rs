@@ -34,15 +34,41 @@ pub async fn get_schema(ip: String) -> Result<Value, Error> {
 /// * `Result<Value, String>` - Returns the server's response as a `Value` if successful, or an error message if the request fails.
 pub async fn add_device(
     host: String,
-    port: i32,
+    port: Option<String>,
+    tenant: Option<String>,
     user: String,
     password: String,
 ) -> Result<Value, String> {
+    let real_port: Option<String>;
+
+    if port.is_some() {
+        if port.clone().unwrap() == "".to_string() {
+            real_port = None;
+        } else {
+            real_port = port.clone();
+        }
+    } else {
+        real_port = None;
+    }
+
+    let real_tenant: Option<String>;
+
+    if tenant.is_some() {
+        if tenant.clone().unwrap() == "".to_string() {
+            real_tenant = None;
+        } else {
+            real_tenant = tenant.clone();
+        }
+    } else {
+        real_tenant = None;
+    }
+
     if let Ok(builder) = Request::post("http://localhost:8080/add_host")
         .header("Accept", "application/json")
         .json(&json!({
             "host": host,
-            "port": port,
+            "port": real_port,
+            "tenant": real_tenant,
             "user": user,
             "password": password,
         })) {

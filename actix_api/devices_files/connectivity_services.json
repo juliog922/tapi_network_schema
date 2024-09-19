@@ -1,0 +1,347 @@
+[
+    {
+        "administrative-state": "UNLOCKED",
+        "connection": [
+            {
+                "connection-uuid": "42b4efe6-a607-365b-a19e-323aaac4c210"
+            },
+            {
+                "connection-uuid": "238e582d-6838-3584-966b-269cb4ab9dd3"
+            },
+            {
+                "connection-uuid": "3314a1c9-1433-3731-b627-175e290bd419"
+            },
+            {
+                "connection-uuid": "5a0c4089-2bad-3aed-8398-5e9426f21ac6"
+            },
+            {
+                "connection-uuid": "eb592970-8a8b-3b96-a060-cd171160f44d"
+            },
+            {
+                "connection-uuid": "17f3bef3-cf72-3c5b-9059-06cc791c239e"
+            },
+            {
+                "connection-uuid": "3d00d125-3c57-3801-9f54-ffd15c1b2eee"
+            },
+            {
+                "connection-uuid": "cee6367f-7a0f-3b94-b166-937f36319c29"
+            }
+        ],
+        "connectivity-direction": "BIDIRECTIONAL",
+        "end-point": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "47f1952c-d5ee-3319-8a80-576bb498456c",
+                        "node-edge-point-uuid": "8c7a1344-7f66-3fb6-b0cb-5dacd71917b0",
+                        "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "direction": "BIDIRECTIONAL",
+                "layer-protocol-name": "DSR",
+                "layer-protocol-qualifier": "tapi-dsr:DIGITAL_SIGNAL_TYPE_10_GigE_LAN",
+                "local-id": "1",
+                "role": "SYMMETRIC",
+                "server-connectivity-service-end-point": {
+                    "connectivity-service-end-point-local-id": "10",
+                    "connectivity-service-uuid": "00000000-0000-0000-0001-000000000077"
+                },
+                "service-interface-point": {
+                    "service-interface-point-uuid": "be07e299-9640-309b-8623-7bdbd34f3754"
+                }
+            },
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "47f1952c-d5ee-3319-8a80-576bb498456c",
+                        "node-edge-point-uuid": "8c7a1344-7f66-3fb6-b0cb-5dacd71917b0",
+                        "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "direction": "BIDIRECTIONAL",
+                "layer-protocol-name": "ODU",
+                "layer-protocol-qualifier": "tapi-odu:ODU_TYPE_ODU2E",
+                "local-id": "10",
+                "role": "SYMMETRIC",
+                "service-interface-point": {
+                    "service-interface-point-uuid": "be07e299-9640-309b-8623-7bdbd34f3754"
+                },
+                "tapi-odu:odu-connectivity-service-end-point-spec": {
+                    "odu-csep-common-pac": {
+                        "odu-type": "tapi-odu:ODU_TYPE_ODU2E"
+                    },
+                    "odu-csep-ttp-pac": {
+                        "configured-client-type": "tapi-dsr:DIGITAL_SIGNAL_TYPE_10_GigE_LAN"
+                    }
+                }
+            },
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "3de33204-bedc-3b02-a21e-2156d1e42a08",
+                        "node-edge-point-uuid": "8e5d893c-2245-3934-b350-d8ee1e9e3558",
+                        "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "direction": "BIDIRECTIONAL",
+                "layer-protocol-name": "DSR",
+                "layer-protocol-qualifier": "tapi-dsr:DIGITAL_SIGNAL_TYPE_10_GigE_LAN",
+                "local-id": "2",
+                "role": "SYMMETRIC",
+                "server-connectivity-service-end-point": {
+                    "connectivity-service-end-point-local-id": "11",
+                    "connectivity-service-uuid": "00000000-0000-0000-0001-000000000077"
+                },
+                "service-interface-point": {
+                    "service-interface-point-uuid": "f4201811-3a67-3355-b4aa-0f82994af511"
+                }
+            },
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "3de33204-bedc-3b02-a21e-2156d1e42a08",
+                        "node-edge-point-uuid": "8e5d893c-2245-3934-b350-d8ee1e9e3558",
+                        "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "direction": "BIDIRECTIONAL",
+                "layer-protocol-name": "ODU",
+                "layer-protocol-qualifier": "tapi-odu:ODU_TYPE_ODU2E",
+                "local-id": "11",
+                "role": "SYMMETRIC",
+                "service-interface-point": {
+                    "service-interface-point-uuid": "f4201811-3a67-3355-b4aa-0f82994af511"
+                },
+                "tapi-odu:odu-connectivity-service-end-point-spec": {
+                    "odu-csep-common-pac": {
+                        "odu-type": "tapi-odu:ODU_TYPE_ODU2E"
+                    },
+                    "odu-csep-ttp-pac": {
+                        "configured-client-type": "tapi-dsr:DIGITAL_SIGNAL_TYPE_10_GigE_LAN"
+                    }
+                }
+            }
+        ],
+        "is-exclusive": true,
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "0be290d9-dd87-4096-9790-21a68c5d2e1d",
+                "value-name": "TRAFFIC_ID"
+            },
+            {
+                "value": "1c-OAC-10GigE-ODU2E_(02-07-2024)",
+                "value-name": "SERVICE_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "requested-capacity": {
+            "total-size": {
+                "unit": "GBPS",
+                "value": 10
+            }
+        },
+        "resilience-type": {
+            "protection-type": "NO_PROTECTON"
+        },
+        "route-objective-function": "MIN_WORK_ROUTE_HOP",
+        "service-layer": "DSR",
+        "service-level": "IRON_LEVEL",
+        "service-type": "POINT_TO_POINT_CONNECTIVITY",
+        "uuid": "00000000-0000-0000-0001-000000000077",
+        "wait-to-revert-time": 15
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "connection": [
+            {
+                "connection-uuid": "3bef8069-f2c7-3159-b21a-72d51596cf51"
+            },
+            {
+                "connection-uuid": "fea09298-e285-30a1-92f9-5fdcdfac7325"
+            },
+            {
+                "connection-uuid": "3314a1c9-1433-3731-b627-175e290bd419"
+            },
+            {
+                "connection-uuid": "5a0c4089-2bad-3aed-8398-5e9426f21ac6"
+            },
+            {
+                "connection-uuid": "eb592970-8a8b-3b96-a060-cd171160f44d"
+            },
+            {
+                "connection-uuid": "17f3bef3-cf72-3c5b-9059-06cc791c239e"
+            },
+            {
+                "connection-uuid": "3d00d125-3c57-3801-9f54-ffd15c1b2eee"
+            },
+            {
+                "connection-uuid": "cee6367f-7a0f-3b94-b166-937f36319c29"
+            }
+        ],
+        "connectivity-direction": "BIDIRECTIONAL",
+        "end-point": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "a1381fa8-9018-3c2a-be38-6bed4ff1429a",
+                        "node-edge-point-uuid": "03da5f59-bdd8-31a3-ae1d-f839d159ef3a",
+                        "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "direction": "BIDIRECTIONAL",
+                "layer-protocol-name": "DSR",
+                "layer-protocol-qualifier": "tapi-dsr:DIGITAL_SIGNAL_TYPE_10_GigE_LAN",
+                "local-id": "0",
+                "role": "SYMMETRIC",
+                "service-interface-point": {
+                    "service-interface-point-uuid": "c2062ee9-7f8f-3b88-9893-895dd2d5dd0d"
+                }
+            },
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "ead801e5-3d1a-3fc0-86d7-f05d918596e2",
+                        "node-edge-point-uuid": "9a5f72f1-8987-3823-b9fe-08509e6fc62b",
+                        "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "direction": "BIDIRECTIONAL",
+                "layer-protocol-name": "DSR",
+                "layer-protocol-qualifier": "tapi-dsr:DIGITAL_SIGNAL_TYPE_10_GigE_LAN",
+                "local-id": "1",
+                "role": "SYMMETRIC",
+                "service-interface-point": {
+                    "service-interface-point-uuid": "10d3cb74-90bc-3882-91fa-f749ea50cda7"
+                }
+            }
+        ],
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "10000000",
+                "value-name": "APO_DATA_BIT_RATE"
+            },
+            {
+                "value": "64eab2e1-9f03-406e-8109-91924bd96586",
+                "value-name": "TRAFFIC_ID"
+            },
+            {
+                "value": "DSR-10GE",
+                "value-name": "SERVICE_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "requested-capacity": {
+            "total-size": {
+                "unit": "MBPS",
+                "value": 10000
+            }
+        },
+        "resilience-type": {
+            "protection-type": "NO_PROTECTON"
+        },
+        "route-objective-function": "MIN_WORK_ROUTE_COST",
+        "service-layer": "DSR",
+        "service-level": "IRON_LEVEL",
+        "service-type": "POINT_TO_POINT_CONNECTIVITY",
+        "uuid": "64eab2e1-9f03-406e-8109-91924bd96586",
+        "wait-to-revert-time": 15
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "connection": [
+            {
+                "connection-uuid": "5a0c4089-2bad-3aed-8398-5e9426f21ac6"
+            },
+            {
+                "connection-uuid": "eb592970-8a8b-3b96-a060-cd171160f44d"
+            },
+            {
+                "connection-uuid": "17f3bef3-cf72-3c5b-9059-06cc791c239e"
+            },
+            {
+                "connection-uuid": "3d00d125-3c57-3801-9f54-ffd15c1b2eee"
+            },
+            {
+                "connection-uuid": "cee6367f-7a0f-3b94-b166-937f36319c29"
+            }
+        ],
+        "connectivity-direction": "BIDIRECTIONAL",
+        "end-point": [
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "7758f948-e342-383f-b357-e3d39e5aeaa9",
+                        "node-edge-point-uuid": "bbd8d714-2a76-31ea-85e1-76d06f9dbf71",
+                        "node-uuid": "638664bc-35af-38df-9bc4-65097246b833",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "direction": "BIDIRECTIONAL",
+                "layer-protocol-name": "PHOTONIC_MEDIA",
+                "layer-protocol-qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi",
+                "local-id": "0",
+                "role": "SYMMETRIC",
+                "service-interface-point": {
+                    "service-interface-point-uuid": "827bc317-cd57-3bfb-8cf3-da2b6dc53dce"
+                }
+            },
+            {
+                "connection-end-point": [
+                    {
+                        "connection-end-point-uuid": "05fb206d-636f-3e78-88a9-022caa7df0af",
+                        "node-edge-point-uuid": "117340a6-22a0-3d76-91dd-3c10b71c2487",
+                        "node-uuid": "03495135-36ec-304d-82db-4d8c4f3d38b1",
+                        "topology-uuid": "0b57c5fc-4fff-3e28-9f94-b764c5da38a3"
+                    }
+                ],
+                "direction": "BIDIRECTIONAL",
+                "layer-protocol-name": "PHOTONIC_MEDIA",
+                "layer-protocol-qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi",
+                "local-id": "1",
+                "role": "SYMMETRIC",
+                "service-interface-point": {
+                    "service-interface-point-uuid": "61fc244c-afd4-3d77-a24e-133dbc859d25"
+                }
+            }
+        ],
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "100000000",
+                "value-name": "APO_DATA_BIT_RATE"
+            },
+            {
+                "value": "ebe79eb1-ad8d-486b-8dcd-da59e03bbd38",
+                "value-name": "TRAFFIC_ID"
+            },
+            {
+                "value": "OCH-Testbed_A_2_Testbed_D_2-192.06875-59",
+                "value-name": "SERVICE_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "requested-capacity": {
+            "total-size": {
+                "unit": "MBPS",
+                "value": 100000
+            }
+        },
+        "resilience-type": {
+            "protection-type": "NO_PROTECTON"
+        },
+        "route-objective-function": "MIN_WORK_ROUTE_COST",
+        "service-layer": "PHOTONIC_MEDIA",
+        "service-level": "IRON_LEVEL",
+        "service-type": "POINT_TO_POINT_CONNECTIVITY",
+        "uuid": "ebe79eb1-ad8d-486b-8dcd-da59e03bbd38",
+        "wait-to-revert-time": 15
+    }
+]

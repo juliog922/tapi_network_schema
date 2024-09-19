@@ -13,6 +13,9 @@ pub struct Endpoint {
     /// UUID of the node edge point.
     pub node_edge_point_uuid: Value,
 
+    /// INVENTORY ID (card id)
+    pub inventory_id: Value,
+
     /// Layer protocol qualifier associated with this endpoint.
     pub layer_protocol_qualifier: Value,
 
@@ -50,6 +53,7 @@ impl Endpoint {
     pub fn new(
         connection_end_point_uuid: Value,
         node_edge_point_uuid: Value,
+        inventory_id: Value,
         layer_protocol_qualifier: Value,
         client_node_edge_point_uuid: Option<Value>,
         service_interface_point_uuid: Option<Value>,
@@ -60,6 +64,7 @@ impl Endpoint {
         Endpoint {
             connection_end_point_uuid,
             node_edge_point_uuid,
+            inventory_id,
             layer_protocol_qualifier,
             client_node_edge_point_uuid,
             service_interface_point_uuid,
@@ -83,6 +88,7 @@ impl Endpoint {
         // Insert required fields into the JSON object
         endpoint_obj.as_object_mut().unwrap().insert("connection_end_point_uuid".to_string(), self.connection_end_point_uuid.clone());
         endpoint_obj.as_object_mut().unwrap().insert("node_edge_point_uuid".to_string(), self.node_edge_point_uuid.clone());
+        endpoint_obj.as_object_mut().unwrap().insert("inventory_id".to_string(), self.inventory_id.clone());
         endpoint_obj.as_object_mut().unwrap().insert("layer_protocol_qualifier".to_string(), self.layer_protocol_qualifier.clone());
 
         // Conditionally insert optional fields into the JSON object if they are present

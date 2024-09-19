@@ -1,0 +1,73 @@
+@startuml
+start
+
+:Check if "connectivity_services" exists in schema;
+if ("connectivity_services exists?") then (yes)
+    :Retrieve `services_array`;
+    :Initialize `service_index` to 0;
+
+    while ("services_array has more services?") is (yes)
+        :Get current service;
+        :Check if "nodes" exists in service;
+        if ("nodes exists?") then (yes)
+            :Retrieve `nodes_array`;
+            :Initialize `node_index` to 0;
+
+            while ("nodes_array has more nodes?") is (yes)
+                :Collect node UUIDs;
+                :Initialize `new_nodes` list;
+                :Get current node UUID;
+
+                :Check if "end_points" exists in node;
+                if ("end_points exists?") then (yes)
+                    :Retrieve `endpoints_array`;
+                    :Initialize `endpoint_index` to 0;
+
+                    while ("endpoints_array has more endpoints?") is (yes)
+                        :Initialize variables for endpoint details;
+
+                        :Check if "link_uuid" exists in endpoint;
+                        if ("link_uuid exists?") then (yes)
+                            :Find `link_section` in `topology_json` using `link_uuid`;
+                            :Iterate over node edge points;
+                            if ("Node edge point found?") then (yes)
+                                :Find `parent_topology` for `node_edge_point_uuid`;
+                                :Extract `connection_uuid` and `protocol_qualifier`;
+                                :Check connections for `lower_connections` and `client_node_edge_point_uuid`;
+                            endif
+                        endif
+
+                        :Process lower connections for the endpoint;
+                        if ("lower_connections exists?") then (yes)
+                            :Find and process lower connection endpoints;
+                        elseif ("node_edge_point_uuid exists?") then (yes)
+                            :Find `client_endpoint` for `node_edge_point_uuid`;
+                        endif
+
+                        :Add new endpoint to `endpoint_node_uuid`;
+                        :Update nodes with new endpoints;
+                        
+                        :Increment `endpoint_index`;
+                    endwhile
+
+                    :Add new nodes to `nodes_array` if not present;
+                else
+                    :Error - "Cannot find end_points on nodes";
+                endif
+                
+                :Increment `node_index`;
+            endwhile
+        else
+            :Error - "Cannot find nodes on connectivity_services";
+        endif
+
+        :Increment `service_index`;
+    endwhile
+else
+    :Error - "Cannot find connectivity_services on schema";
+endif
+
+:End process;
+
+stop
+@enduml

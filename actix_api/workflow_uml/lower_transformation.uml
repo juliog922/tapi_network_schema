@@ -1,0 +1,60 @@
+@startuml
+start
+
+:Check if "connectivity_services" exists in schema;
+if ("connectivity_services exists?") then (yes)
+    :Retrieve `services_array`;
+
+    :Iterate over each service in `services_array`;
+    while ("services_array has more services?") is (yes)
+        :Get current service;
+
+        :Check if "nodes" exists in service;
+        if ("nodes exists?") then (yes)
+            :Retrieve `nodes_array`;
+            :Initialize `node_ids` and `node_ids_index`;
+
+            :Iterate over each node in `nodes_array`;
+            while ("nodes_array has more nodes?") is (yes)
+                :Get current node;
+
+                :Add "node_id" field to node;
+                :Toggle between node ID values;
+
+                :Check if "end_points" exists in node;
+                if ("end_points exists?") then (yes)
+                    :Retrieve `endpoints_array`;
+
+                    :Iterate over each endpoint in `endpoints_array`;
+                    while ("endpoints_array has more endpoints?") is (yes)
+                        :Get current endpoint;
+
+                        :Check if "lower_connections" exists in endpoint;
+                        if ("lower_connections exists?") then (yes)
+                            :Retrieve `lower_conns_array`;
+                            :Add individual fields for each lower connection;
+                        endif
+
+                        :Remove "lower_connections" field from endpoint;
+                        :Sort endpoints by "id";
+
+                    endwhile
+                else
+                    :Error - "Cannot find end_points on nodes";
+                endif
+
+                :Sort nodes by "node_id";
+            endwhile
+        else
+            :Error - "Cannot find nodes on connectivity_services";
+        endif
+
+    endwhile
+else
+    :Error - "Cannot find connectivity_services on schema";
+endif
+
+:End process;
+
+stop
+@enduml

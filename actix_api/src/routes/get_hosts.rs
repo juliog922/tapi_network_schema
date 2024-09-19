@@ -9,7 +9,8 @@ use crate::HostParameters;
 #[derive(Debug, Serialize)]
 struct HostInfo {
     host: String,
-    port: isize,
+    port: Option<String>,
+    tenant: Option<String>,
     user: String,
 }
 
@@ -34,7 +35,8 @@ pub async fn get_hosts(
     for (host, parameters) in host_dictionary.iter() {
         let host_info = HostInfo {
             host: host.clone(),
-            port: parameters.port,
+            port: parameters.port.clone(),
+            tenant: parameters.tenant.clone(),
             user: parameters.user.clone(),
         };
         hosts_info_vector.push(host_info);

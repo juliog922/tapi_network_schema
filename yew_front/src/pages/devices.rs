@@ -54,7 +54,8 @@ pub fn devices() -> Html {
                         {
                             devices_array.iter().enumerate().map(|(index, device)| {
                                 let ip = device["host"].as_str().unwrap_or("").to_string();
-                                let port = device["port"].as_i64().unwrap_or(0);
+                                let port = device["port"].as_str().unwrap_or("").to_string();
+                                let tenant = device["tenant"].as_str().unwrap_or("").to_string();
                                 let user = device["user"].as_str().unwrap_or("").to_string();
                                 
                                 html! {
@@ -64,6 +65,7 @@ pub fn devices() -> Html {
                                             <div class="device-info">
                                                 <p>{ format!("IP: {}", ip) }</p>
                                                 <p>{ format!("Port: {}", port) }</p>
+                                                <p>{ format!("Tenant: {}", tenant) }</p>
                                                 <p>{ format!("User: {}", user) }</p>
                                             </div>
                                             <button class="check-api-button">
