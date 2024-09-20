@@ -3,12 +3,13 @@ services:
     build:
       context: ./yew_front
     expose:
-      - "8091"
+      - "8092"
     volumes:
       - ./yew_front:/app
-    command: trunk serve --release
+    command: trunk serve --release --port 8092 --address 0.0.0.0 --no_autoreload
     networks:
       - app_network
+    restart: always
 
   actix_api:
     build:
@@ -20,11 +21,12 @@ services:
     command: cargo run --release
     networks:
       - app_network
+    restart: always
 
   nginx:
     image: nginx:latest
     ports:
-      - "8092:80"
+      - "8091:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
@@ -32,6 +34,7 @@ services:
       - actix_api
     networks:
       - app_network
+    restart: always
 
 networks:
   app_network:

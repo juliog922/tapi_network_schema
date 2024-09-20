@@ -8,6 +8,7 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 # Install trunk and dependencies
 RUN rustup update
 RUN rustup target add wasm32-unknown-unknown
+RUN apt-get update && apt-get install -y ca-certificates
 RUN cargo install trunk
 
 # Create and set working directory
