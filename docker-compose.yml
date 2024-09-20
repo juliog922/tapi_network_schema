@@ -1,20 +1,38 @@
-version: '3.8'
-
 services:
   yew_front:
     build:
       context: ./yew_front
-    ports:
-      - "8092:8092"
+    expose:
+      - "8091"
     volumes:
       - ./yew_front:/app
     command: trunk serve --release
+    networks:
+      - app_network
 
   actix_api:
     build:
       context: ./actix_api
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
     volumes:
       - ./actix_api:/app
     command: cargo run --release
+    networks:
+      - app_network
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8092:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - yew_front
+      - actix_api
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge

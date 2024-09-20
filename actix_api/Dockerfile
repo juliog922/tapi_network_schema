@@ -16,5 +16,3 @@ WORKDIR /app
 # Copy project files
 COPY . .
 
-# Build and run the project
-CMD ["cargo", "run", "--release"]

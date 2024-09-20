@@ -16,5 +16,3 @@ WORKDIR /app
 # Copy project files
 COPY . .
 
-# Serve the project
-CMD ["trunk", "serve", "--release"]

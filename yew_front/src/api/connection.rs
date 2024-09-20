@@ -2,6 +2,8 @@ use gloo_net::Error;
 use gloo_net::http::Request;
 use serde_json::{Value, from_str, json};
 
+const API_URL: &'static str = "/api";
+
 /// Fetches JSON schema from the server for a given IP address.
 ///
 /// # Arguments
@@ -12,7 +14,7 @@ use serde_json::{Value, from_str, json};
 ///
 /// * `Result<Value, Error>` - Returns the JSON schema as a `Value` if successful, or an error if the request fails.
 pub async fn get_schema(ip: String) -> Result<Value, Error> {
-    let response = Request::get(&format!("http://localhost:8080/get_json/{}", &ip))
+    let response = Request::get(&format!("{}/get_json/{}",API_URL, &ip))
         .send()
         .await?;
     let text = response.text().await?;
@@ -63,7 +65,7 @@ pub async fn add_device(
         real_tenant = None;
     }
 
-    if let Ok(builder) = Request::post("http://localhost:8080/add_host")
+    if let Ok(builder) = Request::post(&format!("{}/add_host", API_URL))
         .header("Accept", "application/json")
         .json(&json!({
             "host": host,
@@ -96,7 +98,7 @@ pub async fn add_device(
 ///
 /// * `Result<Value, Error>` - Returns the list of devices as a `Value` if successful, or an error if the request fails.
 pub async fn get_devices() -> Result<Value, Error> {
-    let response = Request::get("http://localhost:8080/get_hosts")
+    let response = Request::get(&format!("{}/get_hosts", API_URL))
         .send()
         .await?;
     let text = response.text().await?;
@@ -114,7 +116,7 @@ pub async fn get_devices() -> Result<Value, Error> {
 ///
 /// * `Result<Value, Error>` - Returns the server's response as a `Value` if successful, or an error if the request fails.
 pub async fn delete_device(ip: &str) -> Result<Value, Error> {
-    let response = Request::delete(&format!("http://localhost:8080/delete_host/{}", ip))
+    let response = Request::delete(&format!("{}/delete_host/{}",API_URL, ip))
         .send()
         .await?;
     let text = response.text().await?;
