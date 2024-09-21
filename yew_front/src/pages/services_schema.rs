@@ -6,6 +6,7 @@ use crate::components::{
     sidebar::SideBar,
     services::ConnectivityService,
 };
+use crate::contexts::service_context::ServiceContext;
 
 /// Properties for the `ServiceSchema` component.
 #[derive(PartialEq, Properties)]
@@ -16,26 +17,30 @@ pub struct Props {
 
 #[function_component(ServiceSchema)]
 pub fn schema(props: &Props) -> Html {
-    // State to store the JSON data fetched from the API
-    let json_data = use_state(|| None);
+    let context = use_context::<ServiceContext>().expect("ServiceContext not found");
     let ip = props.device_ip.clone();
     
     // Fetch JSON data on component mount
     {
-        let json_clone = json_data.clone();
+        let context_clone = context.clone();
         let ip_clone = ip.clone();
         use_effect(move || {
-            let json_clone = json_clone.clone();
+            let context_clone = context_clone.clone();
             spawn_local(async move {
-                match get_schema(ip_clone).await {
-                    Ok(fetched_json) => {
-                        // Set the fetched JSON data in the state
-                        json_clone.set(Some(fetched_json));
-                    }
-                    Err(_) => {
-                        // Set an error message in case of failure
-                        let error_json: Value = serde_json::json!({"error": "Failed to fetch JSON"});
-                        json_clone.set(Some(error_json));
+                // Check if the schema is already cached
+                if let Some(cached_response) = context_clone.get(&ip_clone) {
+                    context_clone.set(ip_clone.clone(), cached_response);
+                } else {
+                    match get_schema(ip_clone.clone()).await {
+                        Ok(fetched_json) => {
+                            // Store the fetched JSON data in the context
+                            context_clone.set(ip_clone, fetched_json);
+                        }
+                        Err(_) => {
+                            // Set an error message in case of failure
+                            let error_json: Value = serde_json::json!({"error": "Failed to fetch JSON"});
+                            context_clone.set(ip_clone, error_json);
+                        }
                     }
                 }
             });
@@ -45,12 +50,10 @@ pub fn schema(props: &Props) -> Html {
 
     html! {
         <div id="app">
-            // Render the sidebar component for navigation
             <SideBar />
-
-            // Conditionally render content based on the availability of JSON data
-            { 
-                if let Some(data) = (*json_data).clone() {
+            {
+                // Retrieve the stored response from the context
+                if let Some(data) = context.get(&ip) {
                     // Render the `ConnectivityService` component with the fetched data
                     html! { <ConnectivityService services={data} device_ip={ip}/> }
                 } else {
@@ -67,5 +70,5 @@ pub fn schema(props: &Props) -> Html {
                 }
             }
         </div>
-    }    
+    }
 }
