@@ -6,7 +6,10 @@ mod pages;
 mod components;
 mod contexts;
 
-use crate::contexts::node_context::NodesProvider;
+use crate::contexts::{
+    node_context::NodesProvider,
+    service_context::ServiceProvider,
+};
 
 #[derive(Routable, PartialEq, Clone)]
 enum Route {
@@ -40,9 +43,11 @@ fn switch(route: Route) -> Html {
 fn app() -> Html {
     html!{
         <NodesProvider>
+        <ServiceProvider>
             <BrowserRouter>
                 <Switch<Route> render={switch} />
             </BrowserRouter>
+        </ServiceProvider>
         </NodesProvider>
     }
 }
