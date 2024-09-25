@@ -1,8 +1,16 @@
 use actix_web::Error;
 use serde_json::{Value, Map, Number};
 
-use crate::utils::{matching, to_list};
-use crate::models::{endpoint::Endpoint, service::Service, node::Node};
+use crate::utils::{
+    matching, 
+    to_list,
+    find_value_with_parent_value
+};
+use crate::models::{
+    endpoint::Endpoint,
+    service::Service, 
+    node::Node
+};
 
 /// Builds a schema from the provided services JSON vector.
 ///
@@ -12,11 +20,12 @@ use crate::models::{endpoint::Endpoint, service::Service, node::Node};
 /// # Arguments
 ///
 /// * `services_json` - A vector of JSON values representing the services.
+/// - `topology_json`: A JSON value representing the topology data. This includes information about node-edge points, links, and other topological details.
 ///
 /// # Returns
 ///
 /// * `Result<Value, Error>` - A `Result` containing the constructed schema as a `Value` or an `Error` if something goes wrong.
-pub fn services_vector(services_json: &Vec<Value>) -> Result<Value, Error> {
+pub fn services_vector(services_json: &Vec<Value>, topology_json: &Value) -> Result<Value, Error> {
     // Create the root schema object
     let mut schema = Value::Object(Map::new());
     
@@ -43,6 +52,25 @@ pub fn services_vector(services_json: &Vec<Value>) -> Result<Value, Error> {
             for conn_end_point in to_list(matching(false, &endpoint, "connection-end-point")?)? {
                 // Extract necessary details for each connection end point
                 let connection_end_point_uuid = matching(false, &conn_end_point, "connection-end-point-uuid")?;
+                let mut inventory_id: Value = Value::String("".to_string());
+
+                if let Ok(onep) =  find_value_with_parent_value(
+                    topology_json, 
+                    &connection_end_point_uuid, 
+                    2, 
+                    "tapi-connectivity:cep-list"){
+                        let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
+                        
+                        if let Ok(name) = find_value_with_parent_value(
+                            names, 
+                            &Value::String("INVENTORY_ID".to_string()), 
+                            0, 
+                            "value-name"){
+                                inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+
+                        }
+                }
+
                 let node_edge_point_uuid = matching(false, &conn_end_point, "node-edge-point-uuid")?;
                 let layer_protocol_qualifier = matching(false, &endpoint, "layer-protocol-qualifier")?;
                 let id = Value::Number(Number::from(1));
@@ -54,7 +82,7 @@ pub fn services_vector(services_json: &Vec<Value>) -> Result<Value, Error> {
                 // Extract the node UUID from the connection end point
                 let node_uuid = matching(false, &conn_end_point, "node-uuid")?;
                 let node_uuid_str = node_uuid.as_str().unwrap().to_string();
-                let inventory_id = Value::String("".to_string());
+
                 // Create a new Endpoint instance
                 let endpoint = Endpoint::new(
                     connection_end_point_uuid,

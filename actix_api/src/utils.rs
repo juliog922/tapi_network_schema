@@ -1,5 +1,30 @@
 use actix_web::{Error, error};
-use serde_json::{Value, Map};
+use serde_json::{Value, Map, from_str};
+use std::fs::File;
+use std::io::Read;
+use std::path::Path;
+use std::env;
+
+fn get_json_from_file(file_name: &str) -> Result<Value, Error> {
+    let current_dir = env::current_dir()?;
+
+    // Definir la ruta relativa
+    let relative_path = Path::new(file_name);
+
+    // Construir la ruta completa
+    let file_path = current_dir.join(relative_path);
+
+    // Abre el archivo
+    let mut file = File::open(&file_path)?;
+
+    // Lee el contenido del archivo en una cadena
+    let mut json_str = String::new();
+    file.read_to_string(&mut json_str)?;
+
+    // Convierte la cadena JSON en un valor `serde_json::Value`
+    let v: Value = from_str(&json_str)?;
+    Ok(v)
+}
 
 /// Retrieves a value from a JSON object using either a JSON Pointer or a direct key.
 ///
@@ -40,30 +65,6 @@ pub fn to_list(value: Value) -> Result<Vec<Value>, Error> {
         Some(list) => Ok(list.clone()),
         None => Err(error::ErrorUnprocessableEntity("Cannot convert to list")),
     }
-}
-
-/// Filters a JSON object to include only specified keys.
-///
-/// # Arguments
-///
-/// * `data` - The JSON object to filter.
-/// * `keys` - A slice of keys to retain in the filtered JSON object.
-///
-/// # Returns
-///
-/// * `Value` - A new JSON object containing only the specified keys.
-pub fn filter_keys(data: &Value, keys: &[&str]) -> Value {
-    let mut filtered_data = Map::new();
-
-    if let Value::Object(map) = data {
-        for &key in keys {
-            if let Some(value) = map.get(key) {
-                filtered_data.insert(key.to_string(), value.clone());
-            }
-        }
-    }
-
-    Value::Object(filtered_data)
 }
 
 /// Searches for a value in a JSON object and returns the parent value at a specific level.
@@ -145,4 +146,91 @@ pub fn find_value_with_parent_value(json: &Value, target: &Value, levels_up: usi
         Some(found_it) => Ok(found_it),
         None => Err(error::ErrorNotFound("Cannot find value")),
     }
+}
+
+/// Searches for all target values in a JSON object, checking if their parent key
+/// matches the specified key `levels_up` levels above.
+///
+/// # Arguments
+///
+/// * `json` - The JSON object to search within.
+/// * `target` - The target value to search for.
+/// * `levels_up` - The number of levels to go up from the found value to get the parent value.
+/// * `parent_key` - The key to match in the parent value.
+/// * `current_path` - A mutable reference to the current path being traversed (used internally).
+/// * `parent_values` - A mutable reference to the list of parent values (used internally).
+/// * `results` - A mutable reference to the vector that collects all matching parent values.
+///
+/// # Returns
+///
+/// * `()` - Results are stored in the `results` vector.
+fn search_all(
+    json: &Value,
+    target: &Value,
+    levels_up: usize,
+    parent_key: &str,
+    current_path: &mut Vec<String>,
+    parent_values: &mut Vec<Value>,
+    results: &mut Vec<Value>,
+) {
+    match json {
+        Value::Object(map) => {
+            parent_values.push(json.clone());
+            for (key, value) in map {
+                current_path.push(key.clone());
+
+                if value == target {
+                    // Ensure there's enough levels to look up
+                    if parent_values.len() > levels_up {
+                        let parent_index = parent_values.len() - levels_up - 1;
+                        if let Some(parent_object) = parent_values[parent_index].as_object() {
+                            if parent_object.contains_key(parent_key) {
+                                results.push(parent_values[parent_index].clone());
+                            }
+                        }
+                    }
+                }
+
+                // Recursively search within child elements
+                search_all(value, target, levels_up, parent_key, current_path, parent_values, results);
+
+                current_path.pop();
+            }
+            parent_values.pop();
+        }
+        Value::Array(array) => {
+            for item in array {
+                search_all(item, target, levels_up, parent_key, current_path, parent_values, results);
+            }
+        }
+        _ => {}  // No need to handle scalar values directly in search_all
+    }
+}
+
+/// Finds all parent values that match the target value `levels_up` levels above in a large JSON.
+///
+/// # Arguments
+///
+/// * `json` - The JSON object to search within.
+/// * `target` - The target value to search for.
+/// * `levels_up` - The number of levels to go up from the found value to get the parent key.
+/// * `parent_key` - The key to match in the parent value.
+///
+/// # Returns
+///
+/// * `Vec<Value>` - A vector of matching parent values.
+pub fn find_all_values_with_parent_value(
+    json: &Value,
+    target: &Value,
+    levels_up: usize,
+    parent_key: &str,
+) -> Vec<Value> {
+    let mut current_path = Vec::new();
+    let mut parent_values = Vec::new();
+    let mut results = Vec::new();
+
+    // Call the search function
+    search_all(json, target, levels_up, parent_key, &mut current_path, &mut parent_values, &mut results);
+
+    results
 }
