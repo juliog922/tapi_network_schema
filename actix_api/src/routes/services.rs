@@ -2,7 +2,8 @@ use actix_web::{error, web, get, Error, HttpResponse};
 use serde_json::Value;
 use reqwest::Client;
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
+use tokio::sync::Mutex;
+use std::sync::Arc;
 
 use crate::HostParameters;
 use crate::utils::{
@@ -13,6 +14,7 @@ use crate::pross::{
     conn_services::services_vector,
     build_endpoints::endpoints_creation,
     lower_transform::lower_conn_transformation,
+    inventory_id::inventory_creation,
     token_src::{
         get_token,
         get_topology,
@@ -48,65 +50,63 @@ async fn connectivity_services(
     */
 
     let host = host.clone();
-
+    let real_host_dict = host_dictionary.lock().await.clone();
     // Lock the host dictionary for reading.
-    if let Ok(new_host_dictionary) = host_dictionary.lock() {
-        if let Some(current_host) = new_host_dictionary.clone().get(&host) {
-            let _host_parameters = current_host.clone();
+    if let Some(current_host) = real_host_dict.get(&host) {
+        let _host_parameters = current_host.clone();
 
-            let port = {
-                if let Some(some_port) = current_host.port.clone() {
-                    ":".to_string() + &some_port
-                } else {
-                    "".to_string()
-                }
-            };
-
-            let connectivity_services: Vec<Value>;
-            let connections: Vec<Value>;
-            let topology: Value;
-
-            if let Ok(token) = get_token(&host, &port, &current_host.user, &current_host.password, &current_host.tenant.clone().unwrap_or_default()).await {
-
-                connectivity_services = to_list(get_services(&token, &host, &port).await?)?;
-                connections = to_list(get_connections(&token, &host, &port).await?)?;
-                topology = get_topology(&token, &host, &port).await?;
-
+        let port = {
+            if let Some(some_port) = current_host.port.clone() {
+                ":".to_string() + &some_port
             } else {
-                let response = Client::builder()
-                .danger_accept_invalid_certs(true)
-                .gzip(true)
-                .brotli(true)
-                .deflate(true)
-                .build()
-                .unwrap()
-                .get(format!("https://{}{}/restconf/data/tapi-common:context", host, port))
-                .header("Accept", "application/yang-data+json")
-                .header("Accept-Encoding", "gzip, deflate, br")
-                .basic_auth(format!("{}", current_host.user), Some(format!("{}", current_host.password)))
-                .send()
-                .await
-                .map_err(|_| error::ErrorNotFound("Request Error"))?;
-
-                let json: Value = response.json().await.map_err(|_| error::ErrorNotFound("Empty Response."))?;
-
-                connectivity_services = to_list(matching(true, &json, "/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")?)?;
-                connections = to_list(matching(true, &json, "/tapi-common:context/tapi-connectivity:connectivity-context/connection")?)?;
-                //let _services_interface_point = to_list(matching(true, &json, "/tapi-common:context/service-interface-point")?)?;
-                topology = matching(true, &json, "/tapi-common:context/tapi-topology:topology-context/topology")?;
+                "".to_string()
             }
+        };
 
-            let mut schema = services_vector(&connectivity_services, &topology)?;
-            endpoints_creation(&topology, &connections, &mut schema)?;
-            lower_conn_transformation(&mut schema)?;
+        let connectivity_services: Vec<Value>;
+        let connections: Vec<Value>;
+        let topology: Value;
 
-            return Ok(HttpResponse::Ok().json(schema));
+        if let Ok(token) = get_token(&host, &port, &current_host.user, &current_host.password, &current_host.tenant.clone().unwrap_or_default()).await {
+
+            connectivity_services = to_list(get_services(&token, &host, &port).await?)?;
+            connections = to_list(get_connections(&token, &host, &port).await?)?;
+            topology = get_topology(&token, &host, &port).await?;
 
         } else {
-            return Err(error::ErrorNotFound("Host not on database"));
+            let response = Client::builder()
+            .danger_accept_invalid_certs(true)
+            .gzip(true)
+            .brotli(true)
+            .deflate(true)
+            .build()
+            .unwrap()
+            .get(format!("https://{}{}/restconf/data/tapi-common:context", host, port))
+            .header("Accept", "application/yang-data+json")
+            .header("Accept-Encoding", "gzip, deflate, br")
+            .basic_auth(format!("{}", current_host.user), Some(format!("{}", current_host.password)))
+            .send()
+            .await
+            .map_err(|_| error::ErrorNotFound("Request Error"))?;
+
+            let json: Value = response.json().await.map_err(|_| error::ErrorNotFound("Empty Response."))?;
+
+            connectivity_services = to_list(matching(true, &json, "/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")?)?;
+            connections = to_list(matching(true, &json, "/tapi-common:context/tapi-connectivity:connectivity-context/connection")?)?;
+            //let _services_interface_point = to_list(matching(true, &json, "/tapi-common:context/service-interface-point")?)?;
+            topology = matching(true, &json, "/tapi-common:context/tapi-topology:topology-context/topology")?;
         }
+
+        let mut schema = services_vector(&connectivity_services, &topology)?;
+        endpoints_creation(&topology, &connections, &mut schema)?;
+        lower_conn_transformation(&mut schema)?;
+        let schema = inventory_creation(&mut schema)?; 
+
+        return Ok(HttpResponse::Ok().json(schema));
+
     } else {
         return Err(error::ErrorNotFound("Host not on database"));
     }
+
  
 }

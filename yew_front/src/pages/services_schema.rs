@@ -39,7 +39,6 @@ pub fn schema(props: &Props) -> Html {
                         Err(_) => {
                             // Set an error message in case of failure
                             let error_json: Value = serde_json::json!({"error": "Failed to fetch JSON"});
-                            context_clone.set(ip_clone, error_json);
                         }
                     }
                 }

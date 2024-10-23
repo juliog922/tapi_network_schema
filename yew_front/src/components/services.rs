@@ -39,9 +39,16 @@ pub fn connectivity_service_list(props: &ConnectivityServiceProps) -> Html {
     // Default empty array to handle cases where the "connectivity_services" field is missing
     let empty_array = vec![];
     // Extract the "connectivity_services" array from the services JSON
-    let services = props.services["connectivity_services"]
+    let services = props.services
         .as_array()
         .unwrap_or(&empty_array);
+    let title: &str = {
+        if services.len() < 1 {
+            "Cannot Process Schema"
+        } else {
+            "Connectivity Services"
+        }
+    };
 
     // State to manage the expanded service item UUID
     let expanded_uuid = use_state(|| None);
@@ -51,7 +58,7 @@ pub fn connectivity_service_list(props: &ConnectivityServiceProps) -> Html {
 
     html! {
         <div class="services-section">
-            <h1 class="services-title">{"Connectivity Services"}</h1>
+            <h1 class="services-title">{title}</h1>
             <div class="services-container">
                 {
                     // Iterate over the services to create the list items
