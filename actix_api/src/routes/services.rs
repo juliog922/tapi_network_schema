@@ -99,7 +99,7 @@ async fn connectivity_services(
 
         let mut schema = services_vector(&connectivity_services, &topology)?;
         endpoints_creation(&topology, &connections, &mut schema)?;
-        lower_conn_transformation(&mut schema)?;
+        lower_conn_transformation(&mut schema, &connections)?;
         let schema = inventory_creation(&mut schema)?; 
 
         return Ok(HttpResponse::Ok().json(schema));

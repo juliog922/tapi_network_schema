@@ -31,6 +31,9 @@ pub struct Endpoint {
     /// Optional UUID of the link associated with this endpoint.
     pub link_uuid: Option<Value>,
 
+    /// Optional UUID of the connection associated with this endpoint.
+    pub connection_uuid: Option<Value>,
+
     /// Unique identifier for the endpoint.
     pub id: Value,
 }
@@ -59,6 +62,7 @@ impl Endpoint {
         service_interface_point_uuid: Option<Value>,
         lower_connections: Option<Value>,
         link_uuid: Option<Value>,
+        connection_uuid: Option<Value>,
         id: Value,
     ) -> Self {
         Endpoint {
@@ -70,6 +74,7 @@ impl Endpoint {
             service_interface_point_uuid,
             lower_connections,
             link_uuid,
+            connection_uuid,
             id,
         }
     }
@@ -106,6 +111,10 @@ impl Endpoint {
 
         if let Some(ref link_uuid) = self.link_uuid {
             endpoint_obj.as_object_mut().unwrap().insert("link_uuid".to_string(), link_uuid.clone());
+        }
+
+        if let Some(ref connection_uuid) = self.connection_uuid {
+            endpoint_obj.as_object_mut().unwrap().insert("connection_uuid".to_string(), connection_uuid.clone());
         }
 
         // Insert the unique identifier for the endpoint

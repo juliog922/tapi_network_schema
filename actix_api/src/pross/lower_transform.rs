@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use actix_web::{Error, error};
 use serde_json::{Value, Number};
 
@@ -16,7 +17,29 @@ use serde_json::{Value, Number};
 /// # Returns
 ///
 /// * `Result<(), Error>` - Returns `Ok(())` if the transformation is successful, or an `Error` if any required fields are missing.
-pub fn lower_conn_transformation(schema: &mut Value) -> Result<(), Error> {
+pub fn lower_conn_transformation(schema: &mut Value, connections_json: &Vec<Value>) -> Result<(), Error> {
+
+    let mut connection_uuid_hashmap: HashMap<String, Value> = HashMap::new();
+    let mut connection_uuid_lower_hashmap: HashMap<String, Value> = HashMap::new();
+
+    for connection in connections_json {
+        if let Some(connection_uuid) = connection.get("uuid") {
+            for connection_end_point in connection.get("connection-end-point").unwrap_or(&Value::Array(vec![])).as_array().unwrap_or(&vec![]) {
+                if let Some(_) = connection.get("lower-connection") {
+                    connection_uuid_hashmap.insert(
+                        connection_end_point.get("node-edge-point-uuid").and_then(Value::as_str).unwrap().to_string(),
+                        connection_uuid.clone()
+                    );
+                } else {
+                    connection_uuid_lower_hashmap.insert(
+                        connection_end_point.get("node-edge-point-uuid").and_then(Value::as_str).unwrap().to_string(),
+                        connection_uuid.clone()
+                    );
+                }
+            }
+        }
+    }
+
     // Check if the schema contains the "connectivity_services" key.
     if let Some(connectivity_services) = schema.as_object_mut().unwrap().get_mut(&"connectivity_services".to_string()) {
 
@@ -60,6 +83,17 @@ pub fn lower_conn_transformation(schema: &mut Value) -> Result<(), Error> {
                         // Iterate over each endpoint.
                         for endpoint in endpoints_array {
 
+                            let node_edge_point_uuid = endpoint.get("node_edge_point_uuid").and_then(Value::as_str).unwrap().to_string();
+                            let mut connection_uuid_flag = false;
+
+                            if let Some(connection_uuid) = connection_uuid_hashmap.get(&node_edge_point_uuid) {
+                                endpoint.as_object_mut().unwrap().insert(
+                                    format!("connection_uuid"), 
+                                    connection_uuid.clone()
+                                );
+                                connection_uuid_flag = true;
+                            }
+
                             // Check if the endpoint contains the "lower_connections" key.
                             if let Some(lower_conns_ref) = endpoint.clone().as_object().unwrap().get(&"lower_connections".to_string()) {
 
@@ -67,10 +101,26 @@ pub fn lower_conn_transformation(schema: &mut Value) -> Result<(), Error> {
                                 let lower_conns_array = lower_conns_ref.as_array().unwrap();
                                 
                                 // Add individual fields for each lower connection.
-                                for lower_conn_index in 0..lower_conns_array.len() {
+                                'for_loop: for lower_conn_index in 0..lower_conns_array.len() {
+
+                                    let lower_connection_uuid = lower_conns_array[lower_conn_index].as_object().unwrap().get(&"connection-uuid".to_string()).unwrap().clone();
+                                    if let Some(connection_uuid) = connection_uuid_lower_hashmap.get(&node_edge_point_uuid) {
+                                        if lower_connection_uuid.eq(connection_uuid) {
+                                            endpoint.as_object_mut().unwrap().insert(
+                                                format!("lower_connection_uuid"), 
+                                                connection_uuid.clone()
+                                            );
+                                            break 'for_loop;
+                                        }
+                                    }
+
+                                }
+                            }
+                            if !connection_uuid_flag {
+                                if let Some(connection_uuid) = connection_uuid_lower_hashmap.get(&node_edge_point_uuid) {
                                     endpoint.as_object_mut().unwrap().insert(
-                                        format!("lower_connection_{}", lower_conn_index), 
-                                        lower_conns_array[lower_conn_index].as_object().unwrap().get(&"connection-uuid".to_string()).unwrap().clone()
+                                        format!("connection_uuid"), 
+                                        connection_uuid.clone()
                                     );
                                 }
                             }

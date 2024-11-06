@@ -1,11 +1,43 @@
 use yew::prelude::*;
 use serde_json::Value;
 use std::collections::HashSet;
+use super::footer_legend::FooterLegend;
 
 #[derive(Properties, PartialEq)]
 pub struct NodesProps {
     /// The JSON data representing nodes and their endpoints.
     pub nodes: Value,
+}
+
+fn highlight_class(
+    is_selected: bool,
+    is_service: bool,
+    is_client_highlighted: bool,
+    is_edge_highlighted: bool,
+    is_lower_highlighted: bool,
+    is_connection_highlighted: bool,
+    is_connection_endpoint_highlighted: bool,
+    is_highlighted: bool,
+) -> &'static str {
+    if is_selected {
+        "selected"
+    } else if is_service {
+        "service-highlighted"
+    } else if is_client_highlighted {
+        "client-highlighted"
+    } else if is_edge_highlighted {
+        "client-highlighted"
+    } else if is_lower_highlighted {
+        "lower-highlighted"
+    } else if is_connection_highlighted {
+        "lower-highlighted"
+    } else if is_connection_endpoint_highlighted {
+        "connection-endpoint-highlighted"
+    } else if is_highlighted {
+        "highlighted"
+    } else {
+        ""
+    }
 }
 
 /// A Yew functional component that displays nodes and their endpoints.
@@ -30,6 +62,7 @@ pub fn nodes(props: &NodesProps) -> Html {
     let highlighted_edge_uuid = use_state(|| HashSet::<String>::new());
     let highlighted_client_uuid = use_state(|| HashSet::<String>::new());
     let highlighted_service_uuid = use_state(|| HashSet::<String>::new());
+    let highlighted_connection_endpoints = use_state(|| HashSet::<String>::new());
 
     // Callback to handle right-click (context menu) events and update hover data
     let oncontextmenu = {
@@ -63,6 +96,8 @@ pub fn nodes(props: &NodesProps) -> Html {
         let highlighted_edge_uuid = highlighted_edge_uuid.clone();
         let highlighted_client_uuid = highlighted_client_uuid.clone();
         let highlighted_service_uuid = highlighted_service_uuid.clone();
+        let highlighted_connection_endpoints = highlighted_connection_endpoints.clone();
+        
         let nodes = props.nodes.clone();
         
         Callback::from(move |ep: Value| {
@@ -73,9 +108,28 @@ pub fn nodes(props: &NodesProps) -> Html {
             let mut new_highlighted_edge_uuid: HashSet<String> = HashSet::new();
             let mut new_highlighted_client_uuid: HashSet<String> = HashSet::new();
             let mut new_highlighted_service_uuid: HashSet<String> = HashSet::new();
+            let mut new_highlighted_connection_endpoints: HashSet<String> = HashSet::new();
 
             if let Some(_) = ep["service_interface_point_uuid"].as_str() {
                 new_highlighted_service_uuid.insert("service_interface_point_uuid".to_string());
+            }
+
+            if let Some(connection_end_point_uuid) = ep["connection_uuid"].as_str() {
+                if let Some(nodes_array) = nodes.as_array() {
+                    for node in nodes_array {
+                        if let Some(inventories) = node["inventories"].as_array() {
+                            for inventory in inventories {
+                                if let Some(endpoints) = inventory["endpoints"].as_array() {
+                                    for endpoint in endpoints {
+                                        if endpoint["connection_uuid"].as_str() == Some(connection_end_point_uuid) && endpoint != &ep {
+                                            new_highlighted_connection_endpoints.insert(connection_end_point_uuid.to_string());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             // Ahora iteramos sobre los nodos y luego sobre sus inventories para buscar los endpoints
@@ -130,7 +184,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                 }
             }
 
-            // Resaltar endpoints que compartan el mismo connection_end_point_uuid
+            // Resaltar endpoints que compartan connection_end_point_uuid en lower conn
             if let Some(connection_uuid) = ep["connection_end_point_uuid"].as_str() {
                 if let Some(nodes_array) = nodes.as_array() {
                     for node in nodes_array {
@@ -202,6 +256,7 @@ pub fn nodes(props: &NodesProps) -> Html {
             highlighted_client_uuid.set(new_highlighted_client_uuid);
             highlighted_edge_uuid.set(new_highlighted_edge_uuid);
             highlighted_service_uuid.set(new_highlighted_service_uuid);
+            highlighted_connection_endpoints.set(new_highlighted_connection_endpoints);
             })
     };
 
@@ -211,7 +266,28 @@ pub fn nodes(props: &NodesProps) -> Html {
 
     // Function to format JSON values as pretty-printed strings
     fn format_json(value: &Value) -> String {
-        serde_json::to_string_pretty(value).unwrap_or_else(|_| "Error formatting JSON".to_string())
+        match value {
+            Value::Object(map) => {
+                let mut formatted_html = String::new();
+                for (key, val) in map {
+                    formatted_html.push_str(&format!(
+                        "<div><span class='key'>{}</span>: {}</div>",
+                        key,
+                        format_json(val) // Llamada recursiva para manejar estructuras anidadas
+                    ));
+                }
+                formatted_html
+            }
+            Value::Array(arr) => {
+                let mut formatted_html = String::from("<div>[");
+                for item in arr {
+                    formatted_html.push_str(&format!("<div>{}</div>", format_json(item)));
+                }
+                formatted_html.push_str("</div>]");
+                formatted_html
+            }
+            _ => format!("<span class='value'>{}</span>", value.to_string()), // Para valores simples
+        }
     }
 
     html! {
@@ -259,6 +335,22 @@ pub fn nodes(props: &NodesProps) -> Html {
 
                                                                 let mut service_flag = false;
 
+                                                                let is_highlighted = {
+                                                                    if let Some(link_uuid) = ep["link_uuid"].as_str() {
+                                                                        highlighted_link_uuids.contains(link_uuid) && !is_selected
+                                                                    } else {
+                                                                        false
+                                                                    }
+                                                                };
+
+                                                                let is_connection_endpoint_highlighted = {
+                                                                    if let Some(connection_uuid) = ep["connection_uuid"].as_str() {
+                                                                        highlighted_connection_endpoints.contains(connection_uuid) && !is_selected
+                                                                    } else {
+                                                                        false
+                                                                    }
+                                                                };
+
                                                                 let is_service = {
                                                                     if let Some(_) = ep["service_interface_point_uuid"].as_str() {
                                                                         service_flag = true;
@@ -284,33 +376,21 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                                     }
                                                                 };
 
+                                                                
+
+                                                                let is_connection_highlighted = {
+                                                                    if let Some(lower_uuid) = ep["lower_connection_uuid"].as_str() {
+                                                                        highlighted_connections_uuid.contains(lower_uuid) && !is_selected
+                                                                    } else {
+                                                                        false
+                                                                    }
+                                                                };
+
+                                                                
+
                                                                 let is_lower_highlighted = {
                                                                     if let Some(connection_end_point_uuid) = ep["connection_end_point_uuid"].as_str() {
                                                                         highlighted_lower_connections.contains(connection_end_point_uuid)
-                                                                    } else {
-                                                                        false
-                                                                    }
-                                                                };
-
-                                                                let is_connection_highlighted = {
-                                                                    if let Some(ep_obj) = ep.as_object() {
-                                                                        ep_obj.keys().any(|key| key.starts_with("lower_connection_")) &&
-                                                                        ep_obj.values().any(|value| {
-                                                                            if let Some(lower_uuid) = value.as_str() {
-                                                                                highlighted_connections_uuid.contains(lower_uuid)
-                                                                            } else {
-                                                                                false
-                                                                            }
-                                                                        }) &&
-                                                                        !is_selected
-                                                                    } else {
-                                                                        false
-                                                                    }
-                                                                };
-
-                                                                let is_highlighted = {
-                                                                    if let Some(link_uuid) = ep["link_uuid"].as_str() {
-                                                                        highlighted_link_uuids.contains(link_uuid) && !is_selected
                                                                     } else {
                                                                         false
                                                                     }
@@ -345,13 +425,16 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                                         <div
                                                                             class={classes!(
                                                                                 "endpoint-square",
-                                                                                if is_service { "service-highlighted" } else { "" },
-                                                                                if is_client_highlighted { "client-highlighted" } else { "" },
-                                                                                if is_edge_highlighted { "client-highlighted" } else { "" },
-                                                                                if is_lower_highlighted { "lower-highlighted" } else { "" },
-                                                                                if is_connection_highlighted { "lower-highlighted" } else { "" },
-                                                                                if is_highlighted { "highlighted" } else { "" },
-                                                                                if is_selected { "selected" } else { "" },
+                                                                                highlight_class(
+                                                                                    is_selected,
+                                                                                    is_service,
+                                                                                    is_client_highlighted,
+                                                                                    is_edge_highlighted,
+                                                                                    is_lower_highlighted,
+                                                                                    is_connection_highlighted,
+                                                                                    is_connection_endpoint_highlighted,
+                                                                                    is_highlighted,
+                                                                                ),
                                                                                 if service_flag { "first" } else { "second" }
                                                                             )}
                                                                             oncontextmenu={prevent_default_context_menu.clone()}
@@ -372,11 +455,11 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                                     <button class="close-button" onclick={close_modal.clone()}>{"X"}</button>
                                                                     <div class="modal-body">
                                                                         <h2>{"Endpoint Details:\n"}</h2>
-                                                                        <p>{ format_json(&serde_json::from_str(&hover_data).unwrap_or(Value::Null)) }</p>
+                                                                        <div>{ Html::from_html_unchecked(format_json(&serde_json::from_str(&hover_data).unwrap_or(Value::Null)).into()) }</div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        }
+                                                        }                                                        
                                                     </div>
                                                 </div>
                                             }
@@ -387,6 +470,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                         }
                     })
                 }
+                <FooterLegend />
             </div>
         </div>
     }
