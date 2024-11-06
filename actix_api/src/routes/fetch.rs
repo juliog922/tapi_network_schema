@@ -38,7 +38,7 @@ async fn save_schema() -> Result<HttpResponse, Error> {
         .get("https://10.95.87.21:18010/restconf/data/tapi-common:context")
         .header("Accept", "application/yang-data+json")
         .header("Accept-Encoding", "gzip, deflate, br")
-        .basic_auth("tapi", Some("Zenap_1235!!!")) // Basic authentication
+        .basic_auth("123", Some("Zte2024!")) // Basic authentication
         .send()
         .await
         .map_err(|_| error::ErrorNotFound("Request Error"))?;
@@ -59,16 +59,16 @@ async fn save_schema() -> Result<HttpResponse, Error> {
     let topology_str = serde_json::to_string(&topology).map_err(|_| error::ErrorInternalServerError("Serialization Error"))?;
 
     // Write each JSON string to a separate file
-    let mut file = File::create("connectivity_services.txt").map_err(|_| error::ErrorInternalServerError("File Creation Error"))?;
+    let mut file = File::create("connectivity_services.json").map_err(|_| error::ErrorInternalServerError("File Creation Error"))?;
     file.write_all(connectivity_services_str.as_bytes()).map_err(|_| error::ErrorInternalServerError("File Write Error"))?;
 
-    let mut file = File::create("connections.txt").map_err(|_| error::ErrorInternalServerError("File Creation Error"))?;
+    let mut file = File::create("connections.json").map_err(|_| error::ErrorInternalServerError("File Creation Error"))?;
     file.write_all(connections_str.as_bytes()).map_err(|_| error::ErrorInternalServerError("File Write Error"))?;
 
-    let mut file = File::create("services_interface_point.txt").map_err(|_| error::ErrorInternalServerError("File Creation Error"))?;
+    let mut file = File::create("services_interface_point.json").map_err(|_| error::ErrorInternalServerError("File Creation Error"))?;
     file.write_all(services_interface_point_str.as_bytes()).map_err(|_| error::ErrorInternalServerError("File Write Error"))?;
 
-    let mut file = File::create("topology.txt").map_err(|_| error::ErrorInternalServerError("File Creation Error"))?;
+    let mut file = File::create("topology.json").map_err(|_| error::ErrorInternalServerError("File Creation Error"))?;
     file.write_all(topology_str.as_bytes()).map_err(|_| error::ErrorInternalServerError("File Write Error"))?;
 
     // Return a success message

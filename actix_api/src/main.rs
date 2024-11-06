@@ -4,10 +4,11 @@ mod pross;
 mod models;
 
 use actix_web::{web, main, App, HttpServer};
+use tokio::sync::Mutex;
 use std::io::Result;
 use actix_cors::Cors;
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 
 /// Structure to hold host parameters including port, user, and password.
 #[derive(Clone, Debug)]

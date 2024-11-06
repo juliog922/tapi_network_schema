@@ -1,7 +1,8 @@
 use actix_web::{get, web, Responder};
 use std::collections::HashMap;
 use serde::Serialize;
-use std::sync::{Arc, Mutex};
+use tokio::sync::Mutex;
+use std::sync::Arc;
 
 use crate::HostParameters;
 
@@ -28,7 +29,7 @@ pub async fn get_hosts(
     host_dictionary: web::Data<Arc<Mutex<HashMap<String, HostParameters>>>>) 
 -> impl Responder {
     // Lock the host dictionary for reading.
-    let host_dictionary = host_dictionary.lock().unwrap();
+    let host_dictionary = host_dictionary.lock().await;
     // Initialize a vector to store host information.
     let mut hosts_info_vector: Vec<HostInfo> = vec![];
     // Collect all host information from the dictionary.

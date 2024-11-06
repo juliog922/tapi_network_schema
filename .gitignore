@@ -7,6 +7,9 @@ Cargo.lock
 *.swp
 .DS_Store
 
+actix_api/0077.json
+actix_api/example.json
+actix_api/thunder.json
 
 # Trunk
 yew_front/dist

@@ -1,8 +1,11 @@
+use std::collections::HashMap;
+
 use actix_web::{Error, error};
 use serde_json::{Number, Value};
 
 use crate::utils::{
     find_value_with_parent_value,
+    find_all_values_with_parent_value,
     matching,
 };
 use crate::models::{
@@ -23,6 +26,19 @@ use crate::models::{
 /// # Returns
 /// - `Result<(), Error>`: Returns `Ok(())` on success, or an `Error` if something goes wrong, such as missing required fields.
 pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, schema: &mut Value) -> Result<(), Error> {
+
+    let mut lower_connections_hashmap: HashMap<String, Value> = HashMap::new();
+    for connection in connections_json {
+        if let Some(lower_connections) = connection.get("lower-connection") {
+            for connection_end_point in connection.get("connection-end-point").unwrap_or(&Value::Array(vec![])).as_array().unwrap_or(&vec![]) {
+                lower_connections_hashmap.insert(
+                    connection_end_point.get("node-edge-point-uuid").unwrap().to_string(),
+                    lower_connections.clone()
+                );
+            }
+        }
+    }
+
     // Check if the schema contains the "connectivity_services" key
     if let Some(connectivity_services) = schema.as_object_mut().unwrap().get_mut(&"connectivity_services".to_string()) {
         
@@ -58,20 +74,20 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
 
                             let mut option_node_uuid: Option<Value> = None;
 
-                            let mut connection_uuid: Value = Value::String("".to_string());
+                            let mut connection_end_uuid: Value = Value::String("".to_string());
                             let mut inventory_id: Value = Value::String("".to_string());
                             let mut protocol_qualifier: Value = Value::String("".to_string());
                             let mut option_node_edge_point: Option<Value> = None;
                             let mut client_node_edge_point_uuid: Option<Value> = None;
                             let mut lower_connections: Option<Value> = None;
                             let mut link_uuid: Option<Value> = None;
+                            let mut connection_uuid: Option<Value> = None;
                             let id = endpoints_array[endpoint_index].as_object().unwrap().get(&"id".to_string()).unwrap().clone();
 
                             // Check if the endpoint has a link UUID and process it
                             if let Some(link_conn) = endpoints_array[endpoint_index].as_object().unwrap().get(&"link_uuid".to_string()) {
 
-                                if let Ok(link_section) = find_value_with_parent_value(
-                                    topology_json, 
+                                if let Ok(link_section) = find_value_with_parent_value(topology_json, 
                                     &link_conn, 
                                     0, 
                                     "uuid") {
@@ -79,98 +95,86 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                         if let Some(node_edge_points) = link_section.as_object().unwrap().get(&"node-edge-point".to_string()) {
                                             // Iterate over node edge points to find connections
                                             for node_edge_point in node_edge_points.as_array().unwrap() {
-                                                //if node_edge_point.as_object().unwrap().get(&"node-uuid".to_string()).unwrap() != &current_node_uuid {
 
-                                                    option_node_uuid = Some(node_edge_point.as_object().unwrap().get(&"node-uuid".to_string()).unwrap().clone());
+                                                option_node_uuid = Some(node_edge_point.as_object().unwrap().get(&"node-uuid".to_string()).unwrap().clone());
 
-                                                    let node_edge_point_uuid = node_edge_point.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone();
+                                                let node_edge_point_uuid = node_edge_point.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone();
 
-                                                    if let Ok(parent_topology) =  find_value_with_parent_value(
-                                                        topology_json, 
-                                                        &node_edge_point_uuid, 
-                                                        1, 
-                                                        "parent-node-edge-point"){
-                                                            connection_uuid = parent_topology.as_object().unwrap().get(&"uuid".to_string()).unwrap().clone();
-                                                            
-                                                            if let Ok(onep) =  find_value_with_parent_value(
-                                                                topology_json, 
-                                                                &connection_uuid, 
-                                                                2, 
-                                                                "tapi-connectivity:cep-list"){
-                                                                    let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
-                                                                    
-                                                                    if let Ok(name) = find_value_with_parent_value(
-                                                                        names, 
-                                                                        &Value::String("INVENTORY_ID".to_string()), 
-                                                                        0, 
-                                                                        "value-name"){
-                                                                            inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+                                                lower_connections = lower_connections_hashmap.get(&node_edge_point_uuid.to_string()).cloned();
 
-                                                                    }
-                                                            }
-                                                            
-                                                            // Check connections to find lower connections
-                                                            for connection in connections_json {
-                                                                if let Ok(node_edge_lower) = find_value_with_parent_value(
-                                                                    connection, 
-                                                                    &connection_uuid, 
-                                                                    1, 
-                                                                    "connection-end-point") {
-                                                                    if let Some(lower_conn) = node_edge_lower.as_object().unwrap().get(&"lower-connection".to_string()) {
-                                                                        lower_connections = Some(lower_conn.clone());
-                                                                    }
+                                                if let Ok(onep) =  find_value_with_parent_value(
+                                                    topology_json, 
+                                                    &node_edge_point_uuid, 
+                                                    0, 
+                                                    "uuid"){
+                                                        let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
+                                                        
+                                                        if let Ok(name) = find_value_with_parent_value(
+                                                            names, 
+                                                            &Value::String("INVENTORY_ID".to_string()), 
+                                                            0, 
+                                                            "value-name"){
+                                                                inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+                                                        }
+                                                }
+
+                                                if let Ok(parent_topology) =  find_value_with_parent_value(
+                                                    topology_json, 
+                                                    &node_edge_point_uuid, 
+                                                    1, 
+                                                    "parent-node-edge-point"){
+                                                        connection_end_uuid = parent_topology.as_object().unwrap().get(&"uuid".to_string()).unwrap().clone();
+                                                        
+
+                                                        // Extract protocol qualifier and client node edge point UUID
+                                                        if let Some(layer_prot) = parent_topology.as_object().unwrap().get(&"layer-protocol-qualifier".to_string()) {
+                                                            protocol_qualifier = layer_prot.clone();
+                                                        }
+                                                        if let Some(client_nop) = parent_topology.as_object().unwrap().get(&"client-node-edge-point".to_string()) {
+                                                            if let Ok(nop) = find_value_with_parent_value(
+                                                                client_nop, 
+                                                                &node_edge_point.as_object().unwrap().get(&"node-uuid".to_string()).unwrap().clone(), 
+                                                                0, 
+                                                                "node-uuid") {
+                                                                    client_node_edge_point_uuid = Some(nop.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone());
                                                                 }
-                                                            }
+                                                        }
+                                                }
 
-                                                            // Extract protocol qualifier and client node edge point UUID
-                                                            if let Some(layer_prot) = parent_topology.as_object().unwrap().get(&"layer-protocol-qualifier".to_string()) {
-                                                                protocol_qualifier = layer_prot.clone();
-                                                            }
-                                                            if let Some(client_nop) = parent_topology.as_object().unwrap().get(&"client-node-edge-point".to_string()) {
-                                                                if let Ok(nop) = find_value_with_parent_value(
-                                                                    client_nop, 
-                                                                    &node_edge_point.as_object().unwrap().get(&"node-uuid".to_string()).unwrap().clone(), 
-                                                                    0, 
-                                                                    "node-uuid") {
-                                                                        client_node_edge_point_uuid = Some(nop.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone());
-                                                                    }
-                                                            }
-                                                    }
+                                                // Extract link UUID
+                                                if let Ok(link) = find_value_with_parent_value(
+                                                    topology_json, 
+                                                    &node_edge_point_uuid, 
+                                                    1, 
+                                                    "node-edge-point") {
+                                                        if let Some(uuid) = link.as_object().unwrap().get(&"uuid".to_string()) {
+                                                            link_uuid = Some(uuid.clone());
+                                                        }
+                                                }
 
-                                                    // Extract link UUID
-                                                    if let Ok(link) = find_value_with_parent_value(
-                                                        topology_json, 
-                                                        &node_edge_point_uuid, 
-                                                        1, 
-                                                        "node-edge-point") {
-                                                            if let Some(uuid) = link.as_object().unwrap().get(&"uuid".to_string()) {
-                                                                link_uuid = Some(uuid.clone());
-                                                            }
-                                                    }
-
-                                                    // Create a new endpoint and add it to the list
-                                                    endpoint_node_uuid.push(
-                                                        (
-                                                            Some(
-                                                                Endpoint::new(
-                                                                    connection_uuid.clone(),
-                                                                    node_edge_point_uuid,
-                                                                    inventory_id.clone(),
-                                                                    protocol_qualifier.clone(),
-                                                                    client_node_edge_point_uuid.clone(),
-                                                                    None,
-                                                                    lower_connections.clone(),
-                                                                    link_uuid.clone(),
-                                                                    Value::Number(Number::from(id.as_i64().unwrap() + 1)),
-                                                                ),
+                                                // Create a new endpoint and add it to the list
+                                                endpoint_node_uuid.push(
+                                                    (
+                                                        Some(
+                                                            Endpoint::new(
+                                                                connection_end_uuid.clone(),
+                                                                node_edge_point_uuid,
+                                                                inventory_id.clone(),
+                                                                protocol_qualifier.clone(),
+                                                                client_node_edge_point_uuid.clone(),
+                                                                None,
+                                                                lower_connections.clone(),
+                                                                connection_uuid.clone(),
+                                                                link_uuid.clone(),
+                                                                Value::Number(Number::from(id.as_i64().unwrap() + 1)),
                                                             ),
-                                                            option_node_uuid.clone()
-                                                        )
-                                                    );
-                                                //}
+                                                        ),
+                                                        option_node_uuid.clone()
+                                                    )
+                                                );
                                             }
                                         }
-                                }
+                                    }
                             }
 
                             // Process lower connections for the endpoint
@@ -178,23 +182,6 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                 for lower_conn in lower_conns.as_array().unwrap() {
 
                                     let connection_uuid = lower_conn.as_object().unwrap().get("connection-uuid").unwrap();
-
-                                    if let Ok(onep) =  find_value_with_parent_value(
-                                        topology_json, 
-                                        &connection_uuid, 
-                                        2, 
-                                        "tapi-connectivity:cep-list"){
-                                            let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
-                                            
-                                            if let Ok(name) = find_value_with_parent_value(
-                                                names, 
-                                                &Value::String("INVENTORY_ID".to_string()), 
-                                                0, 
-                                                "value-name"){
-                                                    inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
-
-                                            }
-                                    }
 
                                     for connection in connections_json {
                                         if let Ok(endpoints) = find_value_with_parent_value(
@@ -207,6 +194,22 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                 for lower_conn_enpoint in endpoints.as_object().unwrap().get(&"connection-end-point".to_string()).unwrap().as_array().unwrap() {
 
                                                     let node_edge_point_uuid = lower_conn_enpoint.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone();
+
+                                                    if let Ok(onep) =  find_value_with_parent_value(
+                                                        topology_json, 
+                                                        &node_edge_point_uuid, 
+                                                        0, 
+                                                        "uuid"){
+                                                            let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
+                                                            
+                                                            if let Ok(name) = find_value_with_parent_value(
+                                                                names, 
+                                                                &Value::String("INVENTORY_ID".to_string()), 
+                                                                0, 
+                                                                "value-name"){
+                                                                    inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+                                                            }
+                                                    }
 
                                                     if let Ok(parent_topology) =  find_value_with_parent_value(
                                                         topology_json, 
@@ -249,6 +252,7 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                                     None,
                                                                     None,
                                                                     link_uuid.clone(),
+                                                                    Some(connection_uuid.clone()),
                                                                     Value::Number(Number::from(id.as_i64().unwrap() + 1)),
                                                                 ),
                                                             ),
@@ -263,30 +267,15 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                             } 
                             if let Some(endpoint_nepu) = endpoints_array[endpoint_index].as_object().unwrap().get(&"node_edge_point_uuid".to_string()) {
 
-                                if let Ok(client_endpoint) = find_value_with_parent_value(
+                                for client_endpoint in find_all_values_with_parent_value(
                                     topology_json, 
                                     endpoint_nepu, 
                                     1, 
                                     "client-node-edge-point"
                                 ) {
-                                    connection_uuid = client_endpoint.as_object().unwrap().get(&"uuid".to_string()).unwrap().clone();
 
-                                    if let Ok(onep) =  find_value_with_parent_value(
-                                        topology_json, 
-                                        &connection_uuid, 
-                                        2, 
-                                        "tapi-connectivity:cep-list"){
-                                            let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
-                                            
-                                            if let Ok(name) = find_value_with_parent_value(
-                                                names, 
-                                                &Value::String("INVENTORY_ID".to_string()), 
-                                                0, 
-                                                "value-name"){
-                                                    inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+                                    connection_end_uuid = client_endpoint.as_object().unwrap().get(&"uuid".to_string()).unwrap().clone();
 
-                                            }
-                                    }
 
                                     protocol_qualifier = client_endpoint.as_object().unwrap().get(&"layer-protocol-qualifier".to_string()).unwrap().clone();
                                     
@@ -297,58 +286,64 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                         "node-edge-point-uuid"
                                     ) {
 
-                                        client_node_edge_point_uuid = Some(conn_end_point.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone()); // topology_uuid
+                                        client_node_edge_point_uuid = Some(conn_end_point.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone());
 
                                     }
 
-                                    option_node_edge_point = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-edge-point-uuid")?); ////////////////////
-                                    option_node_uuid = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-uuid")?) ///////////////////////////
-                                }
+                                    option_node_edge_point = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-edge-point-uuid")?);
+                                    option_node_uuid = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-uuid")?);
 
-                                if let Some(node_edge_point) = option_node_edge_point.clone() {
-                                    // Check connections and create new endpoints
-                                    for connection in connections_json {
-                                        if let Ok(node_edge_lower) = find_value_with_parent_value(
-                                            connection, 
-                                            &connection_uuid, 
-                                            1, 
-                                            "connection-end-point") {
-                                            if let Some(lower_conn) = node_edge_lower.as_object().unwrap().get(&"lower-connection".to_string()) {
-                                                lower_connections = Some(lower_conn.clone());
-                                            }
+                                    if let Some(node_edge_point) = option_node_edge_point.clone() {
+
+                                        if let Ok(onep) =  find_value_with_parent_value(
+                                            topology_json, 
+                                            &node_edge_point, 
+                                            0, 
+                                            "uuid"){
+                                                let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
+                                                
+                                                if let Ok(name) = find_value_with_parent_value(
+                                                    names, 
+                                                    &Value::String("INVENTORY_ID".to_string()), 
+                                                    0, 
+                                                    "value-name"){
+                                                        inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+                                                }
                                         }
-                                    }
-                                    if let Ok(link) = find_value_with_parent_value(
-                                        topology_json, 
-                                        &node_edge_point, 
-                                        1, 
-                                        "node-edge-point") {
-                                            if let Some(uuid) = link.as_object().unwrap().get(&"uuid".to_string()) {
-                                                link_uuid = Some(uuid.clone());
-                                            }
-                                    }
+                                        lower_connections = lower_connections_hashmap.get(&node_edge_point.to_string()).cloned();
 
-                                    // Add new endpoint to the list
-                                    endpoint_node_uuid.push(
-                                        (
-                                            Some(
-                                                Endpoint::new(
-                                                    connection_uuid.clone(),
-                                                    node_edge_point.clone(),
-                                                    inventory_id.clone(),
-                                                    protocol_qualifier.clone(),
-                                                    client_node_edge_point_uuid.clone(),
-                                                    None,
-                                                    lower_connections.clone(),
-                                                    link_uuid.clone(),
-                                                    Value::Number(Number::from(id.as_i64().unwrap() + 1)),
+                                        if let Ok(link) = find_value_with_parent_value(
+                                            topology_json, 
+                                            &node_edge_point, 
+                                            1, 
+                                            "node-edge-point") {
+                                                if let Some(uuid) = link.as_object().unwrap().get(&"uuid".to_string()) {
+                                                    link_uuid = Some(uuid.clone());
+                                                }
+                                        }                                        
+    
+                                        // Add new endpoint to the list
+                                        endpoint_node_uuid.push(
+                                            (
+                                                Some(
+                                                    Endpoint::new(
+                                                        connection_end_uuid.clone(),
+                                                        node_edge_point.clone(),
+                                                        inventory_id.clone(),
+                                                        protocol_qualifier.clone(),
+                                                        client_node_edge_point_uuid.clone(),
+                                                        None,
+                                                        lower_connections.clone(),
+                                                        link_uuid.clone(),
+                                                        connection_uuid.clone(),
+                                                        Value::Number(Number::from(id.as_i64().unwrap() + 1)),
+                                                    ),
                                                 ),
-                                            ),
-                                            option_node_uuid.clone()
-                                        )
-                                    );
+                                                option_node_uuid.clone()
+                                            )
+                                        );
+                                    }
                                 }
-                                
                             }
                             if let Some(lower_connection_uuid) = endpoints_array[endpoint_index].as_object().unwrap().get(&"connection_end_point_uuid".to_string()) {
 
@@ -372,13 +367,13 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                             "node-uuid") {
 
                                                 let node_edge_point_uuid = connection_end_point.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone();
-                                                connection_uuid = connection_end_point.as_object().unwrap().get(&"connection-end-point-uuid".to_string()).unwrap().clone();
+                                                connection_end_uuid = connection_end_point.as_object().unwrap().get(&"connection-end-point-uuid".to_string()).unwrap().clone();
 
                                                 if let Ok(onep) =  find_value_with_parent_value(
                                                     topology_json, 
-                                                    &connection_uuid, 
-                                                    2, 
-                                                    "tapi-connectivity:cep-list"){
+                                                    &node_edge_point_uuid, 
+                                                    0, 
+                                                    "uuid"){
                                                         let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
                                                         
                                                         if let Ok(name) = find_value_with_parent_value(
@@ -387,7 +382,6 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                             0, 
                                                             "value-name"){
                                                                 inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
-
                                                         }
                                                 }
 
@@ -418,14 +412,14 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                             if let Some(uuid) = link.as_object().unwrap().get(&"uuid".to_string()) {
                                                                 link_uuid = Some(uuid.clone());
                                                             }
-                                                    }
+                                                    }                                                   
 
                                                     // Add new endpoint to the list
                                                     endpoint_node_uuid.push(
                                                         (
                                                             Some(
                                                                 Endpoint::new(
-                                                                    connection_uuid.clone(),
+                                                                    connection_end_uuid.clone(),
                                                                     node_edge_point_uuid.clone(),
                                                                     inventory_id.clone(),
                                                                     protocol_qualifier.clone(),
@@ -433,6 +427,7 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                                     None,
                                                                     lower_connections.clone(),
                                                                     link_uuid.clone(),
+                                                                    connection_uuid.clone(),
                                                                     Value::Number(Number::from(id.as_i64().unwrap() - 1)),
                                                                 ),
                                                             ),
@@ -446,80 +441,72 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                             } 
                             if let Some(endpoint_client) = endpoints_array[endpoint_index].as_object().unwrap().get(&"client_node_edge_point_uuid".to_string()) {
 
-                                if let Ok(client_endpoint) = find_value_with_parent_value(
+                                for client_endpoint in find_all_values_with_parent_value(
                                     topology_json, 
                                     &endpoint_client, 
                                     1, 
                                     "parent-node-edge-point"
                                 ) {
-                                    connection_uuid = client_endpoint.as_object().unwrap().get(&"uuid".to_string()).unwrap().clone();
 
-                                    if let Ok(onep) =  find_value_with_parent_value(
-                                        topology_json, 
-                                        &connection_uuid, 
-                                        2, 
-                                        "tapi-connectivity:cep-list"){
-                                            let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
-                                            
-                                            if let Ok(name) = find_value_with_parent_value(
-                                                names, 
-                                                &Value::String("INVENTORY_ID".to_string()), 
-                                                0, 
-                                                "value-name"){
-                                                    inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
-
-                                            }
-                                    }
+                                    connection_end_uuid = client_endpoint.as_object().unwrap().get(&"uuid".to_string()).unwrap().clone();
 
                                     protocol_qualifier = client_endpoint.as_object().unwrap().get(&"layer-protocol-qualifier".to_string()).unwrap().clone();
 
                                     option_node_edge_point = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-edge-point-uuid")?);
-                                    option_node_uuid = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-uuid")?)
-                                }
+                                    option_node_uuid = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-uuid")?);
 
-                                if let Some(node_edge_point) = option_node_edge_point.clone() {
-                                    for connection in connections_json {
-                                        if let Ok(node_edge_lower) = find_value_with_parent_value(
-                                            connection, 
-                                            &connection_uuid, 
-                                            1, 
-                                            "connection-end-point") {
-                                            if let Some(lower_conn) = node_edge_lower.as_object().unwrap().get(&"lower-connection".to_string()) {
-                                                lower_connections = Some(lower_conn.clone());
-                                            }
+                                    if let Some(node_edge_point) = option_node_edge_point.clone() {
+
+                                        if let Ok(onep) =  find_value_with_parent_value(
+                                            topology_json, 
+                                            &node_edge_point, 
+                                            0, 
+                                            "uuid"){
+                                                let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
+                                                
+                                                if let Ok(name) = find_value_with_parent_value(
+                                                    names, 
+                                                    &Value::String("INVENTORY_ID".to_string()), 
+                                                    0, 
+                                                    "value-name"){
+                                                        inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+                                                }
                                         }
-                                    }
-                                    if let Ok(link) = find_value_with_parent_value(
-                                        topology_json, 
-                                        &node_edge_point, 
-                                        1, 
-                                        "node-edge-point") {
-                                            if let Some(uuid) = link.as_object().unwrap().get(&"uuid".to_string()) {
-                                                link_uuid = Some(uuid.clone());
-                                            }
-                                    }
 
-                                    // Add new endpoint to the list
-                                    endpoint_node_uuid.push(
-                                        (
-                                            Some(
-                                                Endpoint::new(
-                                                    connection_uuid,
-                                                    node_edge_point,
-                                                    inventory_id.clone(),
-                                                    protocol_qualifier,
-                                                    client_node_edge_point_uuid,
-                                                    None,
-                                                    lower_connections,
-                                                    link_uuid,
-                                                    Value::Number(Number::from(id.as_i64().unwrap() - 1)),
+                                        lower_connections = lower_connections_hashmap.get(&node_edge_point.to_string()).cloned();
+                                        
+                                        if let Ok(link) = find_value_with_parent_value(
+                                            topology_json, 
+                                            &node_edge_point, 
+                                            1, 
+                                            "node-edge-point") {
+                                                if let Some(uuid) = link.as_object().unwrap().get(&"uuid".to_string()) {
+                                                    link_uuid = Some(uuid.clone());
+                                                }
+                                        }
+    
+                                        // Add new endpoint to the list
+                                        endpoint_node_uuid.push(
+                                            (
+                                                Some(
+                                                    Endpoint::new(
+                                                        connection_end_uuid,
+                                                        node_edge_point,
+                                                        inventory_id.clone(),
+                                                        protocol_qualifier,
+                                                        client_node_edge_point_uuid.clone(),
+                                                        None,
+                                                        lower_connections.clone(),
+                                                        link_uuid.clone(),
+                                                        connection_uuid.clone(),
+                                                        Value::Number(Number::from(id.as_i64().unwrap() - 1)),
+                                                    ),
                                                 ),
-                                            ),
-                                            option_node_uuid
-                                        )
-                                    );
-                                }
-                                
+                                                option_node_uuid
+                                            )
+                                        );
+                                    }
+                                }                             
                             }
                             
                             // Add or update nodes with new endpoints

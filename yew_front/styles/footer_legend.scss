@@ -1,0 +1,77 @@
+.footer-legend {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin-left: 15px;
+    padding: 10px;
+    z-index: 2000; /* Asegura que esté en frente de otros elementos superpuestos */
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 14px;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+    max-width: 250px; /* Para evitar que ocupe todo el ancho */
+
+    .toggle-button {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 5px;
+        font-size: 14px;
+        text-decoration: underline;
+
+        &:hover {
+            color: #cccccc;
+        }
+    }
+
+    .legend-content {
+        margin-top: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            padding: 3px;
+            border-radius: 3px;
+
+            &.selected {
+                background-color: #0000ff;
+                color: white;
+            }
+
+            &.highlighted {
+                background-color: brown;
+                color: white;
+                border: 1px solid green;
+            }
+
+            &.lower-highlighted {
+                background-color: yellow;
+                color: black;
+                border: 1px solid green;
+            }
+
+            &.client-highlighted {
+                background-color: pink;
+                color: black;
+                border: 1px solid green;
+            }
+
+            &.service-highlighted {
+                background-color: red;
+                color: black;
+                border: 1px solid green;
+            }
+
+            &.connection-endpoint-highlighted {
+                background-color: lightblue;
+                color: black;
+                border: 1px solid blue;
+            }
+        }
+    }
+}

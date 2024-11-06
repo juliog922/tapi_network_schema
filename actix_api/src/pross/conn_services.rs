@@ -1,8 +1,16 @@
 use actix_web::Error;
 use serde_json::{Value, Map, Number};
 
-use crate::utils::{matching, to_list};
-use crate::models::{endpoint::Endpoint, service::Service, node::Node};
+use crate::utils::{
+    matching, 
+    to_list,
+    find_value_with_parent_value
+};
+use crate::models::{
+    endpoint::Endpoint,
+    service::Service, 
+    node::Node
+};
 
 /// Builds a schema from the provided services JSON vector.
 ///
@@ -12,11 +20,12 @@ use crate::models::{endpoint::Endpoint, service::Service, node::Node};
 /// # Arguments
 ///
 /// * `services_json` - A vector of JSON values representing the services.
+/// - `topology_json`: A JSON value representing the topology data. This includes information about node-edge points, links, and other topological details.
 ///
 /// # Returns
 ///
 /// * `Result<Value, Error>` - A `Result` containing the constructed schema as a `Value` or an `Error` if something goes wrong.
-pub fn services_vector(services_json: &Vec<Value>) -> Result<Value, Error> {
+pub fn services_vector(services_json: &Vec<Value>, topology_json: &Value) -> Result<Value, Error> {
     // Create the root schema object
     let mut schema = Value::Object(Map::new());
     
@@ -40,51 +49,77 @@ pub fn services_vector(services_json: &Vec<Value>) -> Result<Value, Error> {
             let service_interface_uuid = matching(true, &endpoint, "/service-interface-point/service-interface-point-uuid").ok();
             
             // Iterate over each connection end point in the endpoint
-            for conn_end_point in to_list(matching(false, &endpoint, "connection-end-point")?)? {
-                // Extract necessary details for each connection end point
-                let connection_end_point_uuid = matching(false, &conn_end_point, "connection-end-point-uuid")?;
-                let node_edge_point_uuid = matching(false, &conn_end_point, "node-edge-point-uuid")?;
-                let layer_protocol_qualifier = matching(false, &endpoint, "layer-protocol-qualifier")?;
-                let id = Value::Number(Number::from(1));
+            if endpoint.get("connection-end-point").is_some() {
+                for conn_end_point in to_list(matching(false, &endpoint, "connection-end-point")?)? {
+                    // Extract necessary details for each connection end point
+                    let connection_end_point_uuid = matching(false, &conn_end_point, "connection-end-point-uuid")?;
+                    let mut inventory_id: Value = Value::String("".to_string());
+    
+                    if let Ok(onep) =  find_value_with_parent_value(
+                        topology_json, 
+                        &connection_end_point_uuid, 
+                        2, 
+                        "tapi-connectivity:cep-list"){
+                            let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
+                            
+                            if let Ok(name) = find_value_with_parent_value(
+                                names, 
+                                &Value::String("INVENTORY_ID".to_string()), 
+                                0, 
+                                "value-name"){
+                                    inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+    
+                            }
+                    }
+    
+                    let node_edge_point_uuid = matching(false, &conn_end_point, "node-edge-point-uuid")?;
+    
+                    let connection_uuid: Option<Value> = None;
 
-                // Extract optional fields
-                let lower_connections: Option<Value> = matching(false, &endpoint, "lower-connections").ok();
-                let link_uuid = matching(false, &endpoint, "link-uuid").ok();
-                
-                // Extract the node UUID from the connection end point
-                let node_uuid = matching(false, &conn_end_point, "node-uuid")?;
-                let node_uuid_str = node_uuid.as_str().unwrap().to_string();
-                let inventory_id = Value::String("".to_string());
-                // Create a new Endpoint instance
-                let endpoint = Endpoint::new(
-                    connection_end_point_uuid,
-                    node_edge_point_uuid,
-                    inventory_id,
-                    layer_protocol_qualifier,
-                    None,
-                    service_interface_uuid.clone(),
-                    lower_connections,
-                    link_uuid,
-                    id,
-                );
-
-                // Add or update Node instances
-                if !nodes_uuids.contains(&node_uuid_str) {
-                    // Create a new Node if it does not already exist
-                    let mut node = Node::new(node_uuid_str.clone());
-                    node.endpoints.push(endpoint);
-                    service.add_node(node);
-                    nodes_uuids.push(node_uuid_str);
-                } else {
-                    // Update existing Node by adding the endpoint if it is not already present
-                    if let Some(node) = service.nodes.iter_mut().find(|n| n.node_uuid == node_uuid_str) {
-                        let is_endpoint_present = node.endpoints.iter().any(|ep| ep.connection_end_point_uuid == endpoint.connection_end_point_uuid);
-                        if !is_endpoint_present {
-                            node.endpoints.push(endpoint);
+                    let layer_protocol_qualifier = matching(false, &endpoint, "layer-protocol-qualifier")?;
+                    let id = Value::Number(Number::from(1));
+    
+                    // Extract optional fields
+                    let lower_connections: Option<Value> = matching(false, &endpoint, "lower-connections").ok();
+                    let link_uuid = matching(false, &endpoint, "link-uuid").ok();
+                    
+                    // Extract the node UUID from the connection end point
+                    let node_uuid = matching(false, &conn_end_point, "node-uuid")?;
+                    let node_uuid_str = node_uuid.as_str().unwrap().to_string();
+    
+                    // Create a new Endpoint instance
+                    let endpoint = Endpoint::new(
+                        connection_end_point_uuid,
+                        node_edge_point_uuid,
+                        inventory_id,
+                        layer_protocol_qualifier,
+                        None,
+                        service_interface_uuid.clone(),
+                        lower_connections,
+                        link_uuid,
+                        connection_uuid,
+                        id,
+                    );
+    
+                    // Add or update Node instances
+                    if !nodes_uuids.contains(&node_uuid_str) {
+                        // Create a new Node if it does not already exist
+                        let mut node = Node::new(node_uuid_str.clone());
+                        node.endpoints.push(endpoint);
+                        service.add_node(node);
+                        nodes_uuids.push(node_uuid_str);
+                    } else {
+                        // Update existing Node by adding the endpoint if it is not already present
+                        if let Some(node) = service.nodes.iter_mut().find(|n| n.node_uuid == node_uuid_str) {
+                            let is_endpoint_present = node.endpoints.iter().any(|ep| ep.connection_end_point_uuid == endpoint.connection_end_point_uuid);
+                            if !is_endpoint_present {
+                                node.endpoints.push(endpoint);
+                            }
                         }
                     }
                 }
             }
+            
             
             // Extract and set the service name if available
             for name in to_list(matching(false, service_item, "name")?)? {

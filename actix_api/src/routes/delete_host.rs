@@ -1,6 +1,7 @@
 use actix_web::{delete, web, Error, HttpResponse};
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
+use tokio::sync::Mutex;
+use std::sync::Arc;
 
 use crate::HostParameters;
 
@@ -21,7 +22,7 @@ pub async fn delete_host(
 ) -> Result<HttpResponse, Error> {
     let hostname = hostname.clone();
     // Lock the host dictionary for writing.
-    let mut host_dictionary = host_dictionary.lock().unwrap();
+    let mut host_dictionary = host_dictionary.lock().await;
     
     // Attempt to remove the host from the dictionary.
     if host_dictionary.remove(&hostname).is_some() {

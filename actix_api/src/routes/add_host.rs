@@ -2,7 +2,8 @@ use actix_web::{error, post, web, Error, HttpResponse};
 use std::collections::HashMap;
 use serde::Deserialize;
 use serde_json::json;
-use std::sync::{Arc, Mutex};
+use tokio::sync::Mutex;
+use std::sync::Arc;
 use ipaddress::IPAddress;
 
 use crate::HostParameters;
@@ -38,7 +39,7 @@ pub async fn add_host(
     }
 
     // Lock the host dictionary for writing.
-    let mut host_dictionary = host_dictionary.lock().unwrap();
+    let mut host_dictionary = host_dictionary.lock().await;
     // Create a new HostParameters instance from the request data.
     let host_parameters = HostParameters {
         port: request.port.clone(),

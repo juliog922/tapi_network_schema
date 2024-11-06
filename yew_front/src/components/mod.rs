@@ -6,3 +6,4 @@ pub mod select;
 pub mod button;
 pub mod services;
 pub mod nodes;
+pub mod footer_legend;

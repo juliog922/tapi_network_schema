@@ -1,51 +1,9 @@
 /* Wrapper for the entire component */
 .component-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center items horizontally */
-    justify-content: center; /* Center items vertically */
-    height: 100vh; /* Full height of the viewport */
-    width: 100vw; /* Full width of the viewport */
-    position: relative;
-    overflow: auto; /* Ensure content doesn't overflow the container */
-    padding: 20px;
-}
-
-/* Info text container */
-.info-text-wrapper {
-    position: relative;
-    height: 235px;
-    width: 900px; /* Increase the maximum width for a larger text block */
-    text-align: center; /* Center the text inside the info-text */
-    align-items: flex-start;
-    justify-content: center;
-    display: flex;
-    margin-top: 140px;
-}
-
-/* Info text block */
-.info-text {
-    position: relative;
-    height: 100%;
-    display: inline-block; /* Inline-block to keep text centered */
-    width: 100%;
-    padding: 15px; /* Increase padding for better readability */
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    font-size: 16px; /* Slightly larger font size for better readability */
-    line-height: 1.4;
-    white-space: pre-wrap;
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
-    overflow: auto;
-}
-
-/* Adjust appearance when showing detailed information */
-.show-info {
-    opacity: 1;
-    background-color: #fff;
+    transform: scale(0.9); /* Reducir el tamaño general */
+    transform-origin: top left;
+    width: 100vw; /* Asegura que ocupe todo el ancho de la pantalla */
+    height: 100vh; /* Altura completa */
 }
 
 /* Container for all nodes */
@@ -74,10 +32,33 @@
 
 
 /* Title for each node (UUID) */
-.node-item-good h2 {
+.node-item-good > h2 {
     font-size: 16px;
     margin-bottom: 15px;
     text-align: center; /* Center the text inside the node */
+}
+
+.inventories-container-good {
+    margin-top: 10px;
+}
+
+.inventory-item-good {
+    border: 1px dashed #aaa;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #eef;
+}
+
+/* Ajustar el tamaño del título del inventory_id */
+.inventory-item-good > h3 {
+    font-size: 12px; /* Ajusta a un tamaño de fuente más legible */
+    margin: 0;
+    max-width: 100%; /* Mantiene el ancho máximo dentro del contenedor */
+    overflow-wrap: break-word; /* Permite que las palabras se dividan */
+    word-wrap: break-word; /* Compatibilidad para navegadores más antiguos */
+    overflow: visible; /* Permite que el texto se muestre sin cortarse */
+    line-height: 1.2; /* Ajusta el interlineado para mejorar la legibilidad */
 }
 
 /* Container for the endpoint squares */
@@ -161,51 +142,10 @@
     border-color: green;
 }
 
-.legend {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    font-size: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.color-box {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-}
-
-.color-box.yellow {
-    background-color: yellow;
-}
-
-.color-box.pink {
-    background-color: pink;
-}
-
-.color-box.brown {
-    background-color: brown;
-}
-
-.color-box.blue {
-    background-color: #0000ff;
-}
-
-.color-box.red {
-    background-color: red;
+.endpoint-square.connection-endpoint-highlighted {
+    background-color: lightblue; /* Color de resaltado para endpoints con mismo connection_end_point_uuid */
+    color: black; /* Text color for better visibility */
+    border-color: blue;
 }
 
 .service-uuid-title {
@@ -218,3 +158,81 @@
     border-radius: 4px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+/* Aplica el blur al contenido de fondo */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px); /* Aplicar el efecto de desenfoque al fondo */
+}
+
+/* Animación de fade-in para el pop-up */
+@keyframes fade-in-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.95); /* Pequeño escalado inicial */
+    }
+    to {
+        opacity: 1;
+        transform: scale(1); /* Escalado completo */
+    }
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px; /* Aumentamos el padding */
+    border-radius: 10px; /* Un poco más redondeado */
+    width: 500px; /* Aumentamos el ancho */
+    max-height: 600px; /* Aumentamos la altura */
+    overflow-y: auto; /* Añadimos scroll si el contenido es demasiado largo */
+    position: relative;
+    animation: fade-in-pop 0.3s ease-out; /* Animación de fade-in */
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Más espacio para el contenido JSON */
+.modal-body {
+    margin-top: 30px;
+}
+
+/* Espaciado adicional entre pares clave-valor del JSON */
+.modal-body {
+    margin-top: 30px;
+    padding: 20px; /* Más espacio para el contenido JSON */
+    background-color: #f9f9f9; /* Fondo claro para resaltar */
+    border-radius: 8px;
+    line-height: 1.5;
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+}
+
+.modal-body div {
+    margin-bottom: 8px; /* Más espacio entre elementos clave-valor */
+}
+
+.modal-body .key {
+    font-weight: 600; /* Negrita suave */
+    color: #333; /* Un gris oscuro para destacar */
+    margin-right: 8px; /* Espacio entre clave y valor */
+}
+
+.modal-body .value {
+    color: #555; /* Color neutro para valores */
+}
+
