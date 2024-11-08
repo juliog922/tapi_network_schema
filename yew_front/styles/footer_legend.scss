@@ -1,7 +1,8 @@
 .footer-legend {
-    position: absolute;
+    position: fixed; /* Cambiamos a fixed para mantenerlo en el fondo de la pantalla */
     bottom: 0;
     left: 0;
+    margin-top: 200px; /* Margen mínimo superior */
     margin-left: 15px;
     padding: 10px;
     z-index: 2000; /* Asegura que esté en frente de otros elementos superpuestos */
@@ -10,7 +11,12 @@
     font-size: 14px;
     border-radius: 8px 8px 0 0;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
-    max-width: 250px; /* Para evitar que ocupe todo el ancho */
+    max-width: 250px;
+
+    /* Cuando haya suficiente contenido en la página, elimina el margen superior */
+    @media (min-height: 600px) {
+        margin-top: 0;
+    }
 
     .toggle-button {
         background: none;
