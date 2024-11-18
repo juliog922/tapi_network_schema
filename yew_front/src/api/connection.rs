@@ -2,8 +2,8 @@ use gloo_net::Error;
 use gloo_net::http::Request;
 use serde_json::{Value, from_str, json};
 
-//const API_URL: &'static str = "/api";
-const API_URL: &'static str = "http://localhost:8080";
+const API_URL: &'static str = "/api";
+//const API_URL: &'static str = "http://localhost:8080";
 
 /// Fetches JSON schema from the server for a given IP address.
 ///
