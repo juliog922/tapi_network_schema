@@ -4,6 +4,7 @@ use serde_json::json;
 use crate::components::{
     sidebar::SideBar,
     nodes::Nodes,
+    footer_legend::FooterLegend,
 };
 use crate::contexts::node_context::NodesContext;
 
@@ -15,6 +16,9 @@ pub struct Props {
 
     /// The UUID of the service being displayed in this schema.
     pub service_uuid: String,
+
+    /// The UUID of the service being displayed in this schema.
+    pub name: String,
 }
 
 #[function_component(NodeSchema)]
@@ -30,13 +34,21 @@ pub fn node_schema(props: &Props) -> Html {
             // Render the sidebar component for navigation
             <SideBar />
 
-            <div class="new-container-good">
+            <div class="component-wrapper">
                 // Display the UUID of the service
-                <div class="service-uuid-title">{props.service_uuid.clone()}</div>
+                <div class="service-uuid-title">
+                    <div class="service-text-container">
+                        {props.name.clone()}
+                        <br/>
+                        {props.service_uuid.clone()}
+                    </div>
+                </div>
 
                 // Render the `Nodes` component with the nodes data
                 <Nodes nodes={nodes} />
             </div>
+
+            <FooterLegend />
         </div>
     }
 }

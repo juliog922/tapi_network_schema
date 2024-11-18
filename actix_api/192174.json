@@ -1,0 +1,256 @@
+{
+    "nodes": [
+      {
+        "inventories": [
+          {
+            "endpoints": [
+              {
+                "connection_end_point_uuid": "d1db90ce-30f7-3d2b-a5ae-678a4565cb7f",
+                "connection_uuid": "d54de226-4c78-3f9e-851c-9b9a8c4224ef",
+                "id": 1,
+                "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=7/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi",
+                "node_edge_point_uuid": "0362671c-71bc-30c4-9f09-a6e7c234d98e",
+                "service_interface_point_uuid": "ee08d9db-97a6-3abb-83ae-bd00d4d49310"
+              },
+              {
+                "client_node_edge_point_uuid": "0362671c-71bc-30c4-9f09-a6e7c234d98e",
+                "connection_end_point_uuid": "26a80399-58fe-35c2-b14e-be108b8404a0",
+                "id": 2,
+                "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=7/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-common:LAYER_PROTOCOL_QUALIFIER_UNSPECIFIED",
+                "link_uuid": "6edf3b69-8dc8-36ca-ac5a-3f77a6cf9e7a",
+                "node_edge_point_uuid": "5d17102e-0743-3d9e-9833-85e588c0adc9"
+              }
+            ],
+            "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=7/s_sl=0/p=1"
+          }
+        ],
+        "node_id": 1,
+        "node_uuid": "51929ad0-d541-3fa5-8605-81fb5bd4c142"
+      },
+      {
+        "inventories": [
+          {
+            "endpoints": [
+              {
+                "client_node_edge_point_uuid": "66aa7990-4863-3942-aad3-3364ae5b72fa",
+                "connection_end_point_uuid": "4a19e2e4-1c38-3772-b701-307562e42c2f",
+                "connection_uuid": "48c67624-e391-337a-9ee6-d514478389b9",
+                "id": 2,
+                "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=14/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC",
+                "link_uuid": "6edf3b69-8dc8-36ca-ac5a-3f77a6cf9e7a",
+                "lower_connection_uuid": "56fee821-1e3c-303e-88f5-e5e3d2a630be",
+                "node_edge_point_uuid": "bf043d5b-2b57-3e2b-b0d6-90ca181bed13"
+              },
+              {
+                "client_node_edge_point_uuid": "686764f1-546c-3aee-b008-4e3de231d761",
+                "connection_end_point_uuid": "981b3b84-5393-3937-859d-be919d893a4b",
+                "connection_uuid": "cb8a3871-945e-3c1d-9935-29c78635d725",
+                "id": 2,
+                "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=14/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC",
+                "link_uuid": "6edf3b69-8dc8-36ca-ac5a-3f77a6cf9e7a",
+                "lower_connection_uuid": "d66394d5-efe9-3b71-a086-b0980b63d147",
+                "node_edge_point_uuid": "b9b5066e-a857-36a1-b3d8-f12550f02ce2"
+              },
+              {
+                "client_node_edge_point_uuid": "bf043d5b-2b57-3e2b-b0d6-90ca181bed13",
+                "connection_end_point_uuid": "06a4c68e-e090-30f7-bb8e-eb1ff7c47b9c",
+                "connection_uuid": "6edf3b69-8dc8-36ca-ac5a-3f77a6cf9e7a",
+                "id": 3,
+                "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=14/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-common:LAYER_PROTOCOL_QUALIFIER_UNSPECIFIED",
+                "node_edge_point_uuid": "66aa7990-4863-3942-aad3-3364ae5b72fa"
+              },
+              {
+                "client_node_edge_point_uuid": "b9b5066e-a857-36a1-b3d8-f12550f02ce2",
+                "connection_end_point_uuid": "02d59251-af41-3117-b276-7257b86c53cf",
+                "connection_uuid": "6edf3b69-8dc8-36ca-ac5a-3f77a6cf9e7a",
+                "id": 3,
+                "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=14/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-common:LAYER_PROTOCOL_QUALIFIER_UNSPECIFIED",
+                "node_edge_point_uuid": "686764f1-546c-3aee-b008-4e3de231d761"
+              },
+              {
+                "client_node_edge_point_uuid": "b9b5066e-a857-36a1-b3d8-f12550f02ce2",
+                "connection_end_point_uuid": "56fee821-1e3c-303e-88f5-e5e3d2a630be",
+                "connection_uuid": "56fee821-1e3c-303e-88f5-e5e3d2a630be",
+                "id": 3,
+                "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=14/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC",
+                "link_uuid": "c246c14b-c34a-3e7b-8f61-ef65fa331935",
+                "node_edge_point_uuid": "602369be-71bf-3212-8020-eae5836e1fe9"
+              },
+              {
+                "client_node_edge_point_uuid": "b9b5066e-a857-36a1-b3d8-f12550f02ce2",
+                "connection_end_point_uuid": "d66394d5-efe9-3b71-a086-b0980b63d147",
+                "connection_uuid": "d66394d5-efe9-3b71-a086-b0980b63d147",
+                "id": 3,
+                "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=14/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC",
+                "link_uuid": "cef431d8-707f-308d-a2c0-1793cf6449fd",
+                "node_edge_point_uuid": "46827987-733d-3e1f-9d21-9c93b5622e6f"
+              }
+            ],
+            "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=14/s_sl=0/p=1"
+          },
+          {
+            "endpoints": [
+              {
+                "client_node_edge_point_uuid": "602369be-71bf-3212-8020-eae5836e1fe9",
+                "connection_end_point_uuid": "2ccc0783-b9b4-3e5d-a26a-15564a94291d",
+                "connection_uuid": "4d0b80c2-1f9d-31e5-922d-16f677d47ead",
+                "id": 4,
+                "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=4/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-common:LAYER_PROTOCOL_QUALIFIER_UNSPECIFIED",
+                "link_uuid": "4f8c2cef-0f80-39ef-a524-f4dd3a70b3f7",
+                "node_edge_point_uuid": "dc0b64ee-097d-37ce-aacf-81df651f0464"
+              },
+              {
+                "client_node_edge_point_uuid": "46827987-733d-3e1f-9d21-9c93b5622e6f",
+                "connection_end_point_uuid": "03c6bbf2-142f-3714-b06e-332b119803b1",
+                "connection_uuid": "f2eb6070-ce2d-3bbd-babf-1b4dc557fac7",
+                "id": 4,
+                "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=4/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-common:LAYER_PROTOCOL_QUALIFIER_UNSPECIFIED",
+                "link_uuid": "a22ab8c4-8df5-3ddb-b636-5fc893750817",
+                "node_edge_point_uuid": "90bb5ddd-a4f4-3760-b717-a0d884875f9a"
+              }
+            ],
+            "inventory_id": "/ne=UC9-1/r=0/sh=1/sl=4/s_sl=0/p=1"
+          }
+        ],
+        "node_id": 2,
+        "node_uuid": "a5297177-1cda-3f21-9bc0-c27cbb531736"
+      },
+      {
+        "inventories": [
+          {
+            "endpoints": [
+              {
+                "client_node_edge_point_uuid": "037f4b8a-2e8c-364d-98fe-1f5d199e7fad",
+                "connection_end_point_uuid": "0f036950-cf34-329a-b67f-a50d61f4371b",
+                "connection_uuid": "48c67624-e391-337a-9ee6-d514478389b9",
+                "id": 2,
+                "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=14/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC",
+                "link_uuid": "9a8df1ea-11e1-3f1e-866b-7f26daf78633",
+                "lower_connection_uuid": "ea3ff666-8b24-304f-b6cb-20741bdc4145",
+                "node_edge_point_uuid": "787d4b64-d34d-3f48-bb8c-5fc1e38a2335"
+              },
+              {
+                "client_node_edge_point_uuid": "f7f74887-8966-3e8d-b55e-ccaa183be6a6",
+                "connection_end_point_uuid": "e343f0c0-c83f-372f-a44a-ce0a0beefac6",
+                "connection_uuid": "cb8a3871-945e-3c1d-9935-29c78635d725",
+                "id": 2,
+                "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=14/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC",
+                "link_uuid": "9a8df1ea-11e1-3f1e-866b-7f26daf78633",
+                "lower_connection_uuid": "196078a5-371d-337a-a0d0-47454cc52dcf",
+                "node_edge_point_uuid": "bc4e3946-8005-3e40-8852-9cc34f146388"
+              },
+              {
+                "client_node_edge_point_uuid": "787d4b64-d34d-3f48-bb8c-5fc1e38a2335",
+                "connection_end_point_uuid": "aa10286e-50e9-3b82-85f2-9c37c9e95bc4",
+                "connection_uuid": "9a8df1ea-11e1-3f1e-866b-7f26daf78633",
+                "id": 3,
+                "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=14/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-common:LAYER_PROTOCOL_QUALIFIER_UNSPECIFIED",
+                "node_edge_point_uuid": "037f4b8a-2e8c-364d-98fe-1f5d199e7fad"
+              },
+              {
+                "client_node_edge_point_uuid": "bc4e3946-8005-3e40-8852-9cc34f146388",
+                "connection_end_point_uuid": "675b78ee-a3df-35d6-80af-c99e2ad003f6",
+                "connection_uuid": "9a8df1ea-11e1-3f1e-866b-7f26daf78633",
+                "id": 3,
+                "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=14/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-common:LAYER_PROTOCOL_QUALIFIER_UNSPECIFIED",
+                "node_edge_point_uuid": "f7f74887-8966-3e8d-b55e-ccaa183be6a6"
+              },
+              {
+                "client_node_edge_point_uuid": "bc4e3946-8005-3e40-8852-9cc34f146388",
+                "connection_end_point_uuid": "ea3ff666-8b24-304f-b6cb-20741bdc4145",
+                "connection_uuid": "ea3ff666-8b24-304f-b6cb-20741bdc4145",
+                "id": 3,
+                "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=14/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC",
+                "link_uuid": "c246c14b-c34a-3e7b-8f61-ef65fa331935",
+                "node_edge_point_uuid": "6b83eb26-c2cf-38da-8cd9-8f414dd176cd"
+              },
+              {
+                "client_node_edge_point_uuid": "bc4e3946-8005-3e40-8852-9cc34f146388",
+                "connection_end_point_uuid": "196078a5-371d-337a-a0d0-47454cc52dcf",
+                "connection_uuid": "196078a5-371d-337a-a0d0-47454cc52dcf",
+                "id": 3,
+                "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=14/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC",
+                "link_uuid": "cef431d8-707f-308d-a2c0-1793cf6449fd",
+                "node_edge_point_uuid": "9d8eff4f-b54d-3236-b62d-214fc9c09498"
+              }
+            ],
+            "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=14/s_sl=0/p=1"
+          },
+          {
+            "endpoints": [
+              {
+                "client_node_edge_point_uuid": "6b83eb26-c2cf-38da-8cd9-8f414dd176cd",
+                "connection_end_point_uuid": "d22f615d-523d-3fd0-9332-6a4b9c74678d",
+                "connection_uuid": "4d0b80c2-1f9d-31e5-922d-16f677d47ead",
+                "id": 4,
+                "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=4/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-common:LAYER_PROTOCOL_QUALIFIER_UNSPECIFIED",
+                "link_uuid": "4f8c2cef-0f80-39ef-a524-f4dd3a70b3f7",
+                "node_edge_point_uuid": "1519bce1-b9e2-307c-8f85-532468d0b317"
+              },
+              {
+                "client_node_edge_point_uuid": "9d8eff4f-b54d-3236-b62d-214fc9c09498",
+                "connection_end_point_uuid": "8c372b36-b90b-350f-9ae8-5f2740212309",
+                "connection_uuid": "f2eb6070-ce2d-3bbd-babf-1b4dc557fac7",
+                "id": 4,
+                "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=4/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-common:LAYER_PROTOCOL_QUALIFIER_UNSPECIFIED",
+                "link_uuid": "a22ab8c4-8df5-3ddb-b636-5fc893750817",
+                "node_edge_point_uuid": "b2db06bb-b903-387c-818c-74b1208797f5"
+              }
+            ],
+            "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=4/s_sl=0/p=1"
+          }
+        ],
+        "node_id": 3,
+        "node_uuid": "a4107bf0-a562-39ac-8193-2873c74852c9"
+      },
+      {
+        "inventories": [
+          {
+            "endpoints": [
+              {
+                "connection_end_point_uuid": "d17d712f-b105-372c-82d2-071ce53c3c4b",
+                "connection_uuid": "d54de226-4c78-3f9e-851c-9b9a8c4224ef",
+                "id": 1,
+                "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=7/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi",
+                "node_edge_point_uuid": "60e9f351-702d-3511-8177-d34675406520",
+                "service_interface_point_uuid": "b698cebd-ddfb-34e0-bd75-f1d9db5daa8f"
+              },
+              {
+                "client_node_edge_point_uuid": "60e9f351-702d-3511-8177-d34675406520",
+                "connection_end_point_uuid": "e73e3ebf-7362-3773-a5ec-a79ea8dfd50a",
+                "id": 2,
+                "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=7/s_sl=0/p=1",
+                "layer_protocol_qualifier": "tapi-common:LAYER_PROTOCOL_QUALIFIER_UNSPECIFIED",
+                "link_uuid": "9a8df1ea-11e1-3f1e-866b-7f26daf78633",
+                "node_edge_point_uuid": "a237495b-cfbf-34ec-894b-dcb9ac8d781f"
+              }
+            ],
+            "inventory_id": "/ne=UC9-2/r=0/sh=1/sl=7/s_sl=0/p=1"
+          }
+        ],
+        "node_id": 4,
+        "node_uuid": "8381a216-b796-3a03-9bd1-c5b2748a6852"
+      }
+    ],
+    "uuid": "088d78de-6e67-4695-bbc4-40b84a0d25dc",
+    "value_name": "OCH-UC9-1_UC9-2-192.1-74"
+  }

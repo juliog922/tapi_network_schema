@@ -49,7 +49,7 @@ pub fn connectivity_service_list(props: &ConnectivityServiceProps) -> Html {
                         let animation_delay = format!("{}s", index as f32 * 0.3);
 
                         html! {
-                            <Link<Route> to={Route::NodeSchema { ip: props.device_ip.clone(), uuid: uuid.to_string() }}>
+                            <Link<Route> to={Route::NodeSchema { ip: props.device_ip.clone(), uuid: uuid.to_string(), name: value_name.to_string() }}>
                                 <div class="service-item" style={format!("animation-delay: {}", animation_delay)} onclick={on_click}>
                                     <div class="service-content">
                                         <p class="service-name">{ value_name }</p>

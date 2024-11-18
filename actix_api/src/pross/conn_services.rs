@@ -1,5 +1,6 @@
 use actix_web::Error;
 use serde_json::{Value, Map, Number};
+use std::collections::HashMap;
 
 use crate::utils::{
     matching, 
@@ -25,7 +26,8 @@ use crate::models::{
 /// # Returns
 ///
 /// * `Result<Value, Error>` - A `Result` containing the constructed schema as a `Value` or an `Error` if something goes wrong.
-pub fn services_vector(services_json: &Vec<Value>, topology_json: &Value) -> Result<Value, Error> {
+pub fn services_vector(services_json: &Vec<Value>, topology_json: &Value, lower_connections_hashmap: &HashMap<String, Value>, 
+    connection_uuid_hashmap: &HashMap<String, Value>, connection_uuid_lower_hashmap: &HashMap<String, Value>, link_nepu_hashmap: &HashMap<String, Value>) -> Result<Value, Error> {
     // Create the root schema object
     let mut schema = Value::Object(Map::new());
     
@@ -73,15 +75,29 @@ pub fn services_vector(services_json: &Vec<Value>, topology_json: &Value) -> Res
                     }
     
                     let node_edge_point_uuid = matching(false, &conn_end_point, "node-edge-point-uuid")?;
-    
-                    let connection_uuid: Option<Value> = None;
+                    let mut connection_uuid: Option<Value> = None;
+
+                    let mut connection_uuid_flag = false;
+
+                    if let Some(connection_uuid_mapped) = connection_uuid_hashmap.get(&node_edge_point_uuid.to_string()) {
+                        connection_uuid = Some(connection_uuid_mapped.clone());
+                        connection_uuid_flag = true;
+                    }
+                    
+                    if !connection_uuid_flag {
+                        if let Some(connection_uuid_mapped) = connection_uuid_lower_hashmap.get(&node_edge_point_uuid.to_string()) {
+                            connection_uuid = Some(connection_uuid_mapped.clone());
+                        }
+                    }
+                    
 
                     let layer_protocol_qualifier = matching(false, &endpoint, "layer-protocol-qualifier")?;
                     let id = Value::Number(Number::from(1));
     
                     // Extract optional fields
-                    let lower_connections: Option<Value> = matching(false, &endpoint, "lower-connections").ok();
-                    let link_uuid = matching(false, &endpoint, "link-uuid").ok();
+                    let lower_connections = lower_connections_hashmap.get(&node_edge_point_uuid.to_string()).cloned();
+                    
+                    let link_uuid = link_nepu_hashmap.get(&node_edge_point_uuid.to_string()).cloned();
                     
                     // Extract the node UUID from the connection end point
                     let node_uuid = matching(false, &conn_end_point, "node-uuid")?;

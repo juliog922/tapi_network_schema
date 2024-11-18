@@ -1,7 +1,31 @@
 use yew::prelude::*;
 use serde_json::Value;
 use std::collections::HashSet;
-use super::footer_legend::FooterLegend;
+use wasm_bindgen::JsCast;
+
+fn get_position(id: &str) -> Option<(f64, f64)> {
+    let window = web_sys::window()?;
+    let document = window.document()?;
+    let element = document.get_element_by_id(id)?;
+    let html_element = element.dyn_into::<web_sys::HtmlElement>().ok()?;
+    let rect = html_element.get_bounding_client_rect();
+
+    let body = document.body().unwrap();
+    let body_rect = body.get_bounding_client_rect();
+
+    // Ajusta las coordenadas al centro del elemento
+    let mut x = rect.x() + rect.width() / 2.0;
+    let mut y = rect.y() + rect.height() / 2.0;
+
+    // Corrige el desplazamiento por el scroll de la ventana
+    let scroll_x = window.scroll_x().ok()?;
+    let scroll_y = window.scroll_y().ok()?;
+    x += scroll_x;
+    y += scroll_y;
+
+    x -= body_rect.x();
+    Some((x, y))
+}
 
 #[derive(Properties, PartialEq)]
 pub struct NodesProps {
@@ -13,11 +37,11 @@ fn highlight_class(
     is_selected: bool,
     is_service: bool,
     is_client_highlighted: bool,
-    is_edge_highlighted: bool,
+    is_parent_highlighted: bool,
     is_lower_highlighted: bool,
+    is_higher_highlighted: bool,
     is_connection_highlighted: bool,
-    is_connection_endpoint_highlighted: bool,
-    is_highlighted: bool,
+    is_link_highlighted: bool,
 ) -> &'static str {
     if is_selected {
         "selected"
@@ -25,16 +49,16 @@ fn highlight_class(
         "service-highlighted"
     } else if is_client_highlighted {
         "client-highlighted"
-    } else if is_edge_highlighted {
+    } else if is_parent_highlighted {
         "client-highlighted"
     } else if is_lower_highlighted {
         "lower-highlighted"
-    } else if is_connection_highlighted {
+    } else if is_higher_highlighted {
         "lower-highlighted"
-    } else if is_connection_endpoint_highlighted {
-        "connection-endpoint-highlighted"
-    } else if is_highlighted {
-        "highlighted"
+    } else if is_connection_highlighted {
+        "connection-highlighted"
+    } else if is_link_highlighted {
+        "link-highlighted"
     } else {
         ""
     }
@@ -55,14 +79,18 @@ pub fn nodes(props: &NodesProps) -> Html {
     // State hooks for managing hover data, selected endpoint, and highlighted endpoints
     let hover_data = use_state(|| "Hover over an endpoint to see details".to_string());
     let is_modal_open = use_state(|| false);
+
     let selected_value = use_state(|| Option::<Value>::None);
     let highlighted_link_uuids = use_state(|| HashSet::<String>::new());
     let highlighted_lower_connections = use_state(|| HashSet::<String>::new());
+    let highlighted_higher_connections = use_state(|| HashSet::<String>::new());
     let highlighted_connections_uuid = use_state(|| HashSet::<String>::new());
-    let highlighted_edge_uuid = use_state(|| HashSet::<String>::new());
     let highlighted_client_uuid = use_state(|| HashSet::<String>::new());
+    let highlighted_parent_uuid = use_state(|| HashSet::<String>::new());
     let highlighted_service_uuid = use_state(|| HashSet::<String>::new());
-    let highlighted_connection_endpoints = use_state(|| HashSet::<String>::new());
+
+    let positions_pairs_vec = use_state(|| Vec::<((f64, f64), (f64, f64))>::new());
+
 
     // Callback to handle right-click (context menu) events and update hover data
     let oncontextmenu = {
@@ -92,77 +120,33 @@ pub fn nodes(props: &NodesProps) -> Html {
         let selected_value = selected_value.clone();
         let highlighted_link_uuids = highlighted_link_uuids.clone();
         let highlighted_lower_connections = highlighted_lower_connections.clone();
+        let highlighted_higher_connections = highlighted_higher_connections.clone();
         let highlighted_connections_uuid = highlighted_connections_uuid.clone();
-        let highlighted_edge_uuid = highlighted_edge_uuid.clone();
         let highlighted_client_uuid = highlighted_client_uuid.clone();
+        let highlighted_parent_uuid = highlighted_parent_uuid.clone();
         let highlighted_service_uuid = highlighted_service_uuid.clone();
-        let highlighted_connection_endpoints = highlighted_connection_endpoints.clone();
+        let positions_pairs_vec = positions_pairs_vec.clone();
         
         let nodes = props.nodes.clone();
         
         Callback::from(move |ep: Value| {
+
+            //let node_edge_point_uuid = ep["node_edge_point_uuid"].as_str().unwrap();
+
+            let selected_postion = get_position(ep["node_edge_point_uuid"].as_str().unwrap()).unwrap();
+            //if let Some((x,y)) = get_position(node_edge_point_uuid) {
+            //    web_sys::console::log_1(&format!("Posición de {}: ({}, {})", node_edge_point_uuid, x, y).into());
+            //}
+
             selected_value.set(Some(ep.clone()));
             let mut new_highlighted_link_uuids: HashSet<String> = HashSet::new();
             let mut new_highlighted_lower_connections: HashSet<String> = HashSet::new();
+            let mut new_highlighted_higher_connections: HashSet<String> = HashSet::new();
             let mut new_highlighted_connections_uuid: HashSet<String> = HashSet::new();
-            let mut new_highlighted_edge_uuid: HashSet<String> = HashSet::new();
             let mut new_highlighted_client_uuid: HashSet<String> = HashSet::new();
+            let mut new_highlighted_parent_uuid: HashSet<String> = HashSet::new();
             let mut new_highlighted_service_uuid: HashSet<String> = HashSet::new();
-            let mut new_highlighted_connection_endpoints: HashSet<String> = HashSet::new();
-
-            if let Some(_) = ep["service_interface_point_uuid"].as_str() {
-                new_highlighted_service_uuid.insert("service_interface_point_uuid".to_string());
-            }
-
-            if let Some(connection_end_point_uuid) = ep["connection_uuid"].as_str() {
-                if let Some(nodes_array) = nodes.as_array() {
-                    for node in nodes_array {
-                        if let Some(inventories) = node["inventories"].as_array() {
-                            for inventory in inventories {
-                                if let Some(endpoints) = inventory["endpoints"].as_array() {
-                                    for endpoint in endpoints {
-                                        if endpoint["connection_uuid"].as_str() == Some(connection_end_point_uuid) && endpoint != &ep {
-                                            new_highlighted_connection_endpoints.insert(connection_end_point_uuid.to_string());
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Ahora iteramos sobre los nodos y luego sobre sus inventories para buscar los endpoints
-            if let Some(link_uuid) = ep["link_uuid"].as_str() {
-                if let Some(nodes_array) = nodes.as_array() {
-                    for node in nodes_array {
-                        if let Some(inventories) = node["inventories"].as_array() {
-                            for inventory in inventories {
-                                if let Some(endpoints) = inventory["endpoints"].as_array() {
-                                    for endpoint in endpoints {
-                                        // Comparamos el link_uuid para resaltar los endpoints relacionados
-                                        if endpoint["link_uuid"].as_str() == Some(link_uuid) && endpoint != &ep {
-                                            new_highlighted_link_uuids.insert(link_uuid.to_string());
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Resaltar los endpoints conectados vía las claves lower_connection_
-            let mut lower_connections = vec![];
-            if let Some(ep_obj) = ep.as_object() {
-                for (key, value) in ep_obj {
-                    if key.starts_with("lower_connection_") {
-                        if let Some(connection_uuid) = value.as_str() {
-                            lower_connections.push(connection_uuid.to_string());
-                        }
-                    }
-                }
-            }
+            let mut new_positions_pairs_vec: Vec::<((f64, f64), (f64, f64))> = Vec::new();
 
             if let Some(nodes_array) = nodes.as_array() {
                 for node in nodes_array {
@@ -170,78 +154,95 @@ pub fn nodes(props: &NodesProps) -> Html {
                         for inventory in inventories {
                             if let Some(endpoints) = inventory["endpoints"].as_array() {
                                 for endpoint in endpoints {
-                                    if let Some(connection_end_point_uuid) = endpoint["connection_end_point_uuid"].as_str() {
-                                        if lower_connections.contains(&connection_end_point_uuid.to_string()) {
-                                            if !highlighted_link_uuids.contains(connection_end_point_uuid) {
-                                                new_highlighted_lower_connections.insert(connection_end_point_uuid.to_string());
+
+                                    //Link UUID Check
+                                    if let Some(link_uuid_guest) = endpoint.get("link_uuid") {
+                                        if let Some(link_uuid_home) = ep.get("link_uuid") {
+                                            if link_uuid_guest.eq(link_uuid_home) {
+                                                
+                                                new_positions_pairs_vec.push(
+                                                    (selected_postion, 
+                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap())
+                                                );
+                                                new_highlighted_link_uuids.insert(link_uuid_guest.to_string());
+
                                             }
                                         }
                                     }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
 
-            // Resaltar endpoints que compartan connection_end_point_uuid en lower conn
-            if let Some(connection_uuid) = ep["connection_end_point_uuid"].as_str() {
-                if let Some(nodes_array) = nodes.as_array() {
-                    for node in nodes_array {
-                        if let Some(inventories) = node["inventories"].as_array() {
-                            for inventory in inventories {
-                                if let Some(endpoints) = inventory["endpoints"].as_array() {
-                                    for endpoint in endpoints {
-                                        if let Some(endpoint_obj) = endpoint.as_object() {
-                                            for (key, value) in endpoint_obj {
-                                                if key.starts_with("lower_connection_") {
-                                                    if let Some(lower_uuid) = value.as_str() {
-                                                        if lower_uuid == connection_uuid {
-                                                            new_highlighted_connections_uuid.insert(connection_uuid.to_string());
-                                                        }
-                                                    }
+                                    //Connection UUID and Service interface Point UUID
+                                    if let Some(connection_uuid_guest) = endpoint.get("connection_uuid") {
+                                        if let Some(connection_uuid_home) = ep.get("connection_uuid") {
+                                            if connection_uuid_guest.eq(connection_uuid_home) {
+
+                                                new_positions_pairs_vec.push(
+                                                    (selected_postion, 
+                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap())
+                                                );
+                                                new_highlighted_connections_uuid.insert(connection_uuid_guest.to_string());
+
+                                                if let Some(_) = endpoint.get("service_interface_point_uuid") {
+
+                                                    new_highlighted_service_uuid.insert(connection_uuid_guest.to_string());
+
                                                 }
+
                                             }
                                         }
                                     }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
 
-            // Resaltar endpoints con el mismo client_node_edge_point_uuid
-            if let Some(client_uuid) = ep["client_node_edge_point_uuid"].as_str() {
-                if let Some(nodes_array) = nodes.as_array() {
-                    for node in nodes_array {
-                        if let Some(inventories) = node["inventories"].as_array() {
-                            for inventory in inventories {
-                                if let Some(endpoints) = inventory["endpoints"].as_array() {
-                                    for endpoint in endpoints {
-                                        if endpoint["node_edge_point_uuid"].as_str() == Some(client_uuid) && endpoint != &ep {
-                                            new_highlighted_client_uuid.insert(client_uuid.to_string());
+                                    //Lower Connection
+                                    if let Some(lower_connection_home) = ep.get("lower_connection_uuid") {
+                                        if let Some(connection_uuid_guest) = endpoint.get("connection_uuid") {
+                                            if lower_connection_home == connection_uuid_guest {
+
+                                                new_positions_pairs_vec.push(
+                                                    (selected_postion, 
+                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap())
+                                                );
+                                                new_highlighted_lower_connections.insert(connection_uuid_guest.to_string());
+
+                                            }
                                         }
                                     }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
 
-            // Resaltar endpoints con el mismo node_edge_point_uuid
-            if let Some(edge_uuid) = ep["node_edge_point_uuid"].as_str() {
-                if let Some(nodes_array) = nodes.as_array() {
-                    for node in nodes_array {
-                        if let Some(inventories) = node["inventories"].as_array() {
-                            for inventory in inventories {
-                                if let Some(endpoints) = inventory["endpoints"].as_array() {
-                                    for endpoint in endpoints {
-                                        if endpoint["client_node_edge_point_uuid"].as_str() == Some(edge_uuid) && endpoint != &ep {
-                                            new_highlighted_edge_uuid.insert(edge_uuid.to_string());
+                                    //Higher Connection
+                                    if let Some(connection_uuid_home) = ep.get("connection_uuid") {
+                                        if let Some(lower_connection_guest) = endpoint.get("lower_connection_uuid") {
+                                            if lower_connection_guest == connection_uuid_home {
+
+                                                new_positions_pairs_vec.push(
+                                                    (selected_postion, 
+                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap())
+                                                );
+                                                new_highlighted_higher_connections.insert(lower_connection_guest.to_string());
+
+                                            }
                                         }
                                     }
+
+                                    //Client Connection
+                                    if let Some(client_node_edge_point_uuid_home) = ep.get("client_node_edge_point_uuid") {
+                                        if let Some(node_edge_point_uuid_guest) = endpoint.get("node_edge_point_uuid") {
+                                            if client_node_edge_point_uuid_home == node_edge_point_uuid_guest {
+
+                                                new_highlighted_client_uuid.insert(node_edge_point_uuid_guest.to_string());
+
+                                            }
+                                        }
+                                    }
+
+                                    //Parent Connection
+                                    if let Some(client_node_edge_point_uuid_guest) = endpoint.get("client_node_edge_point_uuid") {
+                                        if let Some(node_edge_point_uuid_home) = ep.get("node_edge_point_uuid") {
+                                            if client_node_edge_point_uuid_guest == node_edge_point_uuid_home {
+
+                                                new_highlighted_parent_uuid.insert(client_node_edge_point_uuid_guest.to_string());
+
+                                            }
+                                        }
+                                    }
+
                                 }
                             }
                         }
@@ -252,12 +253,15 @@ pub fn nodes(props: &NodesProps) -> Html {
             // Actualizar los estados con los nuevos valores resaltados
             highlighted_link_uuids.set(new_highlighted_link_uuids);
             highlighted_lower_connections.set(new_highlighted_lower_connections);
+            highlighted_higher_connections.set(new_highlighted_higher_connections);
             highlighted_connections_uuid.set(new_highlighted_connections_uuid);
             highlighted_client_uuid.set(new_highlighted_client_uuid);
-            highlighted_edge_uuid.set(new_highlighted_edge_uuid);
+            highlighted_parent_uuid.set(new_highlighted_parent_uuid);
             highlighted_service_uuid.set(new_highlighted_service_uuid);
-            highlighted_connection_endpoints.set(new_highlighted_connection_endpoints);
+            positions_pairs_vec.set(new_positions_pairs_vec);
+            
             })
+            
     };
 
     // Render nodes and their endpoints
@@ -291,188 +295,211 @@ pub fn nodes(props: &NodesProps) -> Html {
     }
 
     html! {
-        <div class="component-wrapper">
-            <div class="new-container-good">
-                {
-                    for nodes.iter().map(|node| {
-                        let node_uuid = node["node_uuid"].as_str().unwrap_or("Unknown UUID");
-                        let inventories = node["inventories"].as_array().unwrap_or(&empty_array); // Accedemos a los inventarios
-
+        <div id="este">
+        <svg class="line-overlay" xmlns="http://www.w3.org/2000/svg">
+                {   
+                    // Recorrer `postions_pairs_hashset` y dibujar una línea para cada par de puntos
+                    for (*positions_pairs_vec).iter().map(|((x1, y1), (x2, y2))| {
                         html! {
-                            <div class="node-item-good">
-                                <h2>{ format!("Node UUID: {}", node_uuid) }</h2>
-                                <div class="inventories-container-good">
-                                    {
-                                        for inventories.iter().map(|inventory| {
-                                            let endpoints = inventory["endpoints"].as_array().unwrap_or(&empty_array); // Accedemos a los endpoints dentro del inventario
-                                            let inventory_id = inventory["inventory_id"].as_str().unwrap_or("Unknown Inventory ID");
-
-                                            html! {
-                                                <div class="inventory-item-good">
-                                                <h3>
-                                                    { format!("{}", inventory_id) }
-                                                </h3>
-                                                    <div class="endpoints-container-good">
-                                                        {
-                                                            for endpoints.iter().enumerate().map(|(_, ep)| {
-                                                                let ep_json = ep.clone();
-                                                                let ep_json_str = ep.to_string();
-                                                                // Callback para manejar el clic derecho y prevenir el menú contextual
-                                                                let oncontextmenu = oncontextmenu.reform(move |_: MouseEvent| ep_json_str.clone());
-                                                                let prevent_default_context_menu = prevent_default_context_menu.clone();
-                                                                let on_click = {
-                                                                    let ep_clone = ep_json.clone();
-                                                                    on_click.reform(move |_| ep_clone.clone())
-                                                                };
-    
-                                                                let is_selected = {
-                                                                    if let Some(ref selected) = *selected_value {
-                                                                        *selected == ep.clone()
-                                                                    } else {
-                                                                        false
-                                                                    }
-                                                                };
-
-                                                                let mut service_flag = false;
-
-                                                                let is_highlighted = {
-                                                                    if let Some(link_uuid) = ep["link_uuid"].as_str() {
-                                                                        highlighted_link_uuids.contains(link_uuid) && !is_selected
-                                                                    } else {
-                                                                        false
-                                                                    }
-                                                                };
-
-                                                                let is_connection_endpoint_highlighted = {
-                                                                    if let Some(connection_uuid) = ep["connection_uuid"].as_str() {
-                                                                        highlighted_connection_endpoints.contains(connection_uuid) && !is_selected
-                                                                    } else {
-                                                                        false
-                                                                    }
-                                                                };
-
-                                                                let is_service = {
-                                                                    if let Some(_) = ep["service_interface_point_uuid"].as_str() {
-                                                                        service_flag = true;
-                                                                        highlighted_service_uuid.contains("service_interface_point_uuid") && !is_selected
-                                                                    } else {
-                                                                        false
-                                                                    }
-                                                                };
-
-                                                                let is_client_highlighted = {
-                                                                    if let Some(edge_uuid) = ep["node_edge_point_uuid"].as_str() {
-                                                                        highlighted_client_uuid.contains(edge_uuid) && !is_selected
-                                                                    } else {
-                                                                        false
-                                                                    }
-                                                                };
-
-                                                                let is_edge_highlighted = {
-                                                                    if let Some(client_uuid) = ep["client_node_edge_point_uuid"].as_str() {
-                                                                        highlighted_edge_uuid.contains(client_uuid) && !is_selected
-                                                                    } else {
-                                                                        false
-                                                                    }
-                                                                };
-
-                                                                
-
-                                                                let is_connection_highlighted = {
-                                                                    if let Some(lower_uuid) = ep["lower_connection_uuid"].as_str() {
-                                                                        highlighted_connections_uuid.contains(lower_uuid) && !is_selected
-                                                                    } else {
-                                                                        false
-                                                                    }
-                                                                };
-
-                                                                
-
-                                                                let is_lower_highlighted = {
-                                                                    if let Some(connection_end_point_uuid) = ep["connection_end_point_uuid"].as_str() {
-                                                                        highlighted_lower_connections.contains(connection_end_point_uuid)
-                                                                    } else {
-                                                                        false
-                                                                    }
-                                                                };
-
-                                                                let last_nepu: &str = {
-                                                                        if let Some(node_edge_point_uuid) = ep["node_edge_point_uuid"].as_str() {
-                                                                            &node_edge_point_uuid[node_edge_point_uuid.len()-4..]
-                                                                    } else {
-                                                                        ""
-                                                                    }
-                                                                };
-
-                                                                let qualifier: &str = {
-                                                                    if let Some(protocol_qualifier) = ep["layer_protocol_qualifier"].as_str() {
-                                                                        if let Some(qualifier_index) = protocol_qualifier.find("QUALIFIER_") {
-                                                                            &protocol_qualifier[qualifier_index + "QUALIFIER_".len()..]
-                                                                        } else {
-                                                                            if let Some(qualifier_index) = protocol_qualifier.find("TYPE_") {
-                                                                                &protocol_qualifier[qualifier_index + "TYPE_".len()..]
-                                                                            } else {
-                                                                                ""
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        ""
-                                                                    }
-                                                                };
-
-                                                                html! {
-                                                                    <div class="endpoint-wrapper">
-                                                                        <div
-                                                                            class={classes!(
-                                                                                "endpoint-square",
-                                                                                highlight_class(
-                                                                                    is_selected,
-                                                                                    is_service,
-                                                                                    is_client_highlighted,
-                                                                                    is_edge_highlighted,
-                                                                                    is_lower_highlighted,
-                                                                                    is_connection_highlighted,
-                                                                                    is_connection_endpoint_highlighted,
-                                                                                    is_highlighted,
-                                                                                ),
-                                                                                if service_flag { "first" } else { "second" }
-                                                                            )}
-                                                                            oncontextmenu={prevent_default_context_menu.clone()}
-                                                                            oncontextmenu={oncontextmenu.clone()}
-                                                                            onclick={on_click}
-                                                                        >
-                                                                            {""}
-                                                                        </div>
-                                                                        <div class="endpoint-details">{format!("{} / {}", last_nepu, qualifier)}</div>
-                                                                    </div>
-                                                                }
-                                                            })
-                                                        }
-                                                        // Modal (pop-up) que aparece con el clic derecho
-                                                        if *is_modal_open {
-                                                            <div class="modal-overlay" onclick={close_modal.clone()}>
-                                                                <div class="modal-content" onclick={Callback::from(|e: MouseEvent| e.stop_propagation())}>
-                                                                    <button class="close-button" onclick={close_modal.clone()}>{"X"}</button>
-                                                                    <div class="modal-body">
-                                                                        <h2>{"Endpoint Details:\n"}</h2>
-                                                                        <div>{ Html::from_html_unchecked(format_json(&serde_json::from_str(&hover_data).unwrap_or(Value::Null)).into()) }</div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        }                                                        
-                                                    </div>
-                                                </div>
-                                            }
-                                        })
-                                    }
-                                </div>
-                            </div>
+                            <line x1={(x1).to_string()} y1={(y1).to_string()}
+                                x2={(x2).to_string()} y2={(y2).to_string()}
+                                stroke="black" stroke-width="1" opacity="0.5" />
                         }
                     })
                 }
-                <FooterLegend />
-            </div>
+        </svg>
+        <div class="new-container-good">
+            {
+                for nodes.iter().map(|node| {
+                    let node_uuid = node["node_uuid"].as_str().unwrap_or("Unknown UUID");
+                    let inventories = node["inventories"].as_array().unwrap_or(&empty_array); // Accedemos a los inventarios
+
+                    html! {
+                        <div class="node-item-good">
+                            <h2>{ format!("Node UUID: {}", node_uuid) }</h2>
+                            <div class="inventories-container-good">
+                                {
+                                    for inventories.iter().map(|inventory| {
+                                        let endpoints = inventory["endpoints"].as_array().unwrap_or(&empty_array); // Accedemos a los endpoints dentro del inventario
+                                        let inventory_id = inventory["inventory_id"].as_str().unwrap_or("Unknown Inventory ID");
+
+                                        html! {
+                                            <div class="inventory-item-good">
+                                            <h3>
+                                                { format!("{}", inventory_id) }
+                                            </h3>
+                                                <div class="endpoints-container-good">
+                                                    {
+                                                        for endpoints.iter().enumerate().map(|(_, ep)| {
+                                                            let ep_json = ep.clone();
+                                                            let ep_json_str = ep.to_string();
+                                                            // Callback para manejar el clic derecho y prevenir el menú contextual
+                                                            let oncontextmenu = oncontextmenu.reform(move |_: MouseEvent| ep_json_str.clone());
+                                                            let prevent_default_context_menu = prevent_default_context_menu.clone();
+                                                            let on_click = {
+                                                                let ep_clone = ep_json.clone();
+                                                                on_click.reform(move |_| ep_clone.clone())
+                                                            };
+
+                                                            let is_selected = {
+                                                                if let Some(ref selected) = *selected_value {
+                                                                    *selected == ep.clone()
+                                                                } else {
+                                                                    false
+                                                                }
+                                                            };
+
+                                                            let mut service_flag = false;
+
+                                                            let is_link_highlighted = {
+                                                                if let Some(link_uuid) = ep.get("link_uuid") {
+                                                                    highlighted_link_uuids.contains(&link_uuid.to_string()) && !is_selected
+                                                                } else {
+                                                                    false
+                                                                }
+                                                            };
+
+                                                            let is_connection_highlighted = {
+                                                                if let Some(connection_uuid) = ep.get("connection_uuid") {
+                                                                    highlighted_connections_uuid.contains(&connection_uuid.to_string()) && !is_selected
+                                                                } else {
+                                                                    false
+                                                                }
+                                                            };
+
+                                                            let is_service = {
+                                                                if let Some(connection_uuid) = ep.get("connection_uuid") {
+                                                                    service_flag = true;
+                                                                    highlighted_service_uuid.contains(&connection_uuid.to_string()) && !is_selected
+                                                                } else {
+                                                                    false
+                                                                }
+                                                            };
+
+                                                            let is_client_highlighted = {
+                                                                if let Some(edge_uuid) = ep.get("node_edge_point_uuid") {
+                                                                    highlighted_client_uuid.contains(&edge_uuid.to_string()) && !is_selected
+                                                                } else {
+                                                                    false
+                                                                }
+                                                            };
+
+                                                            let is_parent_highlighted = {
+                                                                if let Some(client_uuid) = ep.get("client_node_edge_point_uuid") {
+                                                                    highlighted_parent_uuid.contains(&client_uuid.to_string()) && !is_selected
+                                                                } else {
+                                                                    false
+                                                                }
+                                                            };
+
+                                                            
+
+                                                            let is_higher_highlighted = {
+                                                                if let Some(lower_uuid) = ep.get("lower_connection_uuid") {
+                                                                    highlighted_higher_connections.contains(&lower_uuid.to_string()) && !is_selected
+                                                                } else {
+                                                                    false
+                                                                }
+                                                            };
+
+                                                            
+
+                                                            let is_lower_highlighted = {
+                                                                if let Some(connection_uuid) = ep.get("connection_uuid") {
+                                                                    highlighted_lower_connections.contains(&connection_uuid.to_string()) && !is_selected
+                                                                } else {
+                                                                    false
+                                                                }
+                                                            };
+
+                                                            let last_nepu: &str = {
+                                                                    if let Some(node_edge_point_uuid) = ep["node_edge_point_uuid"].as_str() {
+                                                                        //&node_edge_point_uuid[node_edge_point_uuid.len()-4..node_edge_point_uuid.len()-1]
+                                                                        &node_edge_point_uuid[node_edge_point_uuid.len()-4..]
+                                                                } else {
+                                                                    ""
+                                                                }
+                                                            };
+
+                                                            let qualifier: &str = {
+                                                                if let Some(protocol_qualifier) = ep["layer_protocol_qualifier"].as_str() {
+                                                                    if let Some(qualifier_index) = protocol_qualifier.find("QUALIFIER_") {
+                                                                        //&protocol_qualifier[qualifier_index + "QUALIFIER_".len()..protocol_qualifier.len()-1]
+                                                                        &protocol_qualifier[qualifier_index + "QUALIFIER_".len()..]
+                                                                    } else {
+                                                                        if let Some(qualifier_index) = protocol_qualifier.find("TYPE_") {
+                                                                            //&protocol_qualifier[qualifier_index + "TYPE_".len()..protocol_qualifier.len()-1]
+                                                                            &protocol_qualifier[qualifier_index + "TYPE_".len()..]
+                                                                        } else {
+                                                                            ""
+                                                                        }
+                                                                    }
+                                                                } else {
+                                                                    ""
+                                                                }
+                                                            };
+
+                                                            let id: &str = {
+                                                                if let Some(node_edge_point_uuid) = ep["node_edge_point_uuid"].as_str() {
+                                                                    node_edge_point_uuid
+                                                                } else {
+                                                                    ""
+                                                                }
+                                                            };
+
+                                                            html! {
+                                                                <div class="endpoint-wrapper">
+                                                                    <div
+                                                                        id={format!("{}", id)}
+                                                                        class={classes!(
+                                                                            "endpoint-square",
+                                                                            highlight_class(
+                                                                                is_selected,
+                                                                                is_service,
+                                                                                is_client_highlighted,
+                                                                                is_parent_highlighted,
+                                                                                is_lower_highlighted,
+                                                                                is_higher_highlighted,
+                                                                                is_connection_highlighted,
+                                                                                is_link_highlighted,
+                                                                            ),
+                                                                            if service_flag { "first" } else { "second" }
+                                                                        )}
+                                                                        oncontextmenu={prevent_default_context_menu.clone()}
+                                                                        oncontextmenu={oncontextmenu.clone()}
+                                                                        onclick={on_click}
+                                                                    >
+                                                                        {""}
+                                                                    </div>
+                                                                    <div class="endpoint-details">{format!("{} / {}", last_nepu, qualifier)}</div>
+                                                                </div>
+                                                            }
+                                                        })
+                                                    }                                                       
+                                                </div>
+                                            </div>
+                                        }
+                                    })
+                                }
+                            </div>
+                        </div>
+                    }
+                })
+            }
         </div>
+        // Modal (pop-up) que aparece con el clic derecho
+        if *is_modal_open {
+            <div class="modal-overlay" onclick={close_modal.clone()}>
+                <div class="modal-content" onclick={Callback::from(|e: MouseEvent| e.stop_propagation())}>
+                    <button class="close-button" onclick={close_modal.clone()}>{"X"}</button>
+                    <div class="modal-body">
+                        <h2>{"Endpoint Details:\n"}</h2>
+                        <div>{ Html::from_html_unchecked(format_json(&serde_json::from_str(&hover_data).unwrap_or(Value::Null)).into()) }</div>
+                    </div>
+                </div>
+            </div>
+        } 
+        </div>        
     }
 }
 

@@ -25,19 +25,9 @@ use crate::models::{
 ///
 /// # Returns
 /// - `Result<(), Error>`: Returns `Ok(())` on success, or an `Error` if something goes wrong, such as missing required fields.
-pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, schema: &mut Value) -> Result<(), Error> {
-
-    let mut lower_connections_hashmap: HashMap<String, Value> = HashMap::new();
-    for connection in connections_json {
-        if let Some(lower_connections) = connection.get("lower-connection") {
-            for connection_end_point in connection.get("connection-end-point").unwrap_or(&Value::Array(vec![])).as_array().unwrap_or(&vec![]) {
-                lower_connections_hashmap.insert(
-                    connection_end_point.get("node-edge-point-uuid").unwrap().to_string(),
-                    lower_connections.clone()
-                );
-            }
-        }
-    }
+pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, schema: &mut Value, lower_connections_hashmap: &HashMap<String, Value>,
+    connection_uuid_hashmap: &HashMap<String, Value>, connection_uuid_lower_hashmap: &HashMap<String, Value>, nepu_by_connection: &HashMap<String, Vec<Value>>,
+        link_nepu_hashmap: &HashMap<String, Value>) -> Result<(), Error> {
 
     // Check if the schema contains the "connectivity_services" key
     if let Some(connectivity_services) = schema.as_object_mut().unwrap().get_mut(&"connectivity_services".to_string()) {
@@ -84,6 +74,102 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                             let mut connection_uuid: Option<Value> = None;
                             let id = endpoints_array[endpoint_index].as_object().unwrap().get(&"id".to_string()).unwrap().clone();
 
+                            if let Some(connection_uuid_mapped) =  endpoints_array[endpoint_index].as_object().unwrap().get(&"connection_uuid".to_string()) {
+                                let mapped_nepu = endpoints_array[endpoint_index].as_object().unwrap().get(&"node_edge_point_uuid".to_string()).unwrap().clone();
+
+                                if let Some(connection_end_point_list) = nepu_by_connection.get(&connection_uuid_mapped.to_string()) {
+                                    for connection_end_point_element in connection_end_point_list {
+                                        if let Some(node_edge_point_uuid) = connection_end_point_element.get("node-edge-point-uuid") {
+                                            if !mapped_nepu.eq(node_edge_point_uuid) {
+
+                                                connection_uuid = Some(connection_uuid_mapped.clone());
+
+                                                if let Some(connection_end_point_uuid) = connection_end_point_element.get("connection-end-point-uuid") {
+                                                    connection_end_uuid = connection_end_point_uuid.clone();
+                                                }
+
+                                                option_node_uuid = connection_end_point_element.get("node-uuid").cloned();
+
+                                                if let Ok(onep) =  find_value_with_parent_value(
+                                                    topology_json, 
+                                                    &node_edge_point_uuid, 
+                                                    0, 
+                                                    "uuid"){
+                                                        let names = onep.as_object().unwrap().get(&"name".to_string()).unwrap();
+                                                        
+                                                        if let Ok(name) = find_value_with_parent_value(
+                                                            names, 
+                                                            &Value::String("INVENTORY_ID".to_string()), 
+                                                            0, 
+                                                            "value-name"){
+                                                                inventory_id = name.as_object().unwrap().get(&"value".to_string()).unwrap().clone();
+                                                        }
+                                                }
+
+                                                lower_connections = lower_connections_hashmap.get(&node_edge_point_uuid.to_string()).cloned();
+
+                                                if let Ok(parent_topology) =  find_value_with_parent_value(
+                                                    topology_json, 
+                                                    &node_edge_point_uuid, 
+                                                    1, 
+                                                    "parent-node-edge-point"){
+
+                                                        // Extract protocol qualifier and client node edge point UUID
+                                                        if let Some(layer_prot) = parent_topology.as_object().unwrap().get(&"layer-protocol-qualifier".to_string()) {
+                                                            protocol_qualifier = layer_prot.clone();
+                                                        }
+                                                        if let Some(client_nop) = parent_topology.as_object().unwrap().get(&"client-node-edge-point".to_string()) {
+                                                            if let Some(node_uuid) = option_node_uuid.clone() {
+                                                                if let Ok(nop) = find_value_with_parent_value(
+                                                                    client_nop, 
+                                                                    &node_uuid, 
+                                                                    0, 
+                                                                    "node-uuid") {
+                                                                        client_node_edge_point_uuid = Some(nop.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone());
+                                                                    }
+                                                            }
+                                                            
+                                                        }
+                                                }
+
+                                                link_uuid = link_nepu_hashmap.get(&node_edge_point_uuid.to_string()).cloned();
+
+                                                // Create a new endpoint and add it to the list
+                                                endpoint_node_uuid.push(
+                                                    (
+                                                        Some(
+                                                            Endpoint::new(
+                                                                connection_end_uuid.clone(),
+                                                                node_edge_point_uuid.clone(),
+                                                                inventory_id.clone(),
+                                                                protocol_qualifier.clone(),
+                                                                client_node_edge_point_uuid.clone(),
+                                                                None,
+                                                                lower_connections.clone(),
+                                                                link_uuid.clone(),
+                                                                connection_uuid.clone(),
+                                                                Value::Number(Number::from(id.as_i64().unwrap() + 1)),
+                                                            ),
+                                                        ),
+                                                        option_node_uuid.clone()
+                                                    )
+                                                );
+                                                connection_end_uuid = Value::String("".to_string());
+                                                inventory_id = Value::String("".to_string());
+                                                protocol_qualifier = Value::String("".to_string());
+                                                option_node_edge_point = None;
+                                                client_node_edge_point_uuid = None;
+                                                lower_connections = None;
+                                                link_uuid = None;
+                                                connection_uuid = None;
+
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+
                             // Check if the endpoint has a link UUID and process it
                             if let Some(link_conn) = endpoints_array[endpoint_index].as_object().unwrap().get(&"link_uuid".to_string()) {
 
@@ -99,6 +185,19 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                 option_node_uuid = Some(node_edge_point.as_object().unwrap().get(&"node-uuid".to_string()).unwrap().clone());
 
                                                 let node_edge_point_uuid = node_edge_point.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone();
+
+                                                let mut connection_uuid_flag = false;
+
+                                                if let Some(connection_uuid_mapped) = connection_uuid_hashmap.get(&node_edge_point_uuid.to_string()) {
+                                                    connection_uuid = Some(connection_uuid_mapped.clone());
+                                                    connection_uuid_flag = true;
+                                                }
+                                                
+                                                if !connection_uuid_flag {
+                                                    if let Some(connection_uuid_mapped) = connection_uuid_lower_hashmap.get(&node_edge_point_uuid.to_string()) {
+                                                        connection_uuid = Some(connection_uuid_mapped.clone());
+                                                    }
+                                                }
 
                                                 lower_connections = lower_connections_hashmap.get(&node_edge_point_uuid.to_string()).cloned();
 
@@ -142,16 +241,10 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                 }
 
                                                 // Extract link UUID
-                                                if let Ok(link) = find_value_with_parent_value(
-                                                    topology_json, 
-                                                    &node_edge_point_uuid, 
-                                                    1, 
-                                                    "node-edge-point") {
-                                                        if let Some(uuid) = link.as_object().unwrap().get(&"uuid".to_string()) {
-                                                            link_uuid = Some(uuid.clone());
-                                                        }
+                                                if let Some(uuid) = link_section.as_object().unwrap().get(&"uuid".to_string()) {
+                                                    link_uuid = Some(uuid.clone());
                                                 }
-
+                                                
                                                 // Create a new endpoint and add it to the list
                                                 endpoint_node_uuid.push(
                                                     (
@@ -164,14 +257,22 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                                 client_node_edge_point_uuid.clone(),
                                                                 None,
                                                                 lower_connections.clone(),
-                                                                connection_uuid.clone(),
                                                                 link_uuid.clone(),
+                                                                connection_uuid.clone(),
                                                                 Value::Number(Number::from(id.as_i64().unwrap() + 1)),
                                                             ),
                                                         ),
                                                         option_node_uuid.clone()
                                                     )
                                                 );
+                                                connection_end_uuid = Value::String("".to_string());
+                                                inventory_id = Value::String("".to_string());
+                                                protocol_qualifier = Value::String("".to_string());
+                                                option_node_edge_point = None;
+                                                client_node_edge_point_uuid = None;
+                                                lower_connections = None;
+                                                link_uuid = None;
+                                                connection_uuid = None;
                                             }
                                         }
                                     }
@@ -181,12 +282,12 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                             if let Some(lower_conns) = endpoints_array[endpoint_index].as_object().unwrap().get(&"lower_connections".to_string()) {
                                 for lower_conn in lower_conns.as_array().unwrap() {
 
-                                    let connection_uuid = lower_conn.as_object().unwrap().get("connection-uuid").unwrap();
+                                    let connection_uuid_a = lower_conn.as_object().unwrap().get("connection-uuid").unwrap();
 
                                     for connection in connections_json {
                                         if let Ok(endpoints) = find_value_with_parent_value(
                                             connection, 
-                                            connection_uuid, 
+                                            connection_uuid_a, 
                                             0, 
                                             "uuid") {
 
@@ -194,6 +295,7 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                 for lower_conn_enpoint in endpoints.as_object().unwrap().get(&"connection-end-point".to_string()).unwrap().as_array().unwrap() {
 
                                                     let node_edge_point_uuid = lower_conn_enpoint.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone();
+
 
                                                     if let Ok(onep) =  find_value_with_parent_value(
                                                         topology_json, 
@@ -216,6 +318,8 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                         &node_edge_point_uuid, 
                                                         1, 
                                                         "parent-node-edge-point"){
+                                                            connection_end_uuid = parent_topology.as_object().unwrap().get(&"uuid".to_string()).unwrap().clone();
+
                                                             if let Some(layer_prot) = parent_topology.as_object().unwrap().get(&"layer-protocol-qualifier".to_string()) {
                                                                 protocol_qualifier = layer_prot.clone();
                                                             }
@@ -229,22 +333,14 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                                     }
                                                             }
                                                     }
-                                                    if let Ok(link) = find_value_with_parent_value(
-                                                        topology_json, 
-                                                        &node_edge_point_uuid, 
-                                                        1, 
-                                                        "node-edge-point") {
-                                                            if let Some(uuid) = link.as_object().unwrap().get(&"uuid".to_string()) {
-                                                                link_uuid = Some(uuid.clone());
-                                                            }
-                                                    }
+                                                    link_uuid = link_nepu_hashmap.get(&node_edge_point_uuid.to_string()).cloned();
 
                                                     // Create a new endpoint and add it to the list
                                                     endpoint_node_uuid.push(
                                                         (
                                                             Some(
                                                                 Endpoint::new(
-                                                                    connection_uuid.clone(),
+                                                                    connection_end_uuid.clone(),
                                                                     node_edge_point_uuid,
                                                                     inventory_id.clone(),
                                                                     protocol_qualifier.clone(),
@@ -252,13 +348,21 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                                     None,
                                                                     None,
                                                                     link_uuid.clone(),
-                                                                    Some(connection_uuid.clone()),
+                                                                    Some(connection_uuid_a.clone()),
                                                                     Value::Number(Number::from(id.as_i64().unwrap() + 1)),
                                                                 ),
                                                             ),
                                                             Some(lower_conn_enpoint.as_object().unwrap().get(&"node-uuid".to_string()).unwrap().clone())
                                                         )
                                                     );
+                                                    connection_end_uuid = Value::String("".to_string());
+                                                    inventory_id = Value::String("".to_string());
+                                                    protocol_qualifier = Value::String("".to_string());
+                                                    option_node_edge_point = None;
+                                                    client_node_edge_point_uuid = None;
+                                                    lower_connections = None;
+                                                    link_uuid = None;
+                                                    connection_uuid = None;
                                                 }     
                                         }
                                     }
@@ -312,15 +416,20 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                         }
                                         lower_connections = lower_connections_hashmap.get(&node_edge_point.to_string()).cloned();
 
-                                        if let Ok(link) = find_value_with_parent_value(
-                                            topology_json, 
-                                            &node_edge_point, 
-                                            1, 
-                                            "node-edge-point") {
-                                                if let Some(uuid) = link.as_object().unwrap().get(&"uuid".to_string()) {
-                                                    link_uuid = Some(uuid.clone());
-                                                }
-                                        }                                        
+                                        link_uuid = link_nepu_hashmap.get(&node_edge_point.to_string()).cloned();
+
+                                        let mut connection_uuid_flag = false;
+
+                                        if let Some(connection_uuid_mapped) = connection_uuid_hashmap.get(&node_edge_point.to_string()) {
+                                            connection_uuid = Some(connection_uuid_mapped.clone());
+                                            connection_uuid_flag = true;
+                                        }
+                                        
+                                        if !connection_uuid_flag {
+                                            if let Some(connection_uuid_mapped) = connection_uuid_lower_hashmap.get(&node_edge_point.to_string()) {
+                                                connection_uuid = Some(connection_uuid_mapped.clone());
+                                            }
+                                        }                                      
     
                                         // Add new endpoint to the list
                                         endpoint_node_uuid.push(
@@ -342,6 +451,14 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                 option_node_uuid.clone()
                                             )
                                         );
+                                        connection_end_uuid = Value::String("".to_string());
+                                        inventory_id = Value::String("".to_string());
+                                        protocol_qualifier = Value::String("".to_string());
+                                        option_node_edge_point = None;
+                                        client_node_edge_point_uuid = None;
+                                        lower_connections = None;
+                                        link_uuid = None;
+                                        connection_uuid = None;
                                     }
                                 }
                             }
@@ -367,6 +484,20 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                             "node-uuid") {
 
                                                 let node_edge_point_uuid = connection_end_point.as_object().unwrap().get(&"node-edge-point-uuid".to_string()).unwrap().clone();
+
+                                                let mut connection_uuid_flag = false;
+
+                                                if let Some(connection_uuid_mapped) = connection_uuid_hashmap.get(&node_edge_point_uuid.to_string()) {
+                                                    connection_uuid = Some(connection_uuid_mapped.clone());
+                                                    connection_uuid_flag = true;
+                                                }
+                                                
+                                                if !connection_uuid_flag {
+                                                    if let Some(connection_uuid_mapped) = connection_uuid_lower_hashmap.get(&node_edge_point_uuid.to_string()) {
+                                                        connection_uuid = Some(connection_uuid_mapped.clone());
+                                                    }
+                                                }
+
                                                 connection_end_uuid = connection_end_point.as_object().unwrap().get(&"connection-end-point-uuid".to_string()).unwrap().clone();
 
                                                 if let Ok(onep) =  find_value_with_parent_value(
@@ -404,15 +535,7 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
 
                                                     option_node_uuid = Some(matching(true, &client_endpoint, "/parent-node-edge-point/node-uuid")?);
 
-                                                    if let Ok(link) = find_value_with_parent_value(
-                                                        topology_json, 
-                                                        &node_edge_point_uuid, 
-                                                        1, 
-                                                        "node-edge-point") {
-                                                            if let Some(uuid) = link.as_object().unwrap().get(&"uuid".to_string()) {
-                                                                link_uuid = Some(uuid.clone());
-                                                            }
-                                                    }                                                   
+                                                    link_uuid = link_nepu_hashmap.get(&node_edge_point_uuid.to_string()).cloned();                                                  
 
                                                     // Add new endpoint to the list
                                                     endpoint_node_uuid.push(
@@ -434,6 +557,14 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                             option_node_uuid.clone()
                                                         )
                                                     );
+                                                    connection_end_uuid = Value::String("".to_string());
+                                                    inventory_id = Value::String("".to_string());
+                                                    protocol_qualifier = Value::String("".to_string());
+                                                    option_node_edge_point = None;
+                                                    client_node_edge_point_uuid = None;
+                                                    lower_connections = None;
+                                                    link_uuid = None;
+                                                    connection_uuid = None;
                                                 }
                                             }
                                     }
@@ -457,6 +588,19 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
 
                                     if let Some(node_edge_point) = option_node_edge_point.clone() {
 
+                                        let mut connection_uuid_flag = false;
+
+                                        if let Some(connection_uuid_mapped) = connection_uuid_hashmap.get(&node_edge_point.to_string()) {
+                                            connection_uuid = Some(connection_uuid_mapped.clone());
+                                            connection_uuid_flag = true;
+                                        }
+                                        
+                                        if !connection_uuid_flag {
+                                            if let Some(connection_uuid_mapped) = connection_uuid_lower_hashmap.get(&node_edge_point.to_string()) {
+                                                connection_uuid = Some(connection_uuid_mapped.clone());
+                                            }
+                                        }
+
                                         if let Ok(onep) =  find_value_with_parent_value(
                                             topology_json, 
                                             &node_edge_point, 
@@ -475,15 +619,7 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
 
                                         lower_connections = lower_connections_hashmap.get(&node_edge_point.to_string()).cloned();
                                         
-                                        if let Ok(link) = find_value_with_parent_value(
-                                            topology_json, 
-                                            &node_edge_point, 
-                                            1, 
-                                            "node-edge-point") {
-                                                if let Some(uuid) = link.as_object().unwrap().get(&"uuid".to_string()) {
-                                                    link_uuid = Some(uuid.clone());
-                                                }
-                                        }
+                                        link_uuid = link_nepu_hashmap.get(&node_edge_point.to_string()).cloned();
     
                                         // Add new endpoint to the list
                                         endpoint_node_uuid.push(
@@ -505,6 +641,14 @@ pub fn endpoints_creation(topology_json: &Value, connections_json: &Vec<Value>, 
                                                 option_node_uuid
                                             )
                                         );
+                                        connection_end_uuid = Value::String("".to_string());
+                                        inventory_id = Value::String("".to_string());
+                                        protocol_qualifier = Value::String("".to_string());
+                                        option_node_edge_point = None;
+                                        client_node_edge_point_uuid = None;
+                                        lower_connections = None;
+                                        link_uuid = None;
+                                        connection_uuid = None;
                                     }
                                 }                             
                             }

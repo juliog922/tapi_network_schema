@@ -58,37 +58,6 @@
     },
     {
         "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 0
-            }
-        },
-        "direction": "INPUT",
-        "layer-protocol-name": "PHOTONIC_MEDIA",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=Testbed_A_1/r=0/sh=1/sl=10/s_sl=0/p=9",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_otsi/7c9b8c56-1068-4793-bcaf-153ec3b368f4/och/soms_ttp_si-1/10/0/9",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{7c9b8c56-1068-4793-bcaf-153ec3b368f4},EQ={/r=0/sh=1/sl=10},PTP={/p=420_9}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
-        ],
-        "uuid": "e24b5919-8afc-34a2-8a3c-f8ddd08d3d47"
-    },
-    {
-        "administrative-state": "UNLOCKED",
         "direction": "OUTPUT",
         "layer-protocol-name": "PHOTONIC_MEDIA",
         "lifecycle-state": "INSTALLED",
@@ -141,46 +110,6 @@
         "available-capacity": {
             "total-size": {
                 "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-1/r=0/sh=1/sl=6/s_sl=0/p=7",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/62b05559-b6db-4db9-a2f0-be4884e9de20/odu/oac_bi-1/6/0/7",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=6},PTP={/p=453_7}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "e77cc6e5-6072-33aa-8298-705f80feffc5"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "MBPS",
                 "value": 0
             }
         },
@@ -218,6 +147,57 @@
             }
         },
         "uuid": "f02fdc4a-6005-31b4-a715-809d01579b31"
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "available-capacity": {
+            "total-size": {
+                "unit": "GBPS",
+                "value": 0
+            }
+        },
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "/ne=UC9-1/r=0/sh=1/sl=8/s_sl=0/p=1",
+                "value-name": "INVENTORY_ID"
+            },
+            {
+                "value": "sip_otsi/62b05559-b6db-4db9-a2f0-be4884e9de20/och/ochttp_bi-1/8/0/1",
+                "value-name": "SIP_NAME"
+            },
+            {
+                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=8},PTP={/p=454_1}",
+                "value-name": "INVENTORY_NAME"
+            }
+        ],
+        "operational-state": "DISABLED",
+        "supported-layer-protocol-qualifier": [
+            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
+        ],
+        "tapi-photonic-media:otsi-service-interface-point-spec": {
+            "otsi-capability": {
+                "supportable-central-frequency-spectrum-band": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-central-frequency": 201001750,
+                        "upper-central-frequency": 213008000
+                    }
+                ]
+            }
+        },
+        "total-potential-capacity": {
+            "total-size": {
+                "unit": "GBPS",
+                "value": 100
+            }
+        },
+        "uuid": "05c3168a-01f3-3719-a91f-e4d4ab826ee0"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -427,34 +407,62 @@
     },
     {
         "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 0
-            }
-        },
         "direction": "OUTPUT",
         "layer-protocol-name": "PHOTONIC_MEDIA",
         "lifecycle-state": "INSTALLED",
         "name": [
             {
-                "value": "/ne=Testbed_Z_1/r=0/sh=1/sl=16/s_sl=0/p=1",
+                "value": "/ne=Testbed_C_1/r=0/sh=1/sl=12/s_sl=0/p=40",
                 "value-name": "INVENTORY_ID"
             },
             {
-                "value": "sip_otsi/7b5a42ad-07a2-44f4-9d0c-d2318aa5a7f6/och/soms_ctp_so-1/16/0/1",
+                "value": "sip_mc/2407509c-6e48-4ca1-8ea8-ece6816b7909/och/och_ctp_si-1/12/0/40",
                 "value-name": "SIP_NAME"
             },
             {
-                "value": "ME{7b5a42ad-07a2-44f4-9d0c-d2318aa5a7f6},EQ={/r=0/sh=1/sl=16},PTP={/p=417_1}",
+                "value": "ME{2407509c-6e48-4ca1-8ea8-ece6816b7909},EQ={/r=0/sh=1/sl=12},PTP={/p=410_40}",
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "ENABLED",
+        "operational-state": "DISABLED",
         "supported-layer-protocol-qualifier": [
-            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
+            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC"
         ],
-        "uuid": "643fd821-f4ef-3796-9747-7701983d02ef"
+        "tapi-photonic-media:media-channel-service-interface-point-spec": {
+            "mc-pool": {
+                "available-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_100GHZ",
+                            "grid-type": "DWDM"
+                        },
+                        "lower-frequency": 192050000,
+                        "upper-frequency": 195950000
+                    }
+                ],
+                "occupied-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_100GHZ",
+                            "grid-type": "DWDM"
+                        },
+                        "lower-frequency": 195950000,
+                        "upper-frequency": 196050000
+                    }
+                ],
+                "supportable-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_100GHZ",
+                            "grid-type": "DWDM"
+                        },
+                        "lower-frequency": 192050000,
+                        "upper-frequency": 196050000
+                    }
+                ]
+            }
+        },
+        "uuid": "100e2cf9-805d-3a4e-a131-4d963eabf405"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -475,7 +483,7 @@
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "ENABLED",
+        "operational-state": "DISABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC"
         ],
@@ -487,8 +495,26 @@
                             "adjustment-granularity": "G_6_25GHZ",
                             "grid-type": "FLEX"
                         },
-                        "lower-frequency": 191275000,
+                        "lower-frequency": 192225000,
                         "upper-frequency": 196075000
+                    },
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-frequency": 191275000,
+                        "upper-frequency": 192175000
+                    }
+                ],
+                "occupied-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-frequency": 192175000,
+                        "upper-frequency": 192225000
                     }
                 ],
                 "supportable-spectrum": [
@@ -547,46 +573,6 @@
             }
         },
         "uuid": "09a32c7d-7153-367c-8017-b1a9e41071e7"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-1/r=0/sh=1/sl=6/s_sl=0/p=6",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/62b05559-b6db-4db9-a2f0-be4884e9de20/odu/oac_bi-1/6/0/6",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=6},PTP={/p=453_6}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "bd3b8551-89c4-3caa-b416-e3b260adf59b"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -695,6 +681,55 @@
             }
         },
         "uuid": "10d3cb74-90bc-3882-91fa-f749ea50cda7"
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "direction": "INPUT",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "/ne=Testbed_D_1/r=0/sh=1/sl=10/s_sl=0/p=8",
+                "value-name": "INVENTORY_ID"
+            },
+            {
+                "value": "sip_mc/5cad8a30-cdfc-4349-b06f-cffed7b9bedb/och/soms_ttp_si-1/10/0/8",
+                "value-name": "SIP_NAME"
+            },
+            {
+                "value": "ME{5cad8a30-cdfc-4349-b06f-cffed7b9bedb},EQ={/r=0/sh=1/sl=10},PTP={/p=420_8}",
+                "value-name": "INVENTORY_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "supported-layer-protocol-qualifier": [
+            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC"
+        ],
+        "tapi-photonic-media:media-channel-service-interface-point-spec": {
+            "mc-pool": {
+                "available-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-frequency": 191275000,
+                        "upper-frequency": 196075000
+                    }
+                ],
+                "supportable-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-frequency": 191275000,
+                        "upper-frequency": 196075000
+                    }
+                ]
+            }
+        },
+        "uuid": "9824b8bd-1f6c-3c79-b147-8f2d93d37894"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -948,7 +983,7 @@
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "ENABLED",
+        "operational-state": "DISABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC"
         ],
@@ -960,8 +995,26 @@
                             "adjustment-granularity": "G_6_25GHZ",
                             "grid-type": "FLEX"
                         },
-                        "lower-frequency": 191275000,
+                        "lower-frequency": 192225000,
                         "upper-frequency": 196075000
+                    },
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-frequency": 191275000,
+                        "upper-frequency": 192175000
+                    }
+                ],
+                "occupied-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-frequency": 192175000,
+                        "upper-frequency": 192225000
                     }
                 ],
                 "supportable-spectrum": [
@@ -1017,6 +1070,43 @@
             }
         },
         "uuid": "f397171c-2d4c-3956-b819-6794849a7ba5"
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "available-capacity": {
+            "total-size": {
+                "unit": "MBPS",
+                "value": 97500
+            }
+        },
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "ODU",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "/ne=UC9-2/r=0/sh=1/sl=8/s_sl=0/p=1",
+                "value-name": "INVENTORY_ID"
+            },
+            {
+                "value": "sip_hoodu/3887be50-7093-44b7-b14c-400e8b4f9f8b/odu/ochttp_bi-1/8/0/1",
+                "value-name": "SIP_NAME"
+            },
+            {
+                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=8},PTP={/p=454_1}",
+                "value-name": "INVENTORY_NAME"
+            }
+        ],
+        "operational-state": "DISABLED",
+        "supported-layer-protocol-qualifier": [
+            "tapi-dsr:DIGITAL_SIGNAL_TYPE_OTU_4"
+        ],
+        "total-potential-capacity": {
+            "total-size": {
+                "unit": "GBPS",
+                "value": 100
+            }
+        },
+        "uuid": "c1c6b1cf-1a04-3464-a570-5c9b277d1fbe"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -1264,46 +1354,6 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-1/r=0/sh=1/sl=6/s_sl=0/p=1",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/62b05559-b6db-4db9-a2f0-be4884e9de20/odu/oac_bi-1/6/0/1",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=6},PTP={/p=453_1}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "0f4ec3c9-7709-335d-92fc-97837b8346da"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
                 "unit": "GBPS",
                 "value": 10
             }
@@ -1412,6 +1462,65 @@
             }
         },
         "uuid": "a0c11f07-1be7-3de3-9217-1db0203ace2b"
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "direction": "INPUT",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "/ne=Testbed_B_1/r=0/sh=1/sl=10/s_sl=0/p=40",
+                "value-name": "INVENTORY_ID"
+            },
+            {
+                "value": "sip_mc/8d88f1ef-c9dc-48ab-9fae-0ddd79350e16/och/och_ctp_so-1/10/0/40",
+                "value-name": "SIP_NAME"
+            },
+            {
+                "value": "ME{8d88f1ef-c9dc-48ab-9fae-0ddd79350e16},EQ={/r=0/sh=1/sl=10},PTP={/p=409_40}",
+                "value-name": "INVENTORY_NAME"
+            }
+        ],
+        "operational-state": "DISABLED",
+        "supported-layer-protocol-qualifier": [
+            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC"
+        ],
+        "tapi-photonic-media:media-channel-service-interface-point-spec": {
+            "mc-pool": {
+                "available-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_100GHZ",
+                            "grid-type": "DWDM"
+                        },
+                        "lower-frequency": 192050000,
+                        "upper-frequency": 195950000
+                    }
+                ],
+                "occupied-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_100GHZ",
+                            "grid-type": "DWDM"
+                        },
+                        "lower-frequency": 195950000,
+                        "upper-frequency": 196050000
+                    }
+                ],
+                "supportable-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_100GHZ",
+                            "grid-type": "DWDM"
+                        },
+                        "lower-frequency": 192050000,
+                        "upper-frequency": 196050000
+                    }
+                ]
+            }
+        },
+        "uuid": "6a4465ef-f29e-32af-990c-d325a98caaa8"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -1618,7 +1727,7 @@
         "available-capacity": {
             "total-size": {
                 "unit": "GBPS",
-                "value": 10
+                "value": 0
             }
         },
         "direction": "BIDIRECTIONAL",
@@ -1638,10 +1747,24 @@
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "ENABLED",
+        "operational-state": "DISABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
         ],
+        "tapi-photonic-media:otsi-service-interface-point-spec": {
+            "otsi-capability": {
+                "supportable-central-frequency-spectrum-band": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-central-frequency": 201001750,
+                        "upper-central-frequency": 213008000
+                    }
+                ]
+            }
+        },
         "total-potential-capacity": {
             "total-size": {
                 "unit": "GBPS",
@@ -1710,48 +1833,8 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-2/r=0/sh=1/sl=6/s_sl=0/p=5",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/3887be50-7093-44b7-b14c-400e8b4f9f8b/odu/oac_bi-1/6/0/5",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=6},PTP={/p=453_5}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "679bd54b-5f92-3fd3-af0c-4d4162c54044"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
                 "unit": "GBPS",
-                "value": 10
+                "value": 0
             }
         },
         "direction": "BIDIRECTIONAL",
@@ -1771,10 +1854,24 @@
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "ENABLED",
+        "operational-state": "DISABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
         ],
+        "tapi-photonic-media:otsi-service-interface-point-spec": {
+            "otsi-capability": {
+                "supportable-central-frequency-spectrum-band": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-central-frequency": 201001750,
+                        "upper-central-frequency": 213008000
+                    }
+                ]
+            }
+        },
         "total-potential-capacity": {
             "total-size": {
                 "unit": "GBPS",
@@ -1900,46 +1997,6 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-2/r=0/sh=1/sl=6/s_sl=0/p=3",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/3887be50-7093-44b7-b14c-400e8b4f9f8b/odu/oac_bi-1/6/0/3",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=6},PTP={/p=453_3}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "9fac726b-1a92-3053-bbe3-07a2dba53505"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
                 "unit": "GBPS",
                 "value": 10
             }
@@ -1997,41 +2054,103 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
-                "unit": "MBPS",
-                "value": 2500
+                "unit": "GBPS",
+                "value": 0
             }
         },
         "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
         "lifecycle-state": "INSTALLED",
         "name": [
             {
-                "value": "/ne=UC9-1/r=0/sh=1/sl=6/s_sl=0/p=5",
+                "value": "/ne=UC9-2/r=0/sh=1/sl=7/s_sl=0/p=1",
                 "value-name": "INVENTORY_ID"
             },
             {
-                "value": "sip_dsr/62b05559-b6db-4db9-a2f0-be4884e9de20/odu/oac_bi-1/6/0/5",
+                "value": "sip_otsi/3887be50-7093-44b7-b14c-400e8b4f9f8b/och/ochttp_bi-1/7/0/1",
                 "value-name": "SIP_NAME"
             },
             {
-                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=6},PTP={/p=453_5}",
+                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=7},PTP={/p=454_1}",
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "ENABLED",
+        "operational-state": "DISABLED",
         "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
+            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
         ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
+        "tapi-photonic-media:otsi-service-interface-point-spec": {
+            "otsi-capability": {
+                "supportable-central-frequency-spectrum-band": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-central-frequency": 201001750,
+                        "upper-central-frequency": 213008000
+                    }
+                ]
             }
         },
-        "uuid": "57daa61b-da40-3ba5-b31b-c9e26e13fc2c"
+        "total-potential-capacity": {
+            "total-size": {
+                "unit": "GBPS",
+                "value": 100
+            }
+        },
+        "uuid": "b698cebd-ddfb-34e0-bd75-f1d9db5daa8f"
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "available-capacity": {
+            "total-size": {
+                "unit": "GBPS",
+                "value": 0
+            }
+        },
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "/ne=UC9-2/r=0/sh=1/sl=8/s_sl=0/p=1",
+                "value-name": "INVENTORY_ID"
+            },
+            {
+                "value": "sip_otsi/3887be50-7093-44b7-b14c-400e8b4f9f8b/och/ochttp_bi-1/8/0/1",
+                "value-name": "SIP_NAME"
+            },
+            {
+                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=8},PTP={/p=454_1}",
+                "value-name": "INVENTORY_NAME"
+            }
+        ],
+        "operational-state": "DISABLED",
+        "supported-layer-protocol-qualifier": [
+            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
+        ],
+        "tapi-photonic-media:otsi-service-interface-point-spec": {
+            "otsi-capability": {
+                "supportable-central-frequency-spectrum-band": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-central-frequency": 201001750,
+                        "upper-central-frequency": 213008000
+                    }
+                ]
+            }
+        },
+        "total-potential-capacity": {
+            "total-size": {
+                "unit": "GBPS",
+                "value": 100
+            }
+        },
+        "uuid": "d190e3ad-4366-3729-aede-89a658155f6b"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -2072,6 +2191,55 @@
             }
         },
         "uuid": "c75296b7-5ddc-3e4b-9f6d-cff203338e71"
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "direction": "OUTPUT",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "/ne=Testbed_D_1/r=0/sh=1/sl=10/s_sl=0/p=8",
+                "value-name": "INVENTORY_ID"
+            },
+            {
+                "value": "sip_mc/5cad8a30-cdfc-4349-b06f-cffed7b9bedb/och/soms_ttp_so-1/10/0/8",
+                "value-name": "SIP_NAME"
+            },
+            {
+                "value": "ME{5cad8a30-cdfc-4349-b06f-cffed7b9bedb},EQ={/r=0/sh=1/sl=10},PTP={/p=419_8}",
+                "value-name": "INVENTORY_NAME"
+            }
+        ],
+        "operational-state": "ENABLED",
+        "supported-layer-protocol-qualifier": [
+            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC"
+        ],
+        "tapi-photonic-media:media-channel-service-interface-point-spec": {
+            "mc-pool": {
+                "available-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-frequency": 191275000,
+                        "upper-frequency": 196075000
+                    }
+                ],
+                "supportable-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-frequency": 191275000,
+                        "upper-frequency": 196075000
+                    }
+                ]
+            }
+        },
+        "uuid": "a3854ada-fa11-3634-9348-17d399858b7e"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -2190,6 +2358,43 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
+                "unit": "MBPS",
+                "value": 97500
+            }
+        },
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "ODU",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "/ne=UC9-1/r=0/sh=1/sl=8/s_sl=0/p=1",
+                "value-name": "INVENTORY_ID"
+            },
+            {
+                "value": "sip_hoodu/62b05559-b6db-4db9-a2f0-be4884e9de20/odu/ochttp_bi-1/8/0/1",
+                "value-name": "SIP_NAME"
+            },
+            {
+                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=8},PTP={/p=454_1}",
+                "value-name": "INVENTORY_NAME"
+            }
+        ],
+        "operational-state": "DISABLED",
+        "supported-layer-protocol-qualifier": [
+            "tapi-dsr:DIGITAL_SIGNAL_TYPE_OTU_4"
+        ],
+        "total-potential-capacity": {
+            "total-size": {
+                "unit": "GBPS",
+                "value": 100
+            }
+        },
+        "uuid": "71b1c03a-376e-376d-914d-7bbe7bdd6538"
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "available-capacity": {
+            "total-size": {
                 "unit": "GBPS",
                 "value": 10
             }
@@ -2244,6 +2449,65 @@
     },
     {
         "administrative-state": "UNLOCKED",
+        "direction": "INPUT",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "/ne=Testbed_C_1/r=0/sh=1/sl=10/s_sl=0/p=40",
+                "value-name": "INVENTORY_ID"
+            },
+            {
+                "value": "sip_mc/2407509c-6e48-4ca1-8ea8-ece6816b7909/och/och_ctp_so-1/10/0/40",
+                "value-name": "SIP_NAME"
+            },
+            {
+                "value": "ME{2407509c-6e48-4ca1-8ea8-ece6816b7909},EQ={/r=0/sh=1/sl=10},PTP={/p=409_40}",
+                "value-name": "INVENTORY_NAME"
+            }
+        ],
+        "operational-state": "DISABLED",
+        "supported-layer-protocol-qualifier": [
+            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC"
+        ],
+        "tapi-photonic-media:media-channel-service-interface-point-spec": {
+            "mc-pool": {
+                "available-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_100GHZ",
+                            "grid-type": "DWDM"
+                        },
+                        "lower-frequency": 192050000,
+                        "upper-frequency": 195950000
+                    }
+                ],
+                "occupied-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_100GHZ",
+                            "grid-type": "DWDM"
+                        },
+                        "lower-frequency": 195950000,
+                        "upper-frequency": 196050000
+                    }
+                ],
+                "supportable-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_100GHZ",
+                            "grid-type": "DWDM"
+                        },
+                        "lower-frequency": 192050000,
+                        "upper-frequency": 196050000
+                    }
+                ]
+            }
+        },
+        "uuid": "811148d7-ccf1-31ca-995d-e8208038269a"
+    },
+    {
+        "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
                 "unit": "MBPS",
@@ -2281,43 +2545,6 @@
             }
         },
         "uuid": "551ae43a-34c1-37bd-b1c0-a909dcc3915d"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 10
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-1/r=0/sh=1/sl=6/s_sl=0/p=2",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/62b05559-b6db-4db9-a2f0-be4884e9de20/odu/ochttp_bi-1/6/0/2",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=6},PTP={/p=454_2}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_OTU_2"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 10
-            }
-        },
-        "uuid": "51aa4ef9-4f29-3df9-9d3e-222b5d49c256"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -2629,43 +2856,6 @@
     },
     {
         "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 10
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-2/r=0/sh=1/sl=6/s_sl=0/p=2",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/3887be50-7093-44b7-b14c-400e8b4f9f8b/odu/ochttp_bi-1/6/0/2",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=6},PTP={/p=454_2}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_OTU_2"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 10
-            }
-        },
-        "uuid": "2167582b-010c-35c9-aca3-fade6e632201"
-    },
-    {
-        "administrative-state": "UNLOCKED",
         "direction": "OUTPUT",
         "layer-protocol-name": "PHOTONIC_MEDIA",
         "lifecycle-state": "INSTALLED",
@@ -2712,43 +2902,6 @@
             }
         },
         "uuid": "7acf0e39-2127-38e3-9cec-edf13fcb1006"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 10
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "PHOTONIC_MEDIA",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-2/r=0/sh=1/sl=6/s_sl=0/p=1",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_otsi/3887be50-7093-44b7-b14c-400e8b4f9f8b/och/ochttp_bi-1/6/0/1",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=6},PTP={/p=454_1}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 10
-            }
-        },
-        "uuid": "8a44d06d-49a0-3926-802b-76e33fb3c77d"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -2811,48 +2964,8 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-2/r=0/sh=1/sl=6/s_sl=0/p=7",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/3887be50-7093-44b7-b14c-400e8b4f9f8b/odu/oac_bi-1/6/0/7",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=6},PTP={/p=453_7}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "8df655b5-3d8c-3d2b-97af-f6709c155c09"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
                 "unit": "GBPS",
-                "value": 90
+                "value": 100
             }
         },
         "direction": "BIDIRECTIONAL",
@@ -2872,7 +2985,7 @@
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "DISABLED",
+        "operational-state": "ENABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-dsr:DIGITAL_SIGNAL_TYPE_OTU_4"
         ],
@@ -3044,7 +3157,7 @@
             }
         },
         "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
+        "layer-protocol-name": "ODU",
         "lifecycle-state": "INSTALLED",
         "name": [
             {
@@ -3210,46 +3323,6 @@
             }
         },
         "uuid": "1e75d424-ac89-3b51-824b-73a351cf85b4"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-2/r=0/sh=1/sl=6/s_sl=0/p=8",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/3887be50-7093-44b7-b14c-400e8b4f9f8b/odu/oac_bi-1/6/0/8",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=6},PTP={/p=453_8}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "6668ec8d-1e04-308a-bd7e-870c47a73163"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -3597,7 +3670,7 @@
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "ENABLED",
+        "operational-state": "DISABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC"
         ],
@@ -3609,8 +3682,26 @@
                             "adjustment-granularity": "G_6_25GHZ",
                             "grid-type": "FLEX"
                         },
-                        "lower-frequency": 191275000,
+                        "lower-frequency": 192225000,
                         "upper-frequency": 196075000
+                    },
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-frequency": 191275000,
+                        "upper-frequency": 192175000
+                    }
+                ],
+                "occupied-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-frequency": 192175000,
+                        "upper-frequency": 192225000
                     }
                 ],
                 "supportable-spectrum": [
@@ -3632,7 +3723,7 @@
         "available-capacity": {
             "total-size": {
                 "unit": "GBPS",
-                "value": 90
+                "value": 100
             }
         },
         "direction": "BIDIRECTIONAL",
@@ -3652,7 +3743,7 @@
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "DISABLED",
+        "operational-state": "ENABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-dsr:DIGITAL_SIGNAL_TYPE_OTU_4"
         ],
@@ -3944,41 +4035,32 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
-                "unit": "MBPS",
-                "value": 2500
+                "unit": "GBPS",
+                "value": 0
             }
         },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
+        "direction": "INPUT",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
         "lifecycle-state": "INSTALLED",
         "name": [
             {
-                "value": "/ne=UC9-1/r=0/sh=1/sl=6/s_sl=0/p=4",
+                "value": "/ne=Testbed_B_1/r=0/sh=1/sl=10/s_sl=0/p=40",
                 "value-name": "INVENTORY_ID"
             },
             {
-                "value": "sip_dsr/62b05559-b6db-4db9-a2f0-be4884e9de20/odu/oac_bi-1/6/0/4",
+                "value": "sip_otsi/8d88f1ef-c9dc-48ab-9fae-0ddd79350e16/och/och_ctp_so-1/10/0/40",
                 "value-name": "SIP_NAME"
             },
             {
-                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=6},PTP={/p=453_4}",
+                "value": "ME{8d88f1ef-c9dc-48ab-9fae-0ddd79350e16},EQ={/r=0/sh=1/sl=10},PTP={/p=409_40}",
                 "value-name": "INVENTORY_NAME"
             }
         ],
         "operational-state": "ENABLED",
         "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
+            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
         ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "d1d4bef8-2114-3082-8d8d-d54ea92f8b59"
+        "uuid": "00133ffd-2acf-317a-9a03-6e0833876452"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -4149,8 +4231,8 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
-                "unit": "GBPS",
-                "value": 10
+                "unit": "MBPS",
+                "value": 7500
             }
         },
         "direction": "BIDIRECTIONAL",
@@ -4244,46 +4326,6 @@
             }
         },
         "uuid": "b2b9e671-041b-3100-8118-0dd68efb4d32"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-1/r=0/sh=1/sl=6/s_sl=0/p=3",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/62b05559-b6db-4db9-a2f0-be4884e9de20/odu/oac_bi-1/6/0/3",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=6},PTP={/p=453_3}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "c7be6ff6-8182-325e-9d26-c98177bb0564"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -4509,46 +4551,6 @@
             }
         },
         "uuid": "561aa165-0761-3dda-83d4-c969f6dc946f"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-1/r=0/sh=1/sl=6/s_sl=0/p=8",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/62b05559-b6db-4db9-a2f0-be4884e9de20/odu/oac_bi-1/6/0/8",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=6},PTP={/p=453_8}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "3740ce66-e409-3f4c-9a7d-785fdd5c7e6f"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -4852,7 +4854,7 @@
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "ENABLED",
+        "operational-state": "DISABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC"
         ],
@@ -4864,8 +4866,26 @@
                             "adjustment-granularity": "G_6_25GHZ",
                             "grid-type": "FLEX"
                         },
-                        "lower-frequency": 191275000,
+                        "lower-frequency": 192225000,
                         "upper-frequency": 196075000
+                    },
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-frequency": 191275000,
+                        "upper-frequency": 192175000
+                    }
+                ],
+                "occupied-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-frequency": 192175000,
+                        "upper-frequency": 192225000
                     }
                 ],
                 "supportable-spectrum": [
@@ -4984,7 +5004,7 @@
         "available-capacity": {
             "total-size": {
                 "unit": "GBPS",
-                "value": 0
+                "value": 100
             }
         },
         "direction": "BIDIRECTIONAL",
@@ -5002,9 +5022,13 @@
             {
                 "value": "ME{cbaa7e1d-4569-45ff-ab21-41d2e5de2a92},EQ={/r=0/sh=1/sl=13},PTP={/p=454_1}",
                 "value-name": "INVENTORY_NAME"
+            },
+            {
+                "value": "OFEC",
+                "value-name": "PROPRIETARY_FEC_TYPE_OFEC"
             }
         ],
-        "operational-state": "DISABLED",
+        "operational-state": "ENABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
         ],
@@ -5019,6 +5043,9 @@
                         "lower-central-frequency": 191143750,
                         "upper-central-frequency": 196100000
                     }
+                ],
+                "supportable-modulation": [
+                    "QPSK"
                 ],
                 "total-power-warn-threshold": {
                     "total-power-lower-warn-threshold-default": -6000,
@@ -5222,41 +5249,32 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
-                "unit": "MBPS",
-                "value": 2500
+                "unit": "GBPS",
+                "value": 0
             }
         },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
+        "direction": "INPUT",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
         "lifecycle-state": "INSTALLED",
         "name": [
             {
-                "value": "/ne=UC9-2/r=0/sh=1/sl=6/s_sl=0/p=1",
+                "value": "/ne=Testbed_D_1/r=0/sh=1/sl=10/s_sl=0/p=8",
                 "value-name": "INVENTORY_ID"
             },
             {
-                "value": "sip_dsr/3887be50-7093-44b7-b14c-400e8b4f9f8b/odu/oac_bi-1/6/0/1",
+                "value": "sip_otsi/5cad8a30-cdfc-4349-b06f-cffed7b9bedb/och/soms_ttp_si-1/10/0/8",
                 "value-name": "SIP_NAME"
             },
             {
-                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=6},PTP={/p=453_1}",
+                "value": "ME{5cad8a30-cdfc-4349-b06f-cffed7b9bedb},EQ={/r=0/sh=1/sl=10},PTP={/p=420_8}",
                 "value-name": "INVENTORY_NAME"
             }
         ],
         "operational-state": "ENABLED",
         "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
+            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
         ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "aaceb40f-35c3-3605-95b9-362b8e0b8190"
+        "uuid": "122ccc34-3822-320a-a525-08cce7a75645"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -5352,86 +5370,6 @@
             }
         },
         "uuid": "b9a2f719-d973-3040-89c5-d967e4b89d48"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-2/r=0/sh=1/sl=6/s_sl=0/p=4",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/3887be50-7093-44b7-b14c-400e8b4f9f8b/odu/oac_bi-1/6/0/4",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=6},PTP={/p=453_4}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "eda97f0a-029c-3fc1-813e-a6156d9cd06d"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-1/r=0/sh=1/sl=6/s_sl=0/p=2",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/62b05559-b6db-4db9-a2f0-be4884e9de20/odu/oac_bi-1/6/0/2",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=6},PTP={/p=453_2}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "a92eaf48-cc56-3ac2-b755-d29733265500"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -5626,43 +5564,6 @@
             }
         },
         "uuid": "64b01c70-1699-3b76-9210-25fcacacc755"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 10
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "ODU",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-2/r=0/sh=1/sl=6/s_sl=0/p=1",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_hoodu/3887be50-7093-44b7-b14c-400e8b4f9f8b/odu/ochttp_bi-1/6/0/1",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=6},PTP={/p=454_1}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_OTU_2"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 10
-            }
-        },
-        "uuid": "fef61f07-af66-3bf7-90a3-9a27504ab30a"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -6014,43 +5915,6 @@
             }
         },
         "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "ODU",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-1/r=0/sh=1/sl=6/s_sl=0/p=1",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_hoodu/62b05559-b6db-4db9-a2f0-be4884e9de20/odu/ochttp_bi-1/6/0/1",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=6},PTP={/p=454_1}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_OTU_2"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 10
-            }
-        },
-        "uuid": "1f302854-3808-3ed2-899d-711545e307f9"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 10
-            }
-        },
-        "direction": "BIDIRECTIONAL",
         "layer-protocol-name": "DSR",
         "lifecycle-state": "INSTALLED",
         "name": [
@@ -6097,6 +5961,43 @@
             }
         },
         "uuid": "76139e9a-743a-326b-8fed-22b960a76c9d"
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "available-capacity": {
+            "total-size": {
+                "unit": "MBPS",
+                "value": 97500
+            }
+        },
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "ODU",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "/ne=UC9-1/r=0/sh=1/sl=7/s_sl=0/p=1",
+                "value-name": "INVENTORY_ID"
+            },
+            {
+                "value": "sip_hoodu/62b05559-b6db-4db9-a2f0-be4884e9de20/odu/ochttp_bi-1/7/0/1",
+                "value-name": "SIP_NAME"
+            },
+            {
+                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=7},PTP={/p=454_1}",
+                "value-name": "INVENTORY_NAME"
+            }
+        ],
+        "operational-state": "DISABLED",
+        "supported-layer-protocol-qualifier": [
+            "tapi-dsr:DIGITAL_SIGNAL_TYPE_OTU_4"
+        ],
+        "total-potential-capacity": {
+            "total-size": {
+                "unit": "GBPS",
+                "value": 100
+            }
+        },
+        "uuid": "5cd246d3-54d6-35ed-be48-5c02c15270c5"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -6201,46 +6102,6 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-2/r=0/sh=1/sl=6/s_sl=0/p=6",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/3887be50-7093-44b7-b14c-400e8b4f9f8b/odu/oac_bi-1/6/0/6",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=6},PTP={/p=453_6}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "4a764903-0ee8-31cc-b7ff-59b4ea6d2c9e"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
                 "unit": "GBPS",
                 "value": 10
             }
@@ -6292,6 +6153,65 @@
             }
         },
         "uuid": "f0a9e21e-d4a1-3044-81f6-00de50210976"
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "direction": "OUTPUT",
+        "layer-protocol-name": "PHOTONIC_MEDIA",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "/ne=Testbed_B_1/r=0/sh=1/sl=12/s_sl=0/p=40",
+                "value-name": "INVENTORY_ID"
+            },
+            {
+                "value": "sip_mc/8d88f1ef-c9dc-48ab-9fae-0ddd79350e16/och/och_ctp_si-1/12/0/40",
+                "value-name": "SIP_NAME"
+            },
+            {
+                "value": "ME{8d88f1ef-c9dc-48ab-9fae-0ddd79350e16},EQ={/r=0/sh=1/sl=12},PTP={/p=410_40}",
+                "value-name": "INVENTORY_NAME"
+            }
+        ],
+        "operational-state": "DISABLED",
+        "supported-layer-protocol-qualifier": [
+            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_MC"
+        ],
+        "tapi-photonic-media:media-channel-service-interface-point-spec": {
+            "mc-pool": {
+                "available-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_100GHZ",
+                            "grid-type": "DWDM"
+                        },
+                        "lower-frequency": 192050000,
+                        "upper-frequency": 195950000
+                    }
+                ],
+                "occupied-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_100GHZ",
+                            "grid-type": "DWDM"
+                        },
+                        "lower-frequency": 195950000,
+                        "upper-frequency": 196050000
+                    }
+                ],
+                "supportable-spectrum": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_100GHZ",
+                            "grid-type": "DWDM"
+                        },
+                        "lower-frequency": 192050000,
+                        "upper-frequency": 196050000
+                    }
+                ]
+            }
+        },
+        "uuid": "0511fdf4-02c2-3c23-b6f2-4c4dd0586721"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -6374,8 +6294,8 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
-                "unit": "MBPS",
-                "value": 0
+                "unit": "GBPS",
+                "value": 10
             }
         },
         "direction": "BIDIRECTIONAL",
@@ -6395,7 +6315,7 @@
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "DISABLED",
+        "operational-state": "ENABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_64",
             "tapi-dsr:DIGITAL_SIGNAL_TYPE_FC_800",
@@ -6431,44 +6351,7 @@
         "available-capacity": {
             "total-size": {
                 "unit": "GBPS",
-                "value": 10
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "PHOTONIC_MEDIA",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-1/r=0/sh=1/sl=6/s_sl=0/p=1",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_otsi/62b05559-b6db-4db9-a2f0-be4884e9de20/och/ochttp_bi-1/6/0/1",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=6},PTP={/p=454_1}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 10
-            }
-        },
-        "uuid": "9f595c20-b523-3bf5-a2b3-1d96becd9c74"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "GBPS",
-                "value": 0
+                "value": 100
             }
         },
         "direction": "BIDIRECTIONAL",
@@ -6486,9 +6369,13 @@
             {
                 "value": "ME{b15a8949-02c9-419f-90c5-9bfbd427574f},EQ={/r=0/sh=1/sl=13},PTP={/p=454_1}",
                 "value-name": "INVENTORY_NAME"
+            },
+            {
+                "value": "OFEC",
+                "value-name": "PROPRIETARY_FEC_TYPE_OFEC"
             }
         ],
-        "operational-state": "DISABLED",
+        "operational-state": "ENABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
         ],
@@ -6503,6 +6390,9 @@
                         "lower-central-frequency": 191143750,
                         "upper-central-frequency": 196100000
                     }
+                ],
+                "supportable-modulation": [
+                    "QPSK"
                 ],
                 "total-power-warn-threshold": {
                     "total-power-lower-warn-threshold-default": -6000,
@@ -6544,8 +6434,8 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
-                "unit": "MBPS",
-                "value": 0
+                "unit": "GBPS",
+                "value": 10
             }
         },
         "direction": "BIDIRECTIONAL",
@@ -6565,7 +6455,7 @@
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "DISABLED",
+        "operational-state": "ENABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_64",
             "tapi-dsr:DIGITAL_SIGNAL_TYPE_FC_800",
@@ -6997,6 +6887,43 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
+                "unit": "MBPS",
+                "value": 97500
+            }
+        },
+        "direction": "BIDIRECTIONAL",
+        "layer-protocol-name": "ODU",
+        "lifecycle-state": "INSTALLED",
+        "name": [
+            {
+                "value": "/ne=UC9-2/r=0/sh=1/sl=7/s_sl=0/p=1",
+                "value-name": "INVENTORY_ID"
+            },
+            {
+                "value": "sip_hoodu/3887be50-7093-44b7-b14c-400e8b4f9f8b/odu/ochttp_bi-1/7/0/1",
+                "value-name": "SIP_NAME"
+            },
+            {
+                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=7},PTP={/p=454_1}",
+                "value-name": "INVENTORY_NAME"
+            }
+        ],
+        "operational-state": "DISABLED",
+        "supported-layer-protocol-qualifier": [
+            "tapi-dsr:DIGITAL_SIGNAL_TYPE_OTU_4"
+        ],
+        "total-potential-capacity": {
+            "total-size": {
+                "unit": "GBPS",
+                "value": 100
+            }
+        },
+        "uuid": "a508d5a9-2f59-358f-ade3-85fa703fe974"
+    },
+    {
+        "administrative-state": "UNLOCKED",
+        "available-capacity": {
+            "total-size": {
                 "unit": "GBPS",
                 "value": 10
             }
@@ -7049,46 +6976,6 @@
             }
         },
         "uuid": "62900716-dcf8-38f2-9baa-d56e0ada5dbb"
-    },
-    {
-        "administrative-state": "UNLOCKED",
-        "available-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "direction": "BIDIRECTIONAL",
-        "layer-protocol-name": "DSR",
-        "lifecycle-state": "INSTALLED",
-        "name": [
-            {
-                "value": "/ne=UC9-2/r=0/sh=1/sl=6/s_sl=0/p=2",
-                "value-name": "INVENTORY_ID"
-            },
-            {
-                "value": "sip_dsr/3887be50-7093-44b7-b14c-400e8b4f9f8b/odu/oac_bi-1/6/0/2",
-                "value-name": "SIP_NAME"
-            },
-            {
-                "value": "ME{3887be50-7093-44b7-b14c-400e8b4f9f8b},EQ={/r=0/sh=1/sl=6},PTP={/p=453_2}",
-                "value-name": "INVENTORY_NAME"
-            }
-        ],
-        "operational-state": "ENABLED",
-        "supported-layer-protocol-qualifier": [
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_1",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_16",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_GigE",
-            "tapi-dsr:DIGITAL_SIGNAL_TYPE_STM_4"
-        ],
-        "total-potential-capacity": {
-            "total-size": {
-                "unit": "MBPS",
-                "value": 2500
-            }
-        },
-        "uuid": "93ac964e-a636-3489-a2a2-18f541a5ce38"
     },
     {
         "administrative-state": "UNLOCKED",
@@ -7174,8 +7061,8 @@
         "administrative-state": "UNLOCKED",
         "available-capacity": {
             "total-size": {
-                "unit": "GBPS",
-                "value": 10
+                "unit": "MBPS",
+                "value": 7500
             }
         },
         "direction": "BIDIRECTIONAL",
@@ -7499,28 +7386,48 @@
                 "value": 0
             }
         },
-        "direction": "INPUT",
+        "direction": "BIDIRECTIONAL",
         "layer-protocol-name": "PHOTONIC_MEDIA",
         "lifecycle-state": "INSTALLED",
         "name": [
             {
-                "value": "/ne=Testbed_D_1/r=0/sh=1/sl=10/s_sl=0/p=9",
+                "value": "/ne=UC9-1/r=0/sh=1/sl=7/s_sl=0/p=1",
                 "value-name": "INVENTORY_ID"
             },
             {
-                "value": "sip_otsi/5cad8a30-cdfc-4349-b06f-cffed7b9bedb/och/soms_ttp_si-1/10/0/9",
+                "value": "sip_otsi/62b05559-b6db-4db9-a2f0-be4884e9de20/och/ochttp_bi-1/7/0/1",
                 "value-name": "SIP_NAME"
             },
             {
-                "value": "ME{5cad8a30-cdfc-4349-b06f-cffed7b9bedb},EQ={/r=0/sh=1/sl=10},PTP={/p=420_9}",
+                "value": "ME{62b05559-b6db-4db9-a2f0-be4884e9de20},EQ={/r=0/sh=1/sl=7},PTP={/p=454_1}",
                 "value-name": "INVENTORY_NAME"
             }
         ],
-        "operational-state": "ENABLED",
+        "operational-state": "DISABLED",
         "supported-layer-protocol-qualifier": [
             "tapi-photonic-media:PHOTONIC_LAYER_QUALIFIER_OTSi"
         ],
-        "uuid": "56e76683-1904-3017-a720-8db810c4e797"
+        "tapi-photonic-media:otsi-service-interface-point-spec": {
+            "otsi-capability": {
+                "supportable-central-frequency-spectrum-band": [
+                    {
+                        "frequency-constraint": {
+                            "adjustment-granularity": "G_6_25GHZ",
+                            "grid-type": "FLEX"
+                        },
+                        "lower-central-frequency": 201001750,
+                        "upper-central-frequency": 213008000
+                    }
+                ]
+            }
+        },
+        "total-potential-capacity": {
+            "total-size": {
+                "unit": "GBPS",
+                "value": 100
+            }
+        },
+        "uuid": "ee08d9db-97a6-3abb-83ae-bd00d4d49310"
     },
     {
         "administrative-state": "UNLOCKED",
