@@ -60,6 +60,28 @@ pub fn build_schema(
         connectivity_services: Vec::new(),
     };
 
+    let custom_order = |qualifier: &String| {
+        if qualifier.contains("DSR") {
+            0
+        } else if qualifier.contains("ODU") {
+            1
+        } else if qualifier.contains("OTSIMC") {
+            3
+        } else if qualifier.contains("OTSI") {
+            2
+        } else if qualifier.contains("MC") {
+            4
+        } else if qualifier.contains("UNISPECIFIED") {
+            5
+        } else if qualifier.contains("OMS") {
+            6
+        } else if qualifier.contains("OTS") {
+            7
+        } else {
+            8 // Por si no contiene ninguno de los valores
+        }
+    };
+
     for service in service_vector {
         let mut node_response_vector: Vec<NodeResponse> = Vec::new();
         let mut inventories_response_vector: Vec<Inventory> = Vec::new();
@@ -83,6 +105,10 @@ pub fn build_schema(
                         inventory.endpoints.push(endpoint.clone());
                     });
             }
+        }
+
+        for inventory in &mut inventories_response_vector {
+            inventory.endpoints.sort_by_key(|endpoint| custom_order(&endpoint.layer_protocol_qualifier));
         }
 
         for inventory in &inventories_response_vector {

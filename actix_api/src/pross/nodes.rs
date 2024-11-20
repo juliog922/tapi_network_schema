@@ -183,7 +183,7 @@ pub fn node_vector_building(topology_json: &Value) -> Vec<Node> {
         node_vector.push(
             Node {
                 node_uuid: node_item.get("uuid").unwrap_or(&Value::default()).to_string(),
-                name: find_name(&node_item, "NODE_IDENTIFIER".to_string()),
+                name: find_name(&node_item, "NODE_IDENTIFIER".to_string()), ////////////
                 owned_node_edge_points: owned_node_edge_point_vector,
             }
         );

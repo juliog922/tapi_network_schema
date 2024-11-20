@@ -1,7 +1,6 @@
 mod routes;
 mod utils;
 mod pross;
-mod models;
 
 use actix_web::{web, main, App, HttpServer};
 use tokio::sync::Mutex;

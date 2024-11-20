@@ -51,12 +51,12 @@ fn highlight_class(
         "client-highlighted"
     } else if is_parent_highlighted {
         "client-highlighted"
+    } else if is_connection_highlighted {
+        "connection-highlighted"
     } else if is_lower_highlighted {
         "lower-highlighted"
     } else if is_higher_highlighted {
         "lower-highlighted"
-    } else if is_connection_highlighted {
-        "connection-highlighted"
     } else if is_link_highlighted {
         "link-highlighted"
     } else {
@@ -89,7 +89,7 @@ pub fn nodes(props: &NodesProps) -> Html {
     let highlighted_parent_uuid = use_state(|| HashSet::<String>::new());
     let highlighted_service_uuid = use_state(|| HashSet::<String>::new());
 
-    let positions_pairs_vec = use_state(|| Vec::<((f64, f64), (f64, f64))>::new());
+    let positions_pairs_vec = use_state(|| Vec::<((f64, f64), (f64, f64), String)>::new());
 
 
     // Callback to handle right-click (context menu) events and update hover data
@@ -131,12 +131,7 @@ pub fn nodes(props: &NodesProps) -> Html {
         
         Callback::from(move |ep: Value| {
 
-            //let node_edge_point_uuid = ep["node_edge_point_uuid"].as_str().unwrap();
-
             let selected_postion = get_position(ep["node_edge_point_uuid"].as_str().unwrap()).unwrap();
-            //if let Some((x,y)) = get_position(node_edge_point_uuid) {
-            //    web_sys::console::log_1(&format!("Posición de {}: ({}, {})", node_edge_point_uuid, x, y).into());
-            //}
 
             selected_value.set(Some(ep.clone()));
             let mut new_highlighted_link_uuids: HashSet<String> = HashSet::new();
@@ -146,7 +141,7 @@ pub fn nodes(props: &NodesProps) -> Html {
             let mut new_highlighted_client_uuid: HashSet<String> = HashSet::new();
             let mut new_highlighted_parent_uuid: HashSet<String> = HashSet::new();
             let mut new_highlighted_service_uuid: HashSet<String> = HashSet::new();
-            let mut new_positions_pairs_vec: Vec::<((f64, f64), (f64, f64))> = Vec::new();
+            let mut new_positions_pairs_vec: Vec::<((f64, f64), (f64, f64), String)> = Vec::new();
 
             if let Some(nodes_array) = nodes.as_array() {
                 for node in nodes_array {
@@ -162,7 +157,9 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                 
                                                 new_positions_pairs_vec.push(
                                                     (selected_postion, 
-                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap())
+                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap(),
+                                                    "brown".to_string()
+                                                    )
                                                 );
                                                 new_highlighted_link_uuids.insert(link_uuid_guest.to_string());
 
@@ -177,7 +174,9 @@ pub fn nodes(props: &NodesProps) -> Html {
 
                                                 new_positions_pairs_vec.push(
                                                     (selected_postion, 
-                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap())
+                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap(),
+                                                    "blue".to_string()
+                                                    )
                                                 );
                                                 new_highlighted_connections_uuid.insert(connection_uuid_guest.to_string());
 
@@ -192,13 +191,15 @@ pub fn nodes(props: &NodesProps) -> Html {
                                     }
 
                                     //Lower Connection
-                                    if let Some(lower_connection_home) = ep.get("lower_connection_uuid") {
+                                    if let Some(lower_connection_home) = ep.get("lower_connection") {
                                         if let Some(connection_uuid_guest) = endpoint.get("connection_uuid") {
                                             if lower_connection_home == connection_uuid_guest {
 
                                                 new_positions_pairs_vec.push(
                                                     (selected_postion, 
-                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap())
+                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap(),
+                                                    "#FFD700".to_string()
+                                                    )
                                                 );
                                                 new_highlighted_lower_connections.insert(connection_uuid_guest.to_string());
 
@@ -208,12 +209,14 @@ pub fn nodes(props: &NodesProps) -> Html {
 
                                     //Higher Connection
                                     if let Some(connection_uuid_home) = ep.get("connection_uuid") {
-                                        if let Some(lower_connection_guest) = endpoint.get("lower_connection_uuid") {
+                                        if let Some(lower_connection_guest) = endpoint.get("lower_connection") {
                                             if lower_connection_guest == connection_uuid_home {
 
                                                 new_positions_pairs_vec.push(
                                                     (selected_postion, 
-                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap())
+                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap(),
+                                                    "#FFD700".to_string()
+                                                    )
                                                 );
                                                 new_highlighted_higher_connections.insert(lower_connection_guest.to_string());
 
@@ -299,11 +302,11 @@ pub fn nodes(props: &NodesProps) -> Html {
         <svg class="line-overlay" xmlns="http://www.w3.org/2000/svg">
                 {   
                     // Recorrer `postions_pairs_hashset` y dibujar una línea para cada par de puntos
-                    for (*positions_pairs_vec).iter().map(|((x1, y1), (x2, y2))| {
+                    for (*positions_pairs_vec).iter().map(|((x1, y1), (x2, y2), color)| {
                         html! {
                             <line x1={(x1).to_string()} y1={(y1).to_string()}
                                 x2={(x2).to_string()} y2={(y2).to_string()}
-                                stroke="black" stroke-width="1" opacity="0.5" />
+                                stroke={color.clone()} stroke-width="1" opacity="0.5" />
                         }
                     })
                 }
@@ -395,7 +398,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                             
 
                                                             let is_higher_highlighted = {
-                                                                if let Some(lower_uuid) = ep.get("lower_connection_uuid") {
+                                                                if let Some(lower_uuid) = ep.get("lower_connection") {
                                                                     highlighted_higher_connections.contains(&lower_uuid.to_string()) && !is_selected
                                                                 } else {
                                                                     false
@@ -414,8 +417,7 @@ pub fn nodes(props: &NodesProps) -> Html {
 
                                                             let last_nepu: &str = {
                                                                     if let Some(node_edge_point_uuid) = ep["node_edge_point_uuid"].as_str() {
-                                                                        //&node_edge_point_uuid[node_edge_point_uuid.len()-4..node_edge_point_uuid.len()-1]
-                                                                        &node_edge_point_uuid[node_edge_point_uuid.len()-4..]
+                                                                        &node_edge_point_uuid[node_edge_point_uuid.len()-5..node_edge_point_uuid.len()-1]
                                                                 } else {
                                                                     ""
                                                                 }
@@ -424,12 +426,10 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                             let qualifier: &str = {
                                                                 if let Some(protocol_qualifier) = ep["layer_protocol_qualifier"].as_str() {
                                                                     if let Some(qualifier_index) = protocol_qualifier.find("QUALIFIER_") {
-                                                                        //&protocol_qualifier[qualifier_index + "QUALIFIER_".len()..protocol_qualifier.len()-1]
-                                                                        &protocol_qualifier[qualifier_index + "QUALIFIER_".len()..]
+                                                                        &protocol_qualifier[qualifier_index + "QUALIFIER_".len()..protocol_qualifier.len()-1]
                                                                     } else {
                                                                         if let Some(qualifier_index) = protocol_qualifier.find("TYPE_") {
-                                                                            //&protocol_qualifier[qualifier_index + "TYPE_".len()..protocol_qualifier.len()-1]
-                                                                            &protocol_qualifier[qualifier_index + "TYPE_".len()..]
+                                                                            &protocol_qualifier[qualifier_index + "TYPE_".len()..protocol_qualifier.len()-1]
                                                                         } else {
                                                                             ""
                                                                         }

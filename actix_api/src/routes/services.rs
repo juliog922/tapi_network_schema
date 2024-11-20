@@ -1,5 +1,5 @@
 use actix_web::{error, web, get, Error, HttpResponse};
-use serde_json::{Value, from_str};
+use serde_json::Value;
 use reqwest::Client;
 use std::collections::HashMap;
 use tokio::sync::Mutex;
@@ -11,11 +11,6 @@ use crate::utils::{
     matching,
 };
 use crate::pross::{
-    conn_services::services_vector,
-    build_endpoints::endpoints_creation,
-    lower_transform::lower_conn_transformation,
-    inventory_id::inventory_creation,
-    data_fill::link_mapping,
     token_src::{
         get_token,
         get_topology,
@@ -45,10 +40,6 @@ async fn connectivity_services(
     host_dictionary: web::Data<Arc<Mutex<HashMap<String, HostParameters>>>>) -> Result<HttpResponse, Error> {
 
     /*
-    host = 10.95.87.21
-    port = 18010
-    user = tapi
-    password = Zenap_1235!!!
     let connectivity_services = to_list(get_json_from_file("connectivity_services")?)?;
     let connections = to_list(get_json_from_file("connections.json")?)?;
     let _services_interface_point = to_list(get_json_from_file("services_interface_point.json")?)?;
@@ -102,68 +93,13 @@ async fn connectivity_services(
             //let _services_interface_point = to_list(matching(true, &json, "/tapi-common:context/service-interface-point")?)?;
             topology = matching(true, &json, "/tapi-common:context/tapi-topology:topology-context/topology")?;
         }
-
-        /* 
+        
         let link_vector = link_vector_build(&topology);
         let connection_vector = connection_vector_build(&connections);
         let node_vector = node_vector_building(&topology);
         let service_vector = connectivity_service_vector_build(&connectivity_services);
 
-        let schema = build_schema(&service_vector, &link_vector, &node_vector, &connection_vector)?;
-        */
-
-        let mut lower_connections_hashmap: HashMap<String, Value> = HashMap::new();
-        let mut connection_uuid_hashmap: HashMap<String, Value> = HashMap::new();
-        let mut connection_uuid_lower_hashmap: HashMap<String, Value> = HashMap::new();
-        let mut nepu_by_connection: HashMap<String, Vec<Value>> = HashMap::new();
-
-        for connection in &connections {
-            if let Some(connection_uuid) = connection.get("uuid") {
-
-                let connection_end_point_list = connection.get("connection-end-point").unwrap_or(&Value::Array(vec![])).as_array().unwrap_or(&vec![]).clone();
-
-                nepu_by_connection.insert(
-                    connection_uuid.clone().to_string(),
-                    connection_end_point_list.clone()
-                );
-                
-                for connection_end_point in connection_end_point_list.iter() {
-
-                    if let Some(lower_connections) = connection.get("lower-connection") {
-
-                        lower_connections_hashmap.insert(
-                            connection_end_point.get("node-edge-point-uuid").unwrap().to_string(),
-                            lower_connections.clone()
-                        );
-
-                        connection_uuid_hashmap.insert(
-                            connection_end_point.get("node-edge-point-uuid").unwrap().to_string(),
-                            connection_uuid.clone()
-                        );
-
-                    } else {
-
-                        connection_uuid_lower_hashmap.insert(
-                            connection_end_point.get("node-edge-point-uuid").unwrap().to_string(),
-                            connection_uuid.clone()
-                        );
-
-                    }
-                }
-
-            }
-        }
-
-        let link_nepu_hashmap: HashMap<String, Value> = link_mapping(&topology);
-
-        let mut schema = services_vector(&connectivity_services, &topology, 
-            &lower_connections_hashmap, &connection_uuid_hashmap, &connection_uuid_lower_hashmap, &link_nepu_hashmap)?;
-
-        endpoints_creation(&topology, &connections, &mut schema, 
-            &lower_connections_hashmap, &connection_uuid_hashmap, &connection_uuid_lower_hashmap, &nepu_by_connection , &link_nepu_hashmap)?;
-
-        lower_conn_transformation(&mut schema, &connection_uuid_lower_hashmap)?;
-        let schema = inventory_creation(&mut schema)?; 
+        let schema = build_schema(&service_vector, &link_vector, &node_vector, &connection_vector)?; 
         
         
         return Ok(HttpResponse::Ok().json(schema));

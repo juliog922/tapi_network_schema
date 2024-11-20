@@ -27,6 +27,7 @@ enum ConnectionRole {
     UpperWithLowers,
     UpperWithoutLowers,
     Lower,
+    UnknownUpper,
 }
 
 impl Connection {
@@ -35,6 +36,8 @@ impl Connection {
         base_endpoint: &mut BaseEndpoint,
         connection_vector: &Vec<Self>,
     ) -> Vec<BaseEndpoint> {
+        let connection_vector: Vec<Connection> = connection_vector.clone().into_iter()
+                                                    .filter(|connection| connection.connection_uuid != self.connection_uuid).collect();
         let mut base_endpoint_vector: Vec<BaseEndpoint> = Vec::new();
 
         if self.connection_end_points.iter().any(|cep| {
@@ -48,7 +51,7 @@ impl Connection {
             }
 
             // Determina el rol de la conexión
-            match self.determine_connection_role(connection_vector, base_endpoint) {
+            match self.determine_connection_role(&connection_vector, &base_endpoint) {
                 ConnectionRole::UpperWithLowers => {
                     base_endpoint.connection_uuid = Some(self.connection_uuid.clone());
 
@@ -56,8 +59,6 @@ impl Connection {
                     base_endpoint_vector.extend(self.generate_base_endpoints(
                         base_endpoint,
                         &base_endpoint.node_edge_point_uuid,
-                        None,
-                        None,
                         1,
                     ));
 
@@ -70,8 +71,6 @@ impl Connection {
                             base_endpoint_vector.extend(conn.generate_base_endpoints(
                                 base_endpoint,
                                 &base_endpoint.node_edge_point_uuid,
-                                Some(conn.connection_uuid.clone()),
-                                None,
                                 2,
                             ));
                         }
@@ -82,8 +81,6 @@ impl Connection {
                     base_endpoint_vector.extend(self.generate_base_endpoints(
                         base_endpoint,
                         &base_endpoint.node_edge_point_uuid,
-                        None,
-                        None,
                         1,
                     ));
                 }
@@ -92,11 +89,10 @@ impl Connection {
                     base_endpoint_vector.extend(self.generate_base_endpoints(
                         base_endpoint,
                         &base_endpoint.node_edge_point_uuid,
-                        None,
-                        Some(self.connection_uuid.clone()),
                         -2,
                     ));
                 }
+                ConnectionRole::UnknownUpper => {}
             }
         }
 
@@ -112,10 +108,15 @@ impl Connection {
             ConnectionRole::UpperWithLowers
         } else if connection_vector.iter().any(|conn| {
             conn.lower_connections.iter().any(|lc| lc.connection_uuid == self.connection_uuid)
+                && conn.connection_end_points.iter().all(|cep| cep.node_edge_point_uuid != base_endpoint.node_edge_point_uuid)
         }) {
             ConnectionRole::Lower
-        } else {
+        } else if !connection_vector.iter().any(|conn| {
+            conn.lower_connections.iter().any(|lc| lc.connection_uuid == self.connection_uuid)
+        }) {
             ConnectionRole::UpperWithoutLowers
+        } else {
+            ConnectionRole::UnknownUpper
         }
     }
 
@@ -123,8 +124,6 @@ impl Connection {
         &self,
         base_endpoint: &BaseEndpoint,
         excluded_uuid: &str,
-        new_connection_uuid: Option<String>,
-        new_lower_connection: Option<String>,
         id_offset: i32,
     ) -> Vec<BaseEndpoint> {
         self.connection_end_points
@@ -134,8 +133,6 @@ impl Connection {
                 node_edge_point_uuid: cep.node_edge_point_uuid.clone(),
                 node_uuid: cep.node_uuid.clone(),
                 connection_end_point_uuid: Some(cep.connection_end_point_uuid.clone()),
-                connection_uuid: new_connection_uuid.clone(),
-                lower_connection: new_lower_connection.clone(),
                 id: base_endpoint.id.map(|id| id + id_offset),
                 ..Default::default()
             })
