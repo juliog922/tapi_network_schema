@@ -1,6 +1,8 @@
+use std::collections::HashMap;
+
 use reqwest::Client;
 use actix_web::{error, Error};
-use serde_json::Value;
+use serde_json::{Map, Value};
 
 /// Sends a GET request to the provided URL and returns the JSON response.
 ///
@@ -67,7 +69,6 @@ pub async fn get_token(
     let mut json_body = std::collections::HashMap::new();
     json_body.insert("username", &username);
     json_body.insert("password", &password);
-    json_body.insert("tenant", &tenant);
 
     // Send the POST request to obtain the token.
     let response = Client::builder()
@@ -157,7 +158,11 @@ pub async fn get_topology(token: &str, host: &str, port: &str) -> Result<Value, 
     let nodes_json = get_json(&nodes_url, token).await?;
 
     // Combine links and nodes into a single JSON value.
-    let topology_vector: Value = Value::Array(vec![link_json, nodes_json]);
+    let mut topology_hashmap: Map<String, Value> = Map::new();
+    topology_hashmap.insert("link".to_string(), link_json.get("tapi-topology:link").unwrap().clone()); 
+    topology_hashmap.insert("node".to_string(), nodes_json.get("tapi-topology:node").unwrap().clone()); 
+    let topology_object: Value = Value::Object(topology_hashmap);
+    let topology_vector: Value = Value::Array(vec![topology_object]);
 
     Ok(topology_vector) // Return the combined topology information.
 }
