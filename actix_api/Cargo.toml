@@ -11,3 +11,5 @@ actix-cors = "0.7.0"
 serde = { version = "1.0.204", features = ["derive"] }
 ipaddress = "0.1.3"
 tokio = { version = "1.40.0", features = ["full"] }
+futures-util = "0.3.31"
+actix-multipart = "0.7.2"

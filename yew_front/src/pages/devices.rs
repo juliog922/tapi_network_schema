@@ -29,11 +29,11 @@ use crate::api::connection::{get_devices, delete_device};
 pub fn devices() -> Html {
     // State to hold the fetched JSON data
     let json_data = use_state(|| None);
-
+    
     // Fetch JSON data on component mount
     {
         let json_clone = json_data.clone();
-        use_effect(move || {
+        use_effect_with((), move |_| {
             let json_clone = json_clone.clone();
             spawn_local(async move {
                 match get_devices().await {
@@ -53,26 +53,22 @@ pub fn devices() -> Html {
                     <div class="devices-container">
                         {
                             devices_array.iter().enumerate().map(|(index, device)| {
-                                let ip = device["host"].as_str().unwrap_or("").to_string();
-                                let port = device["port"].as_str().unwrap_or("").to_string();
-                                let tenant = device["tenant"].as_str().unwrap_or("").to_string();
-                                let user = device["user"].as_str().unwrap_or("").to_string();
-                                
-                                html! {
-                                    <div class="device-card" style={format!("animation-delay: {}s", index as f32 * 0.3)}>
-                                        <div class="device-header">
-                                            <span class="device-icon">{"📱"}</span>
-                                            <div class="device-info">
-                                                <p>{ format!("IP: {}", ip) }</p>
-                                                <p>{ format!("Port: {}", port) }</p>
-                                                <p>{ format!("Tenant: {}", tenant) }</p>
-                                                <p>{ format!("User: {}", user) }</p>
+
+                                if let Some(id) = device.get("id") {
+                                    let id = id.as_str().unwrap_or("?").to_string();
+                                    html! {
+                                        
+                                        <div class="device-card" style={format!("animation-delay: {}s", index as f32 * 0.3)}>
+                                            <div class="device-header">
+                                                <span class="device-icon">{"📁"}</span>
+                                                <div class="device-info">
+                                                    <p>{ format!("ID: {}", id) }</p>
+                                                </div>
                                             </div>
-                                            <button class="check-api-button">
-                                                <Link<Route> to={Route::ServiceSchema{ip: ip.clone()}} classes="check-api-text">{"Check tAPI Schema"}</Link<Route>>
-                                            </button>
-                                        </div>
                                         <div class="device-actions">
+                                            <button class="check-api-button">
+                                                <Link<Route> to={Route::ServiceSchema{ip: id.clone()}} classes="check-api-text">{"Check Services List"}</Link<Route>>
+                                            </button>
                                             <button onclick={
                                                 Callback::from(move |e: MouseEvent| {
                                                     e.prevent_default();
@@ -80,18 +76,65 @@ pub fn devices() -> Html {
                                                     let is_confirmed = web_sys::window().unwrap()
                                                         .confirm_with_message("Are you sure you want to delete this device?").unwrap();
                                                     if is_confirmed {
-                                                        let ip_clone = ip.clone(); // Clone `ip` to move into async block
+                                                        let id_clone = id.clone(); // Clone `ip` to move into async block
                                                         spawn_local(async move {
-                                                            match delete_device(&ip_clone).await {
-                                                                Ok(_) => {},
+                                                            match delete_device(&id_clone).await {
+                                                                Ok(_) => {
+                                                                },
                                                                 Err(_) => {},
                                                             }
                                                         });
                                                     }
+                                                    web_sys::window().unwrap().location().reload().unwrap()
                                                 })
                                             }>{"Delete"}</button>
                                         </div>
-                                    </div>
+                                        </div>
+                                    }
+
+                                } else {
+                                    let ip = device["ip"].as_str().unwrap_or("?").to_string();
+                                    
+                                    html! {
+                                        <div class="device-card" style={format!("animation-delay: {}s", index as f32 * 0.3)}>
+                                            <div class="device-header">
+                                                <span class="device-icon">{"📱"}</span>
+                                                <div class="device-info">
+                                                    <p>{ format!("IP: {}", ip) }</p>
+                                                    {
+                                                        if let Some(port) = device.get("port") {
+                                                            html!(<p>{ format!("Port: {}", port.as_i64().unwrap_or(00000)) }</p>)
+                                                        } else {
+                                                            html!()
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="device-actions">
+                                                <button class="check-api-button">
+                                                    <Link<Route> to={Route::ServiceSchema{ip: ip.clone()}} classes="check-api-text">{"Check tAPI Schema"}</Link<Route>>
+                                                </button>
+                                                <button onclick={
+                                                    Callback::from(move |e: MouseEvent| {
+                                                        e.prevent_default();
+                                                        // Show confirmation dialog
+                                                        let is_confirmed = web_sys::window().unwrap()
+                                                            .confirm_with_message("Are you sure you want to delete this device?").unwrap();
+                                                        if is_confirmed {
+                                                            let ip_clone = ip.clone(); // Clone `ip` to move into async block
+                                                            spawn_local(async move {
+                                                                match delete_device(&ip_clone).await {
+                                                                    Ok(_) => {},
+                                                                    Err(_) => {},
+                                                                }
+                                                            });
+                                                        }
+                                                        web_sys::window().unwrap().location().reload().unwrap()
+                                                    })
+                                                }>{"Delete"}</button>
+                                            </div>
+                                        </div>
+                                    }
                                 }
                             }).collect::<Html>()
                         }
@@ -126,16 +169,20 @@ pub fn devices() -> Html {
             // Render the sidebar component
             <SideBar />
             
-            <div class="main-content">
-                <div class="intro">
-                    <span></span>
-                </div>
+            <div class="main-device-container">
                 // Render the devices HTML content
                 { devices_html }
                 <div class="add-device-text">
                     <span>
                         <Link<Route> to={Route::AddDevices}>
-                            { "+ Add New Device" }
+                            { "+ New Device 📱" }
+                        </Link<Route>>
+                    </span>
+                </div>
+                <div class="add-files-text">
+                    <span>
+                        <Link<Route> to={Route::UploadFiles}>
+                            { "+ New Files 📁" }
                         </Link<Route>>
                     </span>
                 </div>

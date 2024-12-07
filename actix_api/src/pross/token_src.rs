@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use reqwest::Client;
 use actix_web::{error, Error};
 use serde_json::{Map, Value};
@@ -63,7 +61,6 @@ pub async fn get_token(
     port: &str,
     username: &str,
     password: &str,
-    tenant: &str,
 ) -> Result<String, Error> {
     // Build the JSON body for the POST request.
     let mut json_body = std::collections::HashMap::new();

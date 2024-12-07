@@ -1,12 +1,10 @@
 use yew::prelude::*;
-use serde_json::json;
 
 use crate::components::{
     sidebar::SideBar,
     nodes::Nodes,
     footer_legend::FooterLegend,
 };
-use crate::contexts::node_context::NodesContext;
 
 /// Properties for the `NodeSchema` component.
 #[derive(PartialEq, Properties)]
@@ -23,11 +21,6 @@ pub struct Props {
 
 #[function_component(NodeSchema)]
 pub fn node_schema(props: &Props) -> Html {
-    // Retrieve the NodesContext from the context provider
-    let nodes_context = use_context::<NodesContext>().expect("no context found");
-
-    // Get the nodes data from the context or default to an empty JSON object
-    let nodes = nodes_context.get().clone().unwrap_or_else(|| json!({}));
 
     html! {
         <div id="app">
@@ -45,7 +38,7 @@ pub fn node_schema(props: &Props) -> Html {
                 </div>
 
                 // Render the `Nodes` component with the nodes data
-                <Nodes nodes={nodes} />
+                <Nodes device_ip={props.device_ip.clone()} service_uuid={props.service_uuid.clone()} />
             </div>
 
             <FooterLegend />

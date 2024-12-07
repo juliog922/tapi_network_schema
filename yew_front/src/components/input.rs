@@ -6,6 +6,7 @@ pub struct Props {
     pub input_type: AttrValue,
     pub name: AttrValue,
     pub value: AttrValue,
+    pub placeholder: AttrValue,
     pub onchange: Callback<Event>
 }
 
@@ -20,6 +21,7 @@ pub fn input(props: &Props) -> Html {
                 class="form-control"
                 type={props.input_type.clone()}
                 name={props.name.clone()}
+                placeholder={props.placeholder.clone()}
                 value={props.value.clone()}
                 onchange={props.onchange.clone()}
             />

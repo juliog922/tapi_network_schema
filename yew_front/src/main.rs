@@ -4,12 +4,6 @@ use yew::prelude::*;
 mod api;
 mod pages;
 mod components;
-mod contexts;
-
-use crate::contexts::{
-    node_context::NodesProvider,
-    service_context::ServiceProvider,
-};
 
 #[derive(Routable, PartialEq, Clone)]
 enum Route {
@@ -19,6 +13,8 @@ enum Route {
     Devices,
     #[at("/devices/add")]
     AddDevices,
+    #[at("/files")]
+    UploadFiles,
     #[at("/service_schema/:ip")]
     ServiceSchema {ip: String},
     #[at("/node_schema/:ip/:uuid/:name")]
@@ -34,6 +30,7 @@ fn switch(route: Route) -> Html {
         Route::NodeSchema {ip, uuid, name} => html!{ <pages::nodes_schema::NodeSchema device_ip={ip} service_uuid={uuid} name={name}/> },
         Route::Devices => html!{ <pages::devices::Devices/>},
         Route::AddDevices => html!{ <pages::add_devices::AddDevices/>},
+        Route::UploadFiles => html!{<pages::upload_files::UploadFiles/>},
         Route::Info => html!{ <pages::info::Info/>},
     }
     
@@ -42,13 +39,9 @@ fn switch(route: Route) -> Html {
 #[function_component(App)]
 fn app() -> Html {
     html!{
-        <NodesProvider>
-        <ServiceProvider>
-            <BrowserRouter>
-                <Switch<Route> render={switch} />
-            </BrowserRouter>
-        </ServiceProvider>
-        </NodesProvider>
+        <BrowserRouter>
+            <Switch<Route> render={switch} />
+        </BrowserRouter>
     }
 }
 

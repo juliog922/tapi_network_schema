@@ -1,0 +1,112 @@
+.upload-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f4f7fb;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+  
+    .form-group {
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 400px;
+    }
+  
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 20px;
+    }
+  
+    .toggle-label {
+      font-size: 16px;
+      color: #333;
+    }
+  
+    .toggle-switch {
+      appearance: none;
+      width: 50px;
+      height: 25px;
+      background-color: #ccc;
+      border-radius: 25px;
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  
+      &::before {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 19px;
+        height: 19px;
+        background-color: white;
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+      }
+  
+      &:checked {
+        background-color: #4caf50;
+      }
+  
+      &:checked::before {
+        transform: translateX(25px);
+      }
+    }
+
+    .fake-file-upload-container {
+        width: 100%;
+        max-width: 400px;
+        margin-bottom: 20px;
+        padding: 31.5px;
+    }
+  
+    .file-upload-container {
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 20px;
+  
+      label {
+        display: block;
+        font-size: 10px;
+        margin-bottom: 8px;
+        color: #555;
+      }
+  
+      input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #fff;
+        color: #333;
+        cursor: pointer;
+  
+        &:focus {
+          border-color: #4caf50;
+          outline: none;
+        }
+      }
+    }
+  
+    .upload-mode-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 400px;
+      transition: opacity 0.3s ease, height 0.3s ease;
+    }
+  
+    .upload-mode-container.hide {
+      display: none;
+    }
+  }
+  

@@ -1,6 +1,7 @@
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use super::endpoint::BaseEndpoint;
+use super::{endpoint::BaseEndpoint, connections::{Connection, LowerConnection}};
 use crate::utils::find_name;
 
 #[derive(Debug, Clone)]
@@ -8,6 +9,8 @@ pub struct Service {
     pub service_uuid: String,
     pub name: String,
     pub end_points: Vec<EndPoint>,
+    pub connections: Vec<ServiceConnection>,
+    pub lower_connections: Vec<LowerConnection>,
 }
 
 #[derive(Debug, Clone)]
@@ -16,6 +19,11 @@ pub struct EndPoint {
     pub location: String,
     pub connection_end_points: Vec<ServiceConnectionEndPoint>,
     pub service_interface_point_uuid: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct ServiceConnection {
+    pub connection_uuid: String,
 }
 
 #[derive(Debug, Clone)]
@@ -50,17 +58,12 @@ impl Service {
         });
         base_endpoint_vector
     }
-}
 
-pub fn connectivity_service_vector_build(connectivity_services_json: &Vec<Value>) -> Vec<Service> {
-    
-    let mut connectivity_service_vector: Vec<Service> = Vec::new();
-
-    for service_item in connectivity_services_json {
+    pub fn connectivity_service_build(connectivity_service_json: &Value, connection_vector: &Vec<Connection>) -> Self {
 
         let mut end_point_vector: Vec<EndPoint> = Vec::new();
 
-        if let Some(end_point_section) = service_item.get("end-point").and_then(Value::as_array) {
+        if let Some(end_point_section) = connectivity_service_json.get("end-point").and_then(Value::as_array) {
             for end_point_item in end_point_section {
 
                 let mut service_connection_end_point_vector: Vec<ServiceConnectionEndPoint> = Vec::new();
@@ -92,15 +95,56 @@ pub fn connectivity_service_vector_build(connectivity_services_json: &Vec<Value>
             }
         }
 
-        connectivity_service_vector.push(
-            Service {
-                service_uuid: service_item.get("uuid").unwrap_or(&Value::default()).to_string(),
-                name: find_name(service_item, "SERVICE_NAME".to_string()),
-                end_points: end_point_vector,
+        let mut service_connection_vector: Vec<ServiceConnection> = Vec::new();
+        let mut service_lower_connection_vector: Vec<LowerConnection> = Vec::new();
+
+        if let Some(connection_section) = connectivity_service_json.get("connection").and_then(Value::as_array) {
+            for connection in connection_section {
+                let connection_uuid = connection.get("connection-uuid").unwrap_or(&Value::default()).to_string();
+                service_connection_vector.push(
+                    ServiceConnection {
+                        connection_uuid:  connection_uuid.clone(),
+                    }
+                );
+                'lower_loop: for connection_struct in connection_vector {
+                    if connection_struct.connection_uuid == connection_uuid {
+                        service_lower_connection_vector.extend(connection_struct.lower_connections.clone());
+                        break 'lower_loop;
+                    }
+                }
+            }
+        }
+
+        Self {
+            service_uuid: connectivity_service_json.get("uuid").unwrap_or(&Value::default()).to_string(),
+            name: find_name(&connectivity_service_json, "SERVICE_NAME".to_string()),
+            end_points: end_point_vector,
+            connections: service_connection_vector,
+            lower_connections: service_lower_connection_vector,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SimpleService {
+    pub uuid: String,
+    pub name: String,
+}
+
+pub fn connectivity_services_vector_build(connectivity_service_json: &Vec<Value>) -> Vec<SimpleService> {
+
+    let mut connectivity_services_vector: Vec<SimpleService> = Vec::new();
+
+    for service in connectivity_service_json {
+        connectivity_services_vector.push(
+            SimpleService {
+                uuid: service.get("uuid").unwrap_or(&Value::default()).to_string(),
+                name: find_name(&service, "SERVICE_NAME".to_string()),
             }
         );
     }
 
-    connectivity_service_vector
+    connectivity_services_vector
 }
+
 

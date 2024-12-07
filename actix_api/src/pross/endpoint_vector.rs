@@ -20,7 +20,22 @@ pub fn build_endpoint_vector(
             processed_node_edge_uuids.push(base_endpoint.node_edge_point_uuid.clone()); // Añadir UUID a la lista de procesados
             let (endpoint, extend_base_endpoint_vector) =
                 base_endpoint.build(link_vector, node_vector, connection_vector);
-            endpoint_vector.push(endpoint);
+            if let Some(endpoint_connection_uuid) = endpoint.connection_uuid.clone() {
+                
+                if service.connections.iter().any(|connection| {
+                    connection.connection_uuid == endpoint_connection_uuid
+                }) | service.lower_connections.iter().any(|lower_connection| {
+                    lower_connection.connection_uuid == endpoint_connection_uuid
+                }) {
+                    endpoint_vector.push(endpoint);
+                } else {
+                    println!("This connection its broken: {}", endpoint_connection_uuid);
+                }
+            } else {
+                println!("This endpoint node_edge_point_uuid dont have connection uuid: {}", endpoint.node_edge_point_uuid);
+                endpoint_vector.push(endpoint);
+            }
+            
             base_endpoint_vector.extend(extend_base_endpoint_vector);
         }
     }

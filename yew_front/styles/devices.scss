@@ -1,3 +1,9 @@
+.main-device-container {
+    display: grid;
+    place-items: center; 
+    padding: 100px;
+}
+
 /* Ensure that the devices container allows for absolute positioning of child elements */
 .devices-container {
     position: relative; /* Make sure this container is positioned relatively */
@@ -63,14 +69,24 @@
 
 /* Add new device text container */
 .add-device-text {
-    position: absolute; /* Position it absolutely within the devices container */
-    bottom: 10px; /* Distance from the bottom of the container */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Adjust to truly center it */
+    position: relative; /* Position it absolutely within the devices container */
+    display: grid;
+    place-items: center; 
     font-size: 20px; /* Font size */
     color: black; /* Black text color */
     cursor: pointer; /* Pointer cursor on hover */
-    text-decoration: underline; /* Underline text */
+    padding: 20px;
+}
+
+/* Add new device text container */
+.add-files-text {
+    position: relative; /* Position it absolutely within the devices container */
+    display: grid;
+    place-items: center; 
+    font-size: 20px; /* Font size */
+    color: black; /* Black text color */
+    cursor: pointer; /* Pointer cursor on hover */
+    padding: 20px;
 }
 
 /* Animation for fading in device cards */

@@ -1,121 +1,55 @@
-/* Container for the entire section including title and services */
-.services-section {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 40px 20px; /* Ajuste de padding para dar más espacio */
-    text-align: center;
+.main-services-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f8f9fa;
-    border-radius: 16px;
-    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 20px;
 }
 
-/* Title styling */
-.services-title {
-    font-size: 2.8em;
-    color: #333;
-    margin-bottom: 60px; /* Más espacio entre título y contenedor */
-    font-family: 'Arial', sans-serif;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    padding-bottom: 10px;
-    border-bottom: 3px solid #007bff; /* Subrayado del título */
+.search-container {
+    margin-top: 50px;
+    margin-bottom: 20px;
+    input {
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 300px;
+    }
 }
 
-/* Container for services items with grid layout */
-.services-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Layout adaptable */
-    grid-auto-rows: minmax(180px, auto); /* Ajuste en altura mínima */
-    gap: 30px; /* Más espacio entre items */
+.table-container {
     width: 100%;
-    max-width: 1200px;
-}
-
-/* Styling for each service item */
-.service-item {
-    background: linear-gradient(90deg, #f0f0f0, #ffffff);
-    padding: 25px;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    cursor: pointer;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #333;
-    font-family: 'Arial', sans-serif;
-    border: 1px solid #ddd;
-    text-align: center;
-    animation: fadeIn 1s ease-out forwards;
-    position: relative;
-}
-
-/* Service name styling */
-.service-name {
-    margin: 0 0 12px 0; /* Más separación del UUID */
-    font-size: 1.3em;
-    font-weight: bold;
-    color: #007bff;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* UUID styling */
-.service-uuid {
-    font-size: 0.95em;
-    color: #666;
-    font-style: italic;
-    white-space: normal; /* Permite que el UUID se ajuste a múltiples líneas si es necesario */
-    word-break: break-all; /* Evita que el UUID se desborde horizontalmente */
-    margin-top: 5px;
-}
-
-/* Ajustes de estado hover y expanded */
-.service-item.expanded {
-    transform: scale(1.07); /* Aumenta un poco más el tamaño en estado expandido */
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-    border-color: #007bff;
-}
-
-.service-item:hover {
-    background: linear-gradient(90deg, #e0e0e0, #ffffff);
-}
-
-/* Fade-in animation */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
-    .services-title {
-        font-size: 2.3em;
-        margin-bottom: 30px;
+    max-width: 1000px;
+    margin-top: 20px;
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
     }
 
-    .services-container {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 25px;
-    }
-    
-    .service-item {
-        padding: 20px;
-    }
+    .check-nodes-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
 
-    .service-uuid {
-        font-size: 0.85em;
+        &:hover {
+            background-color: #0056b3;
+        }
     }
 }

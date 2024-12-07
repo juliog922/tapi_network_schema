@@ -4,11 +4,6 @@ use serde_json::Value;
 use std::fs::File;
 use std::io::Write;
 
-use crate::utils::{
-    matching, 
-    to_list
-};
-
 /// Asynchronously fetches data from a remote REST API and saves different parts of the JSON response to separate files.
 ///
 /// This handler function:
@@ -47,10 +42,17 @@ async fn save_schema() -> Result<HttpResponse, Error> {
     let json: Value = response.json().await.map_err(|_| error::ErrorNotFound("Empty Response."))?;
 
     // Extract specific parts of the JSON response
-    let connectivity_services = to_list(matching(true, &json, "/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")?)?;
-    let connections = matching(true, &json, "/tapi-common:context/tapi-connectivity:connectivity-context/connection")?;
-    let services_interface_point = to_list(matching(true, &json, "/tapi-common:context/service-interface-point")?)?;
-    let topology = matching(true, &json, "/tapi-common:context/tapi-topology:topology-context/topology")?;
+    let connectivity_services = json.pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")
+                                                        .ok_or_else(|| error::ErrorNotFound("Cannot find connectivity-service"))?
+                                                        .as_array().ok_or_else(|| error::ErrorNotAcceptable("connectivity-service is not and array"))?.clone();
+    let connections = json.pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connection")
+                                                        .ok_or_else(|| error::ErrorNotFound("Cannot find connection"))?
+                                                        .as_array().ok_or_else(|| error::ErrorNotAcceptable("connection is not and array"))?.clone();
+    let services_interface_point = json.pointer("/tapi-common:context/service-interface-point")
+                                                        .ok_or_else(|| error::ErrorNotFound("Cannot find service-interface-point"))?
+                                                        .as_array().ok_or_else(|| error::ErrorNotAcceptable("service-interface-point is not and array"))?.clone();
+    let topology = json.pointer("/tapi-common:context/tapi-topology:topology-context/topology")
+                                                    .ok_or_else(|| error::ErrorNotFound("Cannot find topology"))?.clone();
 
     // Serialize each part into a JSON string
     let connectivity_services_str = serde_json::to_string(&connectivity_services).map_err(|_| error::ErrorInternalServerError("Serialization Error"))?;

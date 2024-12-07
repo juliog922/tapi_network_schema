@@ -3,7 +3,7 @@
 $form-background-color: #ffffff; // White background for the form
 $form-border-color: #d1d1d1; // Light grey border color
 $form-border-radius: 8px; // Rounded corners
-$form-padding: 50px; // Padding inside the form
+$form-padding: 25px; // Padding inside the form
 $form-margin-top: 80px; // Space above the form container
 
 $input-border-color: #ced4da; // Border color for input fields
@@ -25,14 +25,25 @@ $alert-padding: 15px; // Padding inside alert
 $alert-margin-bottom: 1rem; // Margin below the alert
 
 .form-container {
+    padding-top: 60px;
     background-color: $form-background-color;
     border: 1px solid $form-border-color;
     border-radius: $form-border-radius;
-    padding: $form-padding;
+    padding-right: 50px;
+    padding-left: 50px;
+    padding-bottom: 50px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     max-width: 500px;
     margin: $form-margin-top auto; // Center the form and add space above
     animation: fadeIn 1.5s ease-out;
+}
+
+.main-device-div {
+    display: flex;
+    flex-direction: row; /* Cambiar la dirección a columna */
+    gap: 100px;
+    justify-content: center;
+    align-items: center; /* Alinea los elementos horizontalmente en el centro */
 }
 
 .input-group {
@@ -56,6 +67,11 @@ $alert-margin-bottom: 1rem; // Margin below the alert
             outline: none;
         }
     }
+    input::placeholder {
+        color: #aaa; /* Cambia el color del placeholder */
+        font-style: italic; /* Hace que el texto del placeholder sea itálico */
+    }
+    
 }
 
 .button {
@@ -122,3 +138,29 @@ $alert-margin-bottom: 1rem; // Margin below the alert
         transform: translateY(0);
     }
 }
+
+.button-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    background-color: white;
+    transition: background-color 0.3s, border-color 0.3s;
+    cursor: pointer;
+}
+
+.button-circle.selected {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.form-selector {
+    padding-top: 60px;
+    display: flex;
+    flex-direction: column; /* Cambiar la dirección a columna */
+    gap: 10px;
+    justify-content: center;
+    align-items: center; /* Alinea los elementos horizontalmente en el centro */
+}
+
