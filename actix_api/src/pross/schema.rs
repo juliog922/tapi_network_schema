@@ -68,7 +68,7 @@ pub fn build_schema(
             2
         } else if qualifier.contains("MC") {
             4
-        } else if qualifier.contains("UNISPECIFIED") {
+        } else if qualifier.contains("UNSPECIFIED") {
             5
         } else if qualifier.contains("OMS") {
             6

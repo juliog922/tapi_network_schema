@@ -1,6 +1,6 @@
 use serde_json::Value;
 
-use super::endpoint::BaseEndpoint;
+use super::{connections, endpoint::BaseEndpoint};
 use crate::utils::find_name;
 
 #[derive(Debug, Clone)]
@@ -40,36 +40,37 @@ impl Node {
 
                     base_endpoint.inventory_id = Some(owned_node_edge_point.inventory_id.clone());
 
-                    if owned_node_edge_point.connection_end_points.len() > 1 {
-                        println!("There is more than 2 Clients for the same Endpoint for node-edge-point-uuid: {}", base_endpoint.node_edge_point_uuid);
-                    } 
-                    if !owned_node_edge_point.connection_end_points.is_empty() {
-                        base_endpoint.layer_protocol_qualifier = Some(owned_node_edge_point.connection_end_points[0].layer_protocol_qualifier.clone());
-                        base_endpoint.connection_end_point_uuid = Some(owned_node_edge_point.connection_end_points[0].connection_end_point_uuid.clone());
+                    for connection_end_point in owned_node_edge_point.connection_end_points.iter(){
+                        if base_endpoint.connection_end_point_uuid.is_none() || base_endpoint.connection_end_point_uuid.clone().unwrap() == connection_end_point.connection_end_point_uuid {
+                                
+                            base_endpoint.layer_protocol_qualifier = Some(connection_end_point.layer_protocol_qualifier.clone());
+                            base_endpoint.connection_end_point_uuid = Some(connection_end_point.connection_end_point_uuid.clone());
 
-                        if owned_node_edge_point.connection_end_points[0].client_node_edge_points.len() > 1 {
-                            println!("There is more than 2 Clients for the same Endpoint for node-edge-point-uuid: {}", base_endpoint.node_edge_point_uuid);
-                        } 
-                        if !owned_node_edge_point.connection_end_points[0].client_node_edge_points.is_empty() {
-                            base_endpoint.client_node_edge_point_uuid = Some(owned_node_edge_point.connection_end_points[0].client_node_edge_points[0].node_edge_point_uuid.clone());
+                            if connection_end_point.client_node_edge_points.len() > 1 {
+                                println!("There is more than 2 Clients for the same Endpoint for node-edge-point-uuid: {}", base_endpoint.node_edge_point_uuid);
+                            } 
 
-                            let possible_id = base_endpoint.id.map(|id| id + 1);
-
-                            base_endpoint_vector.push(
-                                BaseEndpoint {
-                                    node_edge_point_uuid: owned_node_edge_point.connection_end_points[0].client_node_edge_points[0].node_edge_point_uuid.clone(),
-                                    node_uuid: owned_node_edge_point.connection_end_points[0].client_node_edge_points[0].node_uuid.clone(),
-                                    connection_end_point_uuid: None,
-                                    service_interface_point_uuid: None,
-                                    connection_uuid: None,
-                                    client_node_edge_point_uuid: None,
-                                    lower_connection: None,
-                                    link_uuid: None,
-                                    layer_protocol_qualifier: None,
-                                    inventory_id: None,
-                                    id: possible_id,
-                                }
-                            );
+                            if !connection_end_point.client_node_edge_points.is_empty() {
+                                base_endpoint.client_node_edge_point_uuid = Some(connection_end_point.client_node_edge_points[0].node_edge_point_uuid.clone());
+    
+                                let possible_id = base_endpoint.id.map(|id| id + 1);
+    
+                                base_endpoint_vector.push(
+                                    BaseEndpoint {
+                                        node_edge_point_uuid: connection_end_point.client_node_edge_points[0].node_edge_point_uuid.clone(),
+                                        node_uuid: connection_end_point.client_node_edge_points[0].node_uuid.clone(),
+                                        connection_end_point_uuid: None,
+                                        service_interface_point_uuid: None,
+                                        connection_uuid: None,
+                                        client_node_edge_point_uuid: None,
+                                        lower_connection: None,
+                                        link_uuid: None,
+                                        layer_protocol_qualifier: None,
+                                        inventory_id: None,
+                                        id: possible_id,
+                                    }
+                                );
+                            }
                         }
                     }
 

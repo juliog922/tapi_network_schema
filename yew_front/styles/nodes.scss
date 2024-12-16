@@ -1,3 +1,12 @@
+.node-page {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
 /* Wrapper for the entire component */
 .component-wrapper {
     position: relative;
@@ -9,20 +18,23 @@
     align-items: center;  /* Centra los elementos hijos horizontalmente */
     justify-content: flex-start;  /* Alinea los elementos en la parte superior */
     overflow-y: auto;
+    flex-wrap: wrap;
 }
 
 /* Service UUID Title */
 .service-uuid-title {
     display: flex;
     align-items: center;
+    position: fixed;
+    width: 600px;
     justify-content: center;  /* Centra el contenido dentro de la barra */
     background-color: #4eb8ff;
     padding: 10px 20px;  /* Añade un poco de espacio extra horizontal y vertical */
     border-radius: 4px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 50%;
-    width: auto;  /* Ajusta el ancho automáticamente al contenido */
-    margin: 10px 0;  /* Añade margen superior e inferior de 10px */
+    margin-top: 20px;
+    margin-left: 37%;
+    margin-right: 37%;
 }
 
 .service-text-container {
@@ -33,14 +45,14 @@
 /* Container for all nodes */
 .new-container-good {
     display: flex;
+    position: relative;
     gap: 20px;
     height: auto;
     align-items: flex-start;
     justify-content: center;
-    flex-wrap: wrap;
     max-width: 100%;
-    position: relative;
-    margin-top: 20px; /* Añadido margen superior para crear espacio con service-uuid-title */
+    padding-top: 200px;
+    padding-bottom: 200px;
 }
 
 /* Each node container (column) */
@@ -50,7 +62,6 @@
     border-radius: 8px;
     width: 100%;
     flex-basis: 100px;
-    max-width: 200px; /* Adjust width as needed */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     position: relative;
 }
@@ -65,6 +76,9 @@
 
 .inventories-container-good {
     margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
 
 .inventory-item-good {
@@ -73,6 +87,7 @@
     padding: 10px;
     margin: 10px 0;
     background-color: #eef;
+
 }
 
 /* Ajustar el tamaño del título del inventory_id */
@@ -91,6 +106,11 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 150px;
+}
+
+.empty-endpoint {
+    height: 70px;
     width: 150px;
 }
 
@@ -254,5 +274,6 @@
     height: 100%;
     pointer-events: none; /* Evita que interfiera con los clics */
     z-index: 2;
+    margin-left: -10px;
 }
 

@@ -15,7 +15,9 @@ pub struct Service {
 
 #[derive(Debug, Clone)]
 pub struct EndPoint {
+    #[allow(dead_code)]
     pub name: String,
+    #[allow(dead_code)]
     pub location: String,
     pub connection_end_points: Vec<ServiceConnectionEndPoint>,
     pub service_interface_point_uuid: String,

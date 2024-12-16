@@ -6,6 +6,7 @@ use crate::utils::find_name;
 #[derive(Debug, Clone)]
 pub struct Connection {
     pub connection_uuid: String,
+    #[allow(dead_code)]
     pub name: String,
     pub lower_connections: Vec<LowerConnection>,
     pub connection_end_points: Vec<CConnectionEndPoint>,

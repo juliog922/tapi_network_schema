@@ -29,7 +29,7 @@ pub fn add_devices() -> Html {
     };
 
     html! {
-        <div id="app">
+        <div class="add-device-page">
             // Renderizar la barra lateral
             <SideBar />
 

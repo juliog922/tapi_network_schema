@@ -23,24 +23,21 @@ pub struct Props {
 pub fn node_schema(props: &Props) -> Html {
 
     html! {
-        <div id="app">
+        <div class="node-page">
             // Render the sidebar component for navigation
             <SideBar />
 
-            <div class="component-wrapper">
-                // Display the UUID of the service
-                <div class="service-uuid-title">
-                    <div class="service-text-container">
-                        {props.name.clone()}
-                        <br/>
-                        {props.service_uuid.clone()}
-                    </div>
+            // Display the UUID of the service
+            <div class="service-uuid-title">
+                <div class="service-text-container">
+                    {props.name.clone()}
+                    <br/>
+                    {props.service_uuid.clone()}
                 </div>
-
-                // Render the `Nodes` component with the nodes data
-                <Nodes device_ip={props.device_ip.clone()} service_uuid={props.service_uuid.clone()} />
             </div>
 
+            <Nodes device_ip={props.device_ip.clone()} service_uuid={props.service_uuid.clone()} />
+            
             <FooterLegend />
         </div>
     }

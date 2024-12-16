@@ -4,6 +4,7 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub enum Error {
+    #[allow(dead_code)]
     Custom(String),
 }
 

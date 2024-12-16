@@ -1,3 +1,9 @@
+.device-page {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
 .main-device-container {
     display: grid;
     place-items: center; 

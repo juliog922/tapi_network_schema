@@ -1,9 +1,8 @@
 body, html {
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Align items to the start to ensure content starts from the top */
+    width: 100%;
+    height: 100%;
     background-color: #f0f8ff; /* Very light blue */
     font-family: Arial, sans-serif;
 }

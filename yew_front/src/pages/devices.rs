@@ -165,7 +165,7 @@ pub fn devices() -> Html {
     };
 
     html! {
-        <div id="app">
+        <div class="device-page">
             // Render the sidebar component
             <SideBar />
             

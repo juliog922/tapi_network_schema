@@ -29,7 +29,7 @@ pub fn build_endpoint_vector(
                 }) {
                     endpoint_vector.push(endpoint);
                 } else {
-                    println!("This connection its broken: {}", endpoint_connection_uuid);
+                    println!("This connection belongs to other service: {}", endpoint_connection_uuid);
                 }
             } else {
                 println!("This endpoint node_edge_point_uuid dont have connection uuid: {}", endpoint.node_edge_point_uuid);

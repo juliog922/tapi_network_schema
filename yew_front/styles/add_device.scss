@@ -1,5 +1,12 @@
 // add_device.scss
 
+.add-device-page {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
 $form-background-color: #ffffff; // White background for the form
 $form-border-color: #d1d1d1; // Light grey border color
 $form-border-radius: 8px; // Rounded corners

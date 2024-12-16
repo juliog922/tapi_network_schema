@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use super::error::Error;
 use std::io::{self, Read};
+use std::path::{Path, PathBuf};
 use std::fs::File;
 use actix_multipart::form::{MultipartForm, tempfile::TempFile, json::Json};
 
@@ -13,14 +14,15 @@ fn read_json_from_file(file: &TempFile) -> io::Result<Value> {
     Ok(json)
 }
 
-fn get_file_path(complete_context_file: &TempFile, id: &String) -> Result<String, Error> {
+fn get_file_path(complete_context_file: &TempFile, id: &String, file_name: &str) -> Result<String, Error> {
     match read_json_from_file(complete_context_file) {
         Ok(value) => {
-            let file_path = format!("data/{}_context.json", id);
+            let base_path = Path::new("data");
+            let file_path = base_path.join(format!("{}_{}.json", id, file_name));
             let file = File::create(&file_path).map_err(|err| Error::from(format!("File cannot be created: {}", err).as_str()))?;
             serde_json::to_writer_pretty(file, &value).map_err(|err| Error::from(format!("File cannot be writed: {}", err).as_str()))?;
 
-            return Ok(file_path);
+            return Ok(file_path.to_string_lossy().to_string());
         },
         Err(err) => {
             return Err(Error::from(format!("File cannot be readed: {}", err).as_str()));
@@ -85,7 +87,7 @@ impl Complete {
 
         Ok(Self {
             id: id.clone(),
-            complete_context_path: get_file_path(form.complete_context_file.as_ref().unwrap(), &id)?,
+            complete_context_path: get_file_path(form.complete_context_file.as_ref().unwrap(), &id, "context")?,
         })   
     }
 }
@@ -97,9 +99,9 @@ impl ByPart {
 
         Ok(Self {
             id: id.clone(),
-            topology_path: get_file_path(form.topology_file.as_ref().unwrap(), &id)?,
-            connections_path: get_file_path(form.connections_file.as_ref().unwrap(), &id)?,
-            connectivity_services_path: get_file_path(form.connectivity_services_file.as_ref().unwrap(), &id)?,
+            topology_path: get_file_path(form.topology_file.as_ref().unwrap(), &id, "topology")?,
+            connections_path: get_file_path(form.connections_file.as_ref().unwrap(), &id, "connections")?,
+            connectivity_services_path: get_file_path(form.connectivity_services_file.as_ref().unwrap(), &id, "connectivity_services")?,
         })
     }
 }

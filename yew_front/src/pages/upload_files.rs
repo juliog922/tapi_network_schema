@@ -21,7 +21,7 @@ use crate::components::{
 #[function_component(UploadFiles)]
 pub fn upload_files() -> Html {
     html! {
-        <div id="app">
+        <div class="upload-files-page">
             // Render the sidebar component
             <SideBar />
             

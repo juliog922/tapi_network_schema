@@ -124,7 +124,7 @@ pub fn schema(props: &Props) -> Html {
     };
 
     html! {
-        <div id="app">
+        <div class="services-page">
             <div class="main-services-container">
                 <SideBar />
                 <div class="search-container">
