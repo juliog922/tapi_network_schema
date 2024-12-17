@@ -25,8 +25,8 @@ async fn connectivity_services(
     data_source_dictionary: web::Data<Arc<Mutex<HashMap<String, DataSource>>>>) -> Result<HttpResponse, Error> {
 
         let id = id.clone();
-        let data_source_dictionary = data_source_dictionary.lock().await;
         let cloned_data_source_dictionary = data_source_dictionary.clone();
+        let cloned_data_source_dictionary = cloned_data_source_dictionary.lock().await;
         // Lock the host dictionary for reading.
         if let Some(data_source) = cloned_data_source_dictionary.get(&id) {
             let services_value = Requester::get_services(&data_source).await.map_err(|_| error::ErrorNotAcceptable("Cannot extract Services from data_sources"))?;

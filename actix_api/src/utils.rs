@@ -2,7 +2,7 @@ use serde_json::Value;
 
 
 pub fn find_name(item: &Value, value: String) -> String {
-    let mut name = String::default();
+    let mut name = String::from("UNKNOWN");
 
         if let Some(name_section) = item.get("name").and_then(Value::as_array) {
             for name_item in name_section {

@@ -57,28 +57,6 @@ pub fn build_schema(
     connection_vector: &Vec<Connection>,
 ) -> Result<Value, Error> {
 
-    let custom_order = |qualifier: &String| {
-        if qualifier.contains("DSR") {
-            0
-        } else if qualifier.contains("ODU") {
-            1
-        } else if qualifier.contains("OTSIMC") {
-            3
-        } else if qualifier.contains("OTSI") {
-            2
-        } else if qualifier.contains("MC") {
-            4
-        } else if qualifier.contains("UNSPECIFIED") {
-            5
-        } else if qualifier.contains("OMS") {
-            6
-        } else if qualifier.contains("OTS") {
-            7
-        } else {
-            8 // Por si no contiene ninguno de los valores
-        }
-    };
-
     let mut node_response_vector: Vec<NodeResponse> = Vec::new();
     let mut inventories_response_vector: Vec<Inventory> = Vec::new();
 
@@ -101,10 +79,6 @@ pub fn build_schema(
                     inventory.endpoints.push(endpoint.clone());
                 });
         }
-    }
-
-    for inventory in &mut inventories_response_vector {
-        inventory.endpoints.sort_by_key(|endpoint| custom_order(&endpoint.layer_protocol_qualifier));
     }
 
     for inventory in &inventories_response_vector {
@@ -130,16 +104,92 @@ pub fn build_schema(
         }
     }
 
+    // Obtener nodos ordenados alternadamente
+    let mut node_with_min_ids: Vec<(NodeResponse, i32)> = node_response_vector
+        .iter()
+        .filter_map(|node| {
+            let min_id = node.inventories.iter()
+                .flat_map(|inv| inv.endpoints.iter().map(|e| e.id))
+                .min();
+            min_id.map(|id| (node.clone(), id))
+        })
+        .collect();
+
+    node_with_min_ids.sort_by(|a, b| a.1.cmp(&b.1));
+
+    let mut reordered_nodes: Vec<NodeResponse> = Vec::new();
+    let mut left = Vec::new();
+    let mut right = Vec::new();
+
+    for (i, (node, _)) in node_with_min_ids.iter().enumerate() {
+        if i % 2 == 0 {
+            left.push(node.clone());
+        } else {
+            right.push(node.clone());
+        }
+    }
+
+    right.reverse(); // El lado derecho debe mantenerse al revés
+
+    let total_nodes = left.len() + right.len();
+    let middle_index = total_nodes / 2;
+
+    // Procesar nodos alternadamente
+    for (i, node) in left.iter_mut().enumerate() {
+        if i == middle_index && total_nodes % 2 != 0 {
+            // Nodo del medio
+            node.inventories = sort_middle_inventories(node.inventories.clone());
+            reordered_nodes.push(node.clone());
+        } else {
+            node.inventories.sort_by_key(|inv| {
+                inv.endpoints.iter().map(|e| e.id).min().unwrap_or(i32::MAX)
+            });
+            reordered_nodes.push(node.clone());
+        }
+    }
+
+    for node in right.iter_mut() {
+        node.inventories.sort_by_key(|inv| {
+            std::cmp::Reverse(inv.endpoints.iter().map(|e| e.id).min().unwrap_or(i32::MAX))
+        });
+        reordered_nodes.push(node.clone());
+    }
+
+    // Construir la respuesta final
     let service_response = ServiceResponse {
         uuid: service.service_uuid.clone(),
         value_name: service.name.clone(),
-        nodes: node_response_vector,
+        nodes: reordered_nodes,
     };
 
     let schema = Schema {
-        connectivity_service: service_response
+        connectivity_service: service_response,
     };
 
     Ok(json!(schema.connectivity_service))
 }
 
+/// Función que ordena los inventarios en zig-zag para el nodo del medio
+fn sort_middle_inventories(mut inventories: Vec<Inventory>) -> Vec<Inventory> {
+    inventories.sort_by_key(|inv| {
+        inv.endpoints.iter().map(|e| e.id).min().unwrap_or(i32::MAX)
+    });
+
+    let mut result = vec![None; inventories.len()];
+    let mut left = 0;
+    let mut right = inventories.len() - 1;
+    let mut toggle = true;
+
+    for inventory in inventories {
+        if toggle {
+            result[left] = Some(inventory);
+            left += 1;
+        } else {
+            result[right] = Some(inventory);
+            right -= 1;
+        }
+        toggle = !toggle;
+    }
+
+    result.into_iter().filter_map(|inv| inv).collect()
+}

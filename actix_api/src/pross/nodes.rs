@@ -1,6 +1,6 @@
 use serde_json::Value;
 
-use super::{connections, endpoint::BaseEndpoint};
+use super::endpoint::BaseEndpoint;
 use crate::utils::find_name;
 
 #[derive(Debug, Clone)]
@@ -82,7 +82,7 @@ impl Node {
         for owned_node_edge_point in &self.owned_node_edge_points {
             if owned_node_edge_point.connection_end_points.len() > 0 && owned_node_edge_point.connection_end_points[0].client_node_edge_points.len() > 0 {
                 if owned_node_edge_point.connection_end_points[0].client_node_edge_points[0].node_edge_point_uuid == base_endpoint.node_edge_point_uuid {
-                    let possible_id = base_endpoint.id.map(|id| id - 1);
+                    let possible_id = base_endpoint.id.map(|id| id + 1);
                     base_endpoint_vector.push(
                         BaseEndpoint {
                             node_edge_point_uuid: owned_node_edge_point.node_edge_point_uuid.clone(),

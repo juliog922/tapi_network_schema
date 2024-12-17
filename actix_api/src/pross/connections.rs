@@ -72,7 +72,7 @@ impl Connection {
                             base_endpoint_vector.extend(conn.generate_base_endpoints(
                                 base_endpoint,
                                 &base_endpoint.node_edge_point_uuid,
-                                2,
+                                1,
                             ));
                         }
                     }
@@ -90,7 +90,7 @@ impl Connection {
                     base_endpoint_vector.extend(self.generate_base_endpoints(
                         base_endpoint,
                         &base_endpoint.node_edge_point_uuid,
-                        -2,
+                        1,
                     ));
                 }
                 ConnectionRole::UnknownUpper => {}

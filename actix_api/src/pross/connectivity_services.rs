@@ -38,6 +38,7 @@ pub struct ServiceConnectionEndPoint {
 impl Service {
     pub fn first_base_endpoint_vector(&self) -> Vec<BaseEndpoint> {
         let mut base_endpoint_vector = Vec::new();
+        let mut id: i32 = 1;
 
         self.end_points.iter().for_each(|end_point| {
             end_point.connection_end_points.iter().for_each(|connection_end_point| {
@@ -53,9 +54,10 @@ impl Service {
                         link_uuid: None,
                         layer_protocol_qualifier: None,
                         inventory_id: None,
-                        id: Some(1),
+                        id: Some(id),
                     }
                 );
+                //id += 1;
             });
         });
         base_endpoint_vector

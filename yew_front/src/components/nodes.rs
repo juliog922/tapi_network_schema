@@ -83,7 +83,9 @@ fn highlight_class(
 /// - `nodes`: A `serde_json::Value` representing the nodes to display.
 #[function_component(Nodes)]
 pub fn nodes(props: &NodesProps) -> Html {
-    let layer_protocol_qualifier_types: Vec<&str> = vec!["_DSR\"", "_ODU\"", "_OTSI\"", "_OTSIMC\"" , "_MC\"", "_UNSPECIFIED\"", "_OMS\"", "_OTS\"", ];
+    let layer_protocol_qualifier_types: Vec<&str> = vec!["_DSR\"", "_ODU\"", "_ODU0\"", "_ODU1\"", "_ODU2\"", "_ODU2E\"", "_ODU3\"", "_ODU4\"", "_ODU_CN\"",
+     "_OTU\"", "_OTU_0\"", "_OTU_1\"", "_OTU_2\"", "_OTU_3\"", "_OTU_4\"",
+     "_OTSI\"", "_OTSIMC\"" , "_MC\"", "_UNSPECIFIED\"", "_OMS\"", "_OTS\"", ];
 
     let json_data = use_state(|| None);
     {
@@ -226,7 +228,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                 new_positions_pairs_vec.push(
                                                     (selected_postion, 
                                                     get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap(),
-                                                    "#FFD700".to_string()
+                                                    "orangered".to_string()
                                                     )
                                                 );
                                                 new_highlighted_lower_connections.insert(connection_uuid_guest.to_string());
@@ -243,7 +245,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                 new_positions_pairs_vec.push(
                                                     (selected_postion, 
                                                     get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap(),
-                                                    "#FFD700".to_string()
+                                                    "orangered".to_string()
                                                     )
                                                 );
                                                 new_highlighted_higher_connections.insert(lower_connection_guest.to_string());
@@ -330,11 +332,10 @@ pub fn nodes(props: &NodesProps) -> Html {
     }
 
     
-    
-    let mut max_layer_hashmap: HashMap<String, HashMap<String, usize>> = HashMap::new(); 
+    let mut max_layer_hashmap_by_inventory: HashMap<String, usize> = HashMap::new(); 
     for node in nodes.iter() {
         let inventories = node["inventories"].as_array().unwrap_or(&empty_array);
-        let mut max_layer_hashmap_by_inventory: HashMap<String, usize> = HashMap::new(); 
+        
         for inventory in inventories.iter(){
             let endpoints = inventory["endpoints"].as_array().unwrap_or(&empty_array);
             let layer_protocol_qualifier_types_clone: Vec<&str> = layer_protocol_qualifier_types.clone();
@@ -354,14 +355,9 @@ pub fn nodes(props: &NodesProps) -> Html {
                 }
             }
         }
-        let node_uuid = node["node_uuid"].as_str().unwrap_or("Unknown UUID");
-        max_layer_hashmap.insert(
-            String::from(node_uuid.clone()),
-            max_layer_hashmap_by_inventory.clone()
-        );
     }
 
-    web_sys::console::log_1(&wasm_bindgen::JsValue::from_serde(&serde_json::to_value(max_layer_hashmap.clone()).unwrap()).unwrap());
+    web_sys::console::log_1(&wasm_bindgen::JsValue::from_serde(&serde_json::to_value(max_layer_hashmap_by_inventory.clone()).unwrap()).unwrap());
     let content = if json_data.is_none() {
         html! {
             <div class="loading-section">
@@ -388,7 +384,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                                 html! {
                                     <line x1={(x1).to_string()} y1={(y1).to_string()}
                                         x2={(x2).to_string()} y2={(y2).to_string()}
-                                        stroke={color.clone()} stroke-width="1" opacity="0.5" />
+                                        stroke={color.clone()} stroke-width="1" />
                                 }
                             })
                         }
@@ -404,13 +400,13 @@ pub fn nodes(props: &NodesProps) -> Html {
                                 <div class="inventories-container-good">
                                     {
                                         for inventories.iter().map(|inventory| {
-                                            let mut max_layer_hashmap_node = max_layer_hashmap.get(node_uuid).unwrap().clone();
+                                            let mut max_layer_hashmap = max_layer_hashmap_by_inventory.clone();
                                             let endpoints = inventory["endpoints"].as_array().unwrap_or(&empty_array); // Accedemos a los endpoints dentro del inventario
                                             let inventory_id = inventory["inventory_id"].as_str().unwrap_or("Unknown Inventory ID");
                                             html! {
                                                 <div class="inventory-item-good">
                                                 <h3>
-                                                    { format!("{}", inventory_id) }
+                                                    { format!("{}\n", inventory_id.replace("/", "\n").replace('"', "")) }
                                                 </h3>
                                                     <div class="endpoints-container-good">
                                                         {   
@@ -420,7 +416,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                                 for ep in endpoints {
                                                                     let protocol_layer = ep.get("layer_protocol_qualifier").unwrap().as_str().unwrap_or_default().to_string();
                                                                     if protocol_layer.to_uppercase().ends_with(layer) {
-                                                                        if let Some(value) = max_layer_hashmap_node.get_mut(*layer) {
+                                                                        if let Some(value) = max_layer_hashmap.get_mut(*layer) {
                                                                             if *value > 0 {
                                                                                 *value -= 1;
                                                                             }
@@ -568,7 +564,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                                         });
                                                                     } 
                                                                 }
-                                                                let empty_endpoints = (0..*max_layer_hashmap_node.get(*layer).unwrap()).map(|_| {
+                                                                let empty_endpoints = (0..*max_layer_hashmap.get(*layer).unwrap()).map(|_| {
                                                                     html!{
                                                                         <div class="empty-endpoint"></div>
                                                                     }

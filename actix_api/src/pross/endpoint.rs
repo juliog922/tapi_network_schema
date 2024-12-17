@@ -90,18 +90,6 @@ impl BaseEndpoint {
     pub fn build(mut self, link_vector: &Vec<Link>, node_vector: &Vec<Node>, connection_vector: &Vec<Connection>) -> (Endpoint, Vec<Self>) {
         let mut base_endpoint_vector: Vec<Self> = Vec::new();
 
-        if self.link_uuid.is_none() {
-            'link_loop: for link in link_vector {
-                let link_base_endpoint_vector = link.provide_link(&mut self);
-                if !link_base_endpoint_vector.is_empty() {
-                    base_endpoint_vector.extend(link_base_endpoint_vector);
-                    if !self.link_uuid.is_none() {
-                        break 'link_loop;
-                    }
-                }
-            }
-        }
-
         if self.connection_uuid.is_none() {
             'connection_loop: for connection in connection_vector {
                 let connection_base_endpoint_vector = connection.provide_connection(&mut self, connection_vector);
@@ -114,7 +102,19 @@ impl BaseEndpoint {
             }
         }
 
-        // Cant 
+        if self.link_uuid.is_none() {
+            'link_loop: for link in link_vector {
+                let link_base_endpoint_vector = link.provide_link(&mut self);
+                if !link_base_endpoint_vector.is_empty() {
+                    base_endpoint_vector.extend(link_base_endpoint_vector);
+                    if !self.link_uuid.is_none() {
+                        break 'link_loop;
+                    }
+                }
+            }
+        }
+
+
         if self.inventory_id.is_none() {
             for node in node_vector {
                 let node_base_endpoint_vector = node.provide_inventory(&mut self);

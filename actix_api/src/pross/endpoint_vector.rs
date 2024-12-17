@@ -28,15 +28,18 @@ pub fn build_endpoint_vector(
                     lower_connection.connection_uuid == endpoint_connection_uuid
                 }) {
                     endpoint_vector.push(endpoint);
+                    base_endpoint_vector.splice(0..0, extend_base_endpoint_vector);
+                    
                 } else {
                     println!("This connection belongs to other service: {}", endpoint_connection_uuid);
                 }
             } else {
                 println!("This endpoint node_edge_point_uuid dont have connection uuid: {}", endpoint.node_edge_point_uuid);
                 endpoint_vector.push(endpoint);
+                base_endpoint_vector.splice(0..0, extend_base_endpoint_vector);
             }
             
-            base_endpoint_vector.extend(extend_base_endpoint_vector);
+            //base_endpoint_vector.extend(extend_base_endpoint_vector);
         }
     }
 
