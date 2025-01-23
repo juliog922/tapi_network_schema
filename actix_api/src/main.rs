@@ -1,15 +1,17 @@
+mod error;
+mod logic;
+mod models;
 mod routes;
-mod utils;
-mod pross;
 mod tests;
+mod utils;
 
-use actix_web::{web, main, App, HttpServer};
-use tokio::sync::Mutex;
-use std::io::Result;
 use actix_cors::Cors;
+use actix_web::{main, web, App, HttpServer};
+use logic::requester::DataSource;
 use std::collections::HashMap;
+use std::io::Result;
 use std::sync::Arc;
-use pross::requester::DataSource;
+use tokio::sync::Mutex;
 
 /// Main entry point for the Actix web server.
 ///
@@ -20,13 +22,13 @@ use pross::requester::DataSource;
 ///
 /// # Returns
 ///
-/// * `Result<()>` - Returns a `Result` indicating success or failure. 
+/// * `Result<()>` - Returns a `Result` indicating success or failure.
 ///   - On success, the server starts and runs.
 ///   - On failure, an `io::Error` is returned.
 #[main]
 async fn main() -> Result<()> {
-    
-    let host_dictionary: Arc<Mutex<HashMap<String, DataSource>>> = Arc::new(Mutex::new(HashMap::new()));
+    let host_dictionary: Arc<Mutex<HashMap<String, DataSource>>> =
+        Arc::new(Mutex::new(HashMap::new()));
     // Create a shared, thread-safe dictionary to hold host parameters
     //let host_dictionary: Arc<Mutex<HashMap<String, HostParameters>>> = Arc::new(Mutex::new(HashMap::new()));
 

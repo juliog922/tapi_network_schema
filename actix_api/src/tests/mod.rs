@@ -1,2 +1,2 @@
-pub mod device_test;
+pub mod device_model_test;
 pub mod files_enum_test;

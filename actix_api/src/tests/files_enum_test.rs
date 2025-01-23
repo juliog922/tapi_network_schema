@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     // Import the necessary structs and enums from your backend models
-    use crate::pross::files_model::FilesEnum;
+    use crate::models::files_model::FilesEnum;
     // Import necessary modules from serde_json for JSON handling
     use serde_json::json;
 
@@ -12,7 +12,8 @@ mod tests {
             "complete_context_path": "/path/to/context.json"
         });
 
-        let result: FilesEnum = serde_json::from_value(json_data).expect("Failed to deserialize FilesEnum as Complete");
+        let result: FilesEnum =
+            serde_json::from_value(json_data).expect("Failed to deserialize FilesEnum as Complete");
 
         match result {
             FilesEnum::Complete(complete) => {
@@ -32,7 +33,8 @@ mod tests {
             "connectivity_services_path": "/path/to/services.json"
         });
 
-        let result: FilesEnum = serde_json::from_value(json_data).expect("Failed to deserialize FilesEnum as ByPart");
+        let result: FilesEnum =
+            serde_json::from_value(json_data).expect("Failed to deserialize FilesEnum as ByPart");
 
         match result {
             FilesEnum::ByPart(bypart) => {
