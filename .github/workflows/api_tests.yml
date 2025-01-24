@@ -1,4 +1,4 @@
-name: Actix APIC Tests
+name: TAPI Tests
 
 on:
   push:
