@@ -10,7 +10,7 @@ on:
 
 jobs:
   run-cargo-test:
-    name: Run Cargo Test
+    name: TAPI Tests
     runs-on: self-hosted  # Asegura que se ejecuta en tu runner self-hosted
     steps:
       - name: Checkout repository
