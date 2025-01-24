@@ -7,6 +7,8 @@ services:
     volumes:
       - ./yew_front:/app
     command: trunk serve --release --port 8092 --address 0.0.0.0 --no-autoreload
+    environment:
+      - PORT=8080
     networks:
       - app_network
     restart: always
