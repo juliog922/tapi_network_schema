@@ -1,4 +1,4 @@
-name: Run Cargo Test
+name: TAPI Tests
 
 on:
   push:
