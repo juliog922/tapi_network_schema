@@ -7,6 +7,7 @@ use super::{
 };
 use crate::utils::find_name;
 
+/// Represents a connectivity service, including its endpoints and associated connections.
 #[derive(Debug, Clone)]
 pub struct Service {
     pub service_uuid: String,
@@ -16,6 +17,7 @@ pub struct Service {
     pub lower_connections: Vec<LowerConnection>,
 }
 
+/// Represents an endpoint within a service.
 #[derive(Debug, Clone)]
 pub struct EndPoint {
     #[allow(dead_code)]
@@ -26,11 +28,13 @@ pub struct EndPoint {
     pub service_interface_point_uuid: String,
 }
 
+/// Represents a direct connection in a service.
 #[derive(Debug, Clone)]
 pub struct ServiceConnection {
     pub connection_uuid: String,
 }
 
+/// Represents a connection endpoint associated with a node.
 #[derive(Debug, Clone)]
 pub struct ServiceConnectionEndPoint {
     pub node_edge_point_uuid: String,
@@ -38,6 +42,7 @@ pub struct ServiceConnectionEndPoint {
     pub node_uuid: String,
 }
 
+/// Represents a simplified version of a service with minimal data.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SimpleService {
     pub uuid: String,
@@ -45,6 +50,10 @@ pub struct SimpleService {
 }
 
 impl Service {
+    /// Constructs the initial vector of `BaseEndpoint` objects from the service's endpoints.
+    ///
+    /// # Returns
+    /// A vector of `BaseEndpoint` objects with basic initialization.
     pub fn first_base_endpoint_vector(&self) -> Vec<BaseEndpoint> {
         let mut base_endpoint_vector = Vec::new();
         let id: i32 = 1;
@@ -77,6 +86,14 @@ impl Service {
         base_endpoint_vector
     }
 
+    /// Constructs a `Service` object from JSON and a list of available connections.
+    ///
+    /// # Arguments
+    /// - `connectivity_service_json`: The JSON object representing the service.
+    /// - `connection_vector`: A vector of available `Connection` objects.
+    ///
+    /// # Returns
+    /// A `Service` object with initialized properties.
     pub fn connectivity_service_build(
         connectivity_service_json: &Value,
         connection_vector: &Vec<Connection>,
@@ -91,6 +108,7 @@ impl Service {
                 let mut service_connection_end_point_vector: Vec<ServiceConnectionEndPoint> =
                     Vec::new();
 
+                // Parse "connection-end-point" for each endpoint.
                 if let Some(connection_end_point_section) = end_point_item
                     .get("connection-end-point")
                     .and_then(Value::as_array)
@@ -130,6 +148,7 @@ impl Service {
         let mut service_connection_vector: Vec<ServiceConnection> = Vec::new();
         let mut service_lower_connection_vector: Vec<LowerConnection> = Vec::new();
 
+        // Parse the "connection" section to build service connections and lower connections.
         if let Some(connection_section) = connectivity_service_json
             .get("connection")
             .and_then(Value::as_array)
@@ -142,11 +161,13 @@ impl Service {
                 service_connection_vector.push(ServiceConnection {
                     connection_uuid: connection_uuid.clone(),
                 });
+
+                // Find lower connections for the current connection.
                 'lower_loop: for connection_struct in connection_vector {
                     if connection_struct.connection_uuid == connection_uuid {
                         service_lower_connection_vector
                             .extend(connection_struct.lower_connections.clone());
-                        break 'lower_loop;
+                        break 'lower_loop; // Exit loop early as match is found.
                     }
                 }
             }
@@ -157,7 +178,7 @@ impl Service {
                 .get("uuid")
                 .unwrap_or(&Value::default())
                 .to_string(),
-            name: find_name(&connectivity_service_json, "SERVICE_NAME".to_string()),
+            name: find_name(connectivity_service_json, "SERVICE_NAME".to_string()),
             end_points: end_point_vector,
             connections: service_connection_vector,
             lower_connections: service_lower_connection_vector,

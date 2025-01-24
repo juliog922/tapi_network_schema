@@ -41,8 +41,7 @@ pub fn build_schema(
             .iter()
             .any(|inventory| inventory.inventory_id == endpoint.inventory_id)
         {
-            let mut inventory_endpoint_vector: Vec<Endpoint> = Vec::new();
-            inventory_endpoint_vector.push(endpoint.clone());
+            let inventory_endpoint_vector: Vec<Endpoint> = vec![endpoint.clone()];
             inventories_response_vector.push(Inventory {
                 inventory_id: endpoint.inventory_id.clone(),
                 endpoints: inventory_endpoint_vector,
@@ -182,5 +181,5 @@ fn sort_middle_inventories(mut inventories: Vec<Inventory>) -> Vec<Inventory> {
         toggle = !toggle;
     }
 
-    result.into_iter().filter_map(|inv| inv).collect()
+    result.into_iter().flatten().collect()
 }

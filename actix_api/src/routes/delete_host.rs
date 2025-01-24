@@ -32,12 +32,12 @@ pub async fn delete_host(
             DataSource::Device(_) => {}
             DataSource::FilesEnum(files_enum) => match files_enum {
                 FilesEnum::ByPart(by_part) => {
-                    fs::remove_file(&format!("{}", by_part.connections_path))?;
-                    fs::remove_file(&format!("{}", by_part.connectivity_services_path))?;
-                    fs::remove_file(&format!("{}", by_part.topology_path))?;
+                    fs::remove_file(&by_part.connections_path)?;
+                    fs::remove_file(&by_part.connectivity_services_path)?;
+                    fs::remove_file(&by_part.topology_path)?;
                 }
                 FilesEnum::Complete(complete) => {
-                    fs::remove_file(&format!("{}", complete.complete_context_path))?;
+                    fs::remove_file(&complete.complete_context_path)?;
                 }
             },
         }

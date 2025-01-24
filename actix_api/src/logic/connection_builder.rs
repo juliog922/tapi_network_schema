@@ -10,7 +10,7 @@ use crate::{
 /// # Arguments
 ///
 /// * `connections_json` - A reference to a vector of JSON values, where each value
-/// represents a connection's data.
+///   represents a connection's data.
 ///
 /// # Returns
 ///

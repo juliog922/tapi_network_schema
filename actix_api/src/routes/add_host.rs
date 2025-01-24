@@ -24,7 +24,7 @@ pub async fn add_host(
     request_device: web::Json<Device>,
 ) -> Result<HttpResponse, Error> {
     // Validate the IP address or hostname
-    if let Err(_) = validate_host(&request_device.ip) {
+    if validate_host(&request_device.ip).is_err() {
         return Err(error::ErrorBadRequest("Host cannot be added"));
     }
 
@@ -41,7 +41,14 @@ pub async fn add_host(
         .json(json!({"message": &format!("{} added successfully", request_device.ip)})))
 }
 
-/// Validate if the provided host is a valid IP address or hostname.
+/// Validates whether the provided string is a valid IP address.
+///
+/// # Arguments
+/// - `ip`: A string slice representing the IP address or hostname to validate.
+///
+/// # Returns
+/// - `Ok(())`: If the IP address is valid.
+/// - `Err(&'static str)`: If the IP address or hostname is invalid.
 fn validate_host(ip: &str) -> Result<(), &'static str> {
     // Check if the host is a valid IP address.
     if IPAddress::parse(ip).is_ok() {

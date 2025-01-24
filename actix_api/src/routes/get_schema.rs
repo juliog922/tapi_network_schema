@@ -47,8 +47,8 @@ async fn schema_by_service(
         let schema = build_schema(&service, &link_vector, &node_vector, &connection_vector)
             .map_err(|_| error::ErrorNotAcceptable("Cannot Build Services from data_sources"))?;
 
-        return Ok(HttpResponse::Ok().json(schema));
+        Ok(HttpResponse::Ok().json(schema))
     } else {
-        return Err(error::ErrorNotFound("Id not on database"));
+        Err(error::ErrorNotFound("Id not on database"))
     }
 }

@@ -18,7 +18,7 @@ services:
       - "8080"
     volumes:
       - ./actix_api:/app
-    command: cargo run --release
+    command: cargo run --bin server --release
     networks:
       - app_network
     restart: always

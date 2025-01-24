@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     // Import the necessary structs and enums from your backend models
-    use crate::models::files_model::FilesEnum;
+    use actix_api::models::files_model::FilesEnum;
     // Import necessary modules from serde_json for JSON handling
     use serde_json::json;
 

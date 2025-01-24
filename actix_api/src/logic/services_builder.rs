@@ -17,7 +17,7 @@ pub fn connectivity_services_vector_build(
     for service in connectivity_service_json {
         connectivity_services_vector.push(SimpleService {
             uuid: service.get("uuid").unwrap_or(&Value::default()).to_string(),
-            name: find_name(&service, "SERVICE_NAME".to_string()),
+            name: find_name(service, "SERVICE_NAME".to_string()),
         });
     }
 

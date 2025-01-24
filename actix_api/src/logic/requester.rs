@@ -81,7 +81,7 @@ impl FilesHandler {
         match file_enum {
             FilesEnum::ByPart(by_part_paths) => {
                 let connectivity_services_file =
-                    File::open(format!("{}", &by_part_paths.connectivity_services_path)).map_err(
+                    File::open(&by_part_paths.connectivity_services_path).map_err(
                         |err| Error::from(format!("File cannot be opened: {}", err).as_str()),
                     )?;
                 let connectivity_services_reader = BufReader::new(connectivity_services_file);
@@ -94,10 +94,10 @@ impl FilesHandler {
                     .cloned()
                     .unwrap_or_default();
 
-                return Ok(connectivity_services);
+                Ok(connectivity_services)
             }
             FilesEnum::Complete(complete_path) => {
-                let file = File::open(format!("{}", &complete_path.complete_context_path))
+                let file = File::open(&complete_path.complete_context_path)
                     .map_err(|err| {
                         Error::from(format!("File cannot be opened: {}", err).as_str())
                     })?;
@@ -107,10 +107,10 @@ impl FilesHandler {
                 })?;
                 let connectivity_services = json_value
                                                             .pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")
-                                                            .and_then(&Value::as_array)
+                                                            .and_then(Value::as_array)
                                                             .ok_or_else(|| Error::from("Cannot find connectivity-context"))?
                                                             .clone();
-                return Ok(connectivity_services);
+                Ok(connectivity_services)
             }
         }
     }
@@ -125,11 +125,11 @@ impl FilesHandler {
     /// A `Result` containing a `Context` object or an `Error`.
     pub fn get_service_context(
         file_enum: &FilesEnum,
-        service_uuid: &String,
+        service_uuid: &str,
     ) -> Result<Context, Error> {
         match file_enum {
             FilesEnum::ByPart(by_part_paths) => {
-                let topology_file = File::open(format!("{}", &by_part_paths.topology_path))
+                let topology_file = File::open(&by_part_paths.topology_path)
                     .map_err(|err| {
                         Error::from(format!("File cannot be opened: {}", err).as_str())
                     })?;
@@ -138,7 +138,7 @@ impl FilesHandler {
                     Error::from(format!("File cannot be readed: {}", err).as_str())
                 })?;
 
-                let connections_file = File::open(format!("{}", &by_part_paths.connections_path))
+                let connections_file = File::open(&by_part_paths.connections_path)
                     .map_err(|err| {
                     Error::from(format!("File cannot be opened: {}", err).as_str())
                 })?;
@@ -150,7 +150,7 @@ impl FilesHandler {
                 let connections = connections_value.as_array().cloned().unwrap_or_default();
 
                 let connectivity_services_file =
-                    File::open(format!("{}", &by_part_paths.connectivity_services_path)).map_err(
+                    File::open(&by_part_paths.connectivity_services_path).map_err(
                         |err| Error::from(format!("File cannot be opened: {}", err).as_str()),
                     )?;
                 let connectivity_services_reader = BufReader::new(connectivity_services_file);
@@ -169,20 +169,20 @@ impl FilesHandler {
                         service
                             .get("uuid")
                             .and_then(|uuid| uuid.as_str())
-                            .map(|uuid_str| uuid_str == service_uuid.as_str())
+                            .map(|uuid_str| uuid_str == service_uuid)
                             .unwrap_or(false)
                     })
                     .ok_or_else(|| Error::from("There is not any Service with that id"))?
                     .clone();
 
-                return Ok(Context {
-                    connectivity_service: connectivity_service,
-                    connections: connections,
-                    topology: topology,
-                });
+                Ok(Context {
+                    connectivity_service,
+                    connections,
+                    topology,
+                })
             }
             FilesEnum::Complete(complete_path) => {
-                let file = File::open(format!("{}", &complete_path.complete_context_path))
+                let file = File::open(&complete_path.complete_context_path)
                     .map_err(|err| {
                         Error::from(format!("File cannot be opened: {}", err).as_str())
                     })?;
@@ -191,7 +191,7 @@ impl FilesHandler {
                     Error::from(format!("File cannot be readed: {}", err).as_str())
                 })?;
 
-                return context_by_context_json(json_value, service_uuid);
+                context_by_context_json(json_value, service_uuid)
             }
         }
     }
@@ -275,7 +275,7 @@ impl DeviceHandler {
         }
 
         if let Ok(services_uuid_json) = match &device.auth {
-            Auth::BasicAuth(basic_auth) => {
+            Auth::Basic(basic_auth) => {
                 Self::basic_request(
                     &services_url,
                     basic_auth.username.clone(),
@@ -306,7 +306,7 @@ impl DeviceHandler {
                     &device.ip, &device.port.map(|s| format!(":{}", s)).unwrap_or_default(), service_uuid
                 );
                 let service_json = match &device.auth {
-                    Auth::BasicAuth(basic_auth) => {
+                    Auth::Basic(basic_auth) => {
                         Self::basic_request(
                             &service_url,
                             basic_auth.username.clone(),
@@ -328,11 +328,10 @@ impl DeviceHandler {
                     .unwrap()[0];
                 services_vector.push(service_data.clone()); // Add the service data to the vector.
             }
-            //println!("{:?}", services_vector);
-            return Ok(services_vector);
+            Ok(services_vector)
         } else {
             let json = match &device.auth {
-                Auth::BasicAuth(basic_auth) => {
+                Auth::Basic(basic_auth) => {
                     Self::basic_request(
                         &context_url,
                         basic_auth.username.clone(),
@@ -346,11 +345,11 @@ impl DeviceHandler {
             //println!("{}", json);
             let connectivity_services = json
                                                         .pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")
-                                                        .and_then(&Value::as_array)
+                                                        .and_then(Value::as_array)
                                                         .ok_or_else(|| Error::from("Cannot find connectivity-context"))?
                                                         .clone();
 
-            return Ok(connectivity_services);
+            Ok(connectivity_services)
         }
     }
 
@@ -548,7 +547,7 @@ impl DeviceHandler {
         match async {
             // Obtain the JSON of topologies based on the authentication method.
             let topology_uuids_json = match &device.auth {
-                Auth::BasicAuth(basic_auth) => Self::basic_request(&topology_by_uuid_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Basic(basic_auth) => Self::basic_request(&topology_by_uuid_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
                 Auth::Custom(_) => Self::token_request(&topology_by_uuid_url, token_custom.as_str()).await?,
                 Auth::Oauth2(_) => Self::token_request(&topology_by_uuid_url, token_oauth.as_str()).await?,
             };
@@ -579,13 +578,13 @@ impl DeviceHandler {
 
             // Retrieve the data for links and nodes.
             let link_json = match &device.auth {
-                Auth::BasicAuth(basic_auth) => Self::basic_request(&link_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Basic(basic_auth) => Self::basic_request(&link_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
                 Auth::Custom(_) => Self::token_request(&link_url, token_custom.as_str()).await?,
                 Auth::Oauth2(_) => Self::token_request(&link_url, token_oauth.as_str()).await?,
             };
 
             let node_json = match &device.auth {
-                Auth::BasicAuth(basic_auth) => Self::basic_request(&nodes_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Basic(basic_auth) => Self::basic_request(&nodes_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
                 Auth::Custom(_) => Self::token_request(&nodes_url, token_custom.as_str()).await?,
                 Auth::Oauth2(_) => Self::token_request(&nodes_url, token_oauth.as_str()).await?,
             };
@@ -606,7 +605,7 @@ impl DeviceHandler {
 
             // Retrieve the connections.
             let connections = match &device.auth {
-                Auth::BasicAuth(basic_auth) => Self::basic_request(&connections_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Basic(basic_auth) => Self::basic_request(&connections_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
                 Auth::Custom(_) => Self::token_request(&connections_url, token_custom.as_str()).await?,
                 Auth::Oauth2(_) => Self::token_request(&connections_url, token_oauth.as_str()).await?,
             }
@@ -621,7 +620,7 @@ impl DeviceHandler {
             );
 
             let service_json = match &device.auth {
-                Auth::BasicAuth(basic_auth) => Self::basic_request(&service_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Basic(basic_auth) => Self::basic_request(&service_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
                 Auth::Custom(_) => Self::token_request(&service_url, token_custom.as_str()).await?,
                 Auth::Oauth2(_) => Self::token_request(&service_url, token_oauth.as_str()).await?,
             };
@@ -643,17 +642,17 @@ impl DeviceHandler {
         .await
         {
             // If the `async` block executes successfully, continue normally.
-            Ok(context) => return Ok(context),
+            Ok(context) => Ok(context),
             Err(err) => {
                 println!("{:?}", err);
                 // If an error occurs, execute the `else` block.
                 let json = match &device.auth {
-                    Auth::BasicAuth(basic_auth) => Self::basic_request(&context_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                    Auth::Basic(basic_auth) => Self::basic_request(&context_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
                     Auth::Custom(_) => Self::token_request(&context_url, token_custom.as_str()).await?,
                     Auth::Oauth2(_) => Self::token_request(&context_url, token_oauth.as_str()).await?,
                 };
 
-                return context_by_context_json(json, service_uuid);
+                context_by_context_json(json, service_uuid)
             }
         }
     }
@@ -667,10 +666,10 @@ impl DeviceHandler {
 ///
 /// # Returns
 /// A `Result` containing a `Context` object or an `Error`.
-fn context_by_context_json(json: Value, service_uuid: &String) -> Result<Context, Error> {
+fn context_by_context_json(json: Value, service_uuid: &str) -> Result<Context, Error> {
     let connectivity_services = json
         .pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")
-        .and_then(&Value::as_array)
+        .and_then(Value::as_array)
         .ok_or_else(|| Error::from("Cannot find connectivity-context"))?
         .clone();
     let connectivity_service = connectivity_services
@@ -679,7 +678,7 @@ fn context_by_context_json(json: Value, service_uuid: &String) -> Result<Context
             service
                 .get("uuid")
                 .and_then(|uuid| uuid.as_str())
-                .map(|uuid_str| uuid_str == service_uuid.as_str())
+                .map(|uuid_str| uuid_str == service_uuid)
                 .unwrap_or(false)
         })
         .ok_or_else(|| Error::from("There is not any Service with that id"))?
@@ -687,7 +686,7 @@ fn context_by_context_json(json: Value, service_uuid: &String) -> Result<Context
 
     let connections = json
         .pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connection")
-        .and_then(&Value::as_array)
+        .and_then(Value::as_array)
         .ok_or_else(|| Error::from("Cannot find connections-context"))?
         .clone();
     let topology = json
@@ -695,9 +694,9 @@ fn context_by_context_json(json: Value, service_uuid: &String) -> Result<Context
         .ok_or_else(|| Error::from("Cannot find connections-context"))?
         .clone();
 
-    return Ok(Context {
-        connectivity_service: connectivity_service,
-        connections: connections,
-        topology: topology,
-    });
+    Ok(Context {
+        connectivity_service,
+        connections,
+        topology,
+    })
 }

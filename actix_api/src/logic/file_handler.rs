@@ -51,12 +51,12 @@ pub fn get_file_path(
             serde_json::to_writer_pretty(file, &value)
                 .map_err(|err| Error::from(format!("File cannot be writed: {}", err).as_str()))?;
 
-            return Ok(file_path.to_string_lossy().to_string());
+            Ok(file_path.to_string_lossy().to_string())
         }
         Err(err) => {
-            return Err(Error::from(
+            Err(Error::from(
                 format!("File cannot be readed: {}", err).as_str(),
-            ));
+            ))
         }
-    };
+    }
 }

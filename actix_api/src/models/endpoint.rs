@@ -2,40 +2,27 @@ use serde::{Deserialize, Serialize};
 
 use super::{connections::Connection, links::Link, nodes::Node};
 
+/// Represents a detailed endpoint with various optional fields and associated metadata.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Endpoint {
-    /// UUID of the node edge point.
     pub node_edge_point_uuid: String,
-
-    /// Layer protocol qualifier associated with this endpoint.
     pub layer_protocol_qualifier: String,
-
-    ///Node UUID
     pub node_uuid: String,
-
-    /// INVENTORY ID (card id)
     pub inventory_id: String,
-
-    /// UUID of the connection endpoint.
     pub connection_end_point_uuid: String,
 
-    /// Optional UUID of the service interface point.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub service_interface_point_uuid: Option<String>,
 
-    /// Optional UUID of the connection associated with this endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connection_uuid: Option<String>,
 
-    /// Optional UUID of the client node edge point.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub client_node_edge_point_uuid: Option<String>,
 
-    /// Optional field representing lower connections related to this endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lower_connection: Option<String>,
 
-    /// Optional UUID of the link associated with this endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link_uuid: Option<String>,
 
@@ -43,33 +30,17 @@ pub struct Endpoint {
     pub id: i32,
 }
 
+/// Represents a basic endpoint with optional fields, often used as a starting point.
 #[derive(Debug, Clone, Eq, Serialize, Deserialize, Default)]
 pub struct BaseEndpoint {
-    /// UUID of the node edge point.
     pub node_edge_point_uuid: String,
-
-    ///Node UUID
     pub node_uuid: String,
-
-    /// UUID of the connection endpoint.
     pub connection_end_point_uuid: Option<String>,
-
-    /// Optional UUID of the service interface point.
     pub service_interface_point_uuid: Option<String>,
-
-    /// Optional UUID of the connection associated with this endpoint.
     pub connection_uuid: Option<String>,
-
-    /// Optional UUID of the client node edge point.
     pub client_node_edge_point_uuid: Option<String>,
-
-    /// Optional field representing lower connections related to this endpoint.
     pub lower_connection: Option<String>,
-
-    /// Optional UUID of the link associated with this endpoint.
     pub link_uuid: Option<String>,
-
-    /// Layer protocol qualifier associated with this endpoint.
     pub layer_protocol_qualifier: Option<String>,
 
     /// INVENTORY ID (card id)
@@ -86,6 +57,15 @@ impl PartialEq for BaseEndpoint {
 }
 
 impl BaseEndpoint {
+    /// Builds an `Endpoint` and associated `BaseEndpoint` objects by resolving connections, links, and inventories.
+    ///
+    /// # Arguments
+    /// - `link_vector`: A vector of links to check for associations.
+    /// - `node_vector`: A vector of nodes to resolve inventories.
+    /// - `connection_vector`: A vector of connections to determine relationships.
+    ///
+    /// # Returns
+    /// A tuple containing the constructed `Endpoint` and a deduplicated vector of `BaseEndpoint` objects.
     pub fn build(
         mut self,
         link_vector: &Vec<Link>,
@@ -95,31 +75,34 @@ impl BaseEndpoint {
         let mut base_endpoint_vector: Vec<Self> = Vec::new();
 
         if self.connection_uuid.is_none() {
+            // Loop through connections to find matching ones and extend the base endpoint vector.
             'connection_loop: for connection in connection_vector {
                 let connection_base_endpoint_vector =
                     connection.provide_connection(&mut self, connection_vector);
                 if !connection_base_endpoint_vector.is_empty() {
                     base_endpoint_vector.extend(connection_base_endpoint_vector);
-                    if !self.connection_uuid.is_none() {
-                        break 'connection_loop;
+                    if self.connection_uuid.is_some() {
+                        break 'connection_loop; // Stop early if connection UUID is found.
                     }
                 }
             }
         }
 
         if self.link_uuid.is_none() {
+            // Loop through links to find matches and extend the base endpoint vector.
             'link_loop: for link in link_vector {
                 let link_base_endpoint_vector = link.provide_link(&mut self);
                 if !link_base_endpoint_vector.is_empty() {
                     base_endpoint_vector.extend(link_base_endpoint_vector);
-                    if !self.link_uuid.is_none() {
-                        break 'link_loop;
+                    if self.link_uuid.is_some() {
+                        break 'link_loop; // Stop early if link UUID is found.
                     }
                 }
             }
         }
 
         if self.inventory_id.is_none() {
+            // Check nodes to resolve inventory IDs.
             for node in node_vector {
                 let node_base_endpoint_vector = node.provide_inventory(&mut self);
                 if !node_base_endpoint_vector.is_empty() {
@@ -128,7 +111,7 @@ impl BaseEndpoint {
             }
         }
 
-        // Construcción del Endpoint
+        // Construct the final `Endpoint` object.
         let endpoint = Endpoint {
             node_edge_point_uuid: self.node_edge_point_uuid,
             layer_protocol_qualifier: self.layer_protocol_qualifier.unwrap_or_default(),
@@ -143,7 +126,7 @@ impl BaseEndpoint {
             id: self.id.unwrap_or_default(),
         };
 
-        // Realizar deduplicación manual
+        // Deduplicate the resulting `BaseEndpoint` vector.
         let mut seen_node_edge_point_uuids = Vec::new();
         let mut unique_base_endpoints = Vec::new();
 

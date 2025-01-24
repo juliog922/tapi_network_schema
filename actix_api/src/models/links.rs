@@ -1,11 +1,13 @@
 use super::endpoint::BaseEndpoint;
 
+/// Represents a link in the network, connecting multiple node edge points.
 #[derive(Debug, Clone)]
 pub struct Link {
     pub link_uuid: String,
     pub node_edge_points: Vec<NodeEdgePoint>,
 }
 
+/// Represents a node edge point, which belongs to a specific node.
 #[derive(Debug, Clone)]
 pub struct NodeEdgePoint {
     pub node_edge_point_uuid: String,
@@ -13,19 +15,25 @@ pub struct NodeEdgePoint {
 }
 
 impl Link {
+    /// Resolves the relationship between a link and a base endpoint, and generates associated `BaseEndpoint` objects.
+    ///
+    /// # Arguments
+    /// - `base_endpoint`: A mutable reference to the `BaseEndpoint` being processed.
+    ///
+    /// # Returns
+    /// A vector of new `BaseEndpoint` objects derived from the link's other node edge points.
     pub fn provide_link(&self, base_endpoint: &mut BaseEndpoint) -> Vec<BaseEndpoint> {
         let mut base_endpoint_vector = Vec::new();
 
-        // Verifica si alguno de los puntos coincide con el base_endpoint
+        // Check if the base endpoint matches any node edge point in the link.
         if self.node_edge_points.iter().any(|node_edge_point| {
             node_edge_point.node_edge_point_uuid == base_endpoint.node_edge_point_uuid
         }) {
             base_endpoint.link_uuid = Some(self.link_uuid.clone());
 
-            // Genera un nuevo ID basado en el existente
             let possible_id = base_endpoint.id.map(|id| id + 1);
 
-            // Filtra y genera nuevos BaseEndpoint en una sola operación
+            // Create new `BaseEndpoint` objects for node edge points not matching the base endpoint.
             base_endpoint_vector = self
                 .node_edge_points
                 .iter()

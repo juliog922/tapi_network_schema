@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     // Import the necessary structs and enums from your backend models
-    use crate::models::devices::{Auth, Device};
+    use actix_api::models::devices::{Auth, Device};
 
     // Import necessary modules from serde_json for JSON handling
     use serde_json::{from_str, Value};
@@ -31,7 +31,7 @@ mod tests {
         // Match the type of authentication used in the device
         match device.auth {
             // Check if it uses Basic Authentication
-            Auth::BasicAuth(_) => assert!(true), // Pass if it's BasicAuth
+            Auth::Basic(_) => assert!(true), // Pass if it's BasicAuth
             _ => panic!("There isn't Basic Authentication here"), // Fail if it's not BasicAuth
         }
     }
