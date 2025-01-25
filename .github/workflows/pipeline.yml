@@ -41,20 +41,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Build and Push yew_front Image
-        run: |
-          docker-compose -f docker-compose.yml build yew_front
-          docker tag yew_front ghcr.io/juliog922/yew_front:latest
-          docker tag yew_front ghcr.io/juliog922/yew_front:${{ github.sha }}
-          docker push ghcr.io/juliog922/yew_front:latest
-          docker push ghcr.io/juliog922/yew_front:${{ github.sha }}
+        uses: hoverkraft-tech/compose-action@v2.1.0
+        with:
+          compose-file: ./docker-compose.yml
+          services: yew_front
+          up-flags: --build
+          down-flags: --volumes
 
       - name: Build and Push actix_api Image
-        run: |
-          docker-compose -f docker-compose.yml build actix_api
-          docker tag actix_api ghcr.io/juliog922/actix_api:latest
-          docker tag actix_api ghcr.io/juliog922/actix_api:${{ github.sha }}
-          docker push ghcr.io/juliog922/actix_api:latest
-          docker push ghcr.io/juliog922/actix_api:${{ github.sha }}
+        uses: hoverkraft-tech/compose-action@v2.1.0
+        with:
+          compose-file: ./docker-compose.yml
+          services: actix_api
+          up-flags: --build
+          down-flags: --volumes
 
 
