@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "yew_front",
+    "actix_api"
+]
+resolver = "2"
