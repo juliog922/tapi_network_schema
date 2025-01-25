@@ -1,0 +1,25 @@
+name: Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  api-test:
+    name: Run API Tests
+    runs-on: self-hosted  # Asegura que se ejecuta en tu runner self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - name: Run Cargo Test in actix_api
+        run: |
+          cd actix_api
+          cargo test
