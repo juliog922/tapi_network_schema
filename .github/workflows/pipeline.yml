@@ -41,12 +41,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: |
-            ghcr.io/juliog922/tapi_network_schema:latest
-            ghcr.io/juliog922/tapi_network_schema:${{ github.sha }}
+      - name: Build and Push yew_front Image
+        run: |
+          docker-compose -f docker-compose.yml build yew_front
+          docker tag yew_front ghcr.io/juliog922/yew_front:latest
+          docker tag yew_front ghcr.io/juliog922/yew_front:${{ github.sha }}
+          docker push ghcr.io/juliog922/yew_front:latest
+          docker push ghcr.io/juliog922/yew_front:${{ github.sha }}
+
+      - name: Build and Push actix_api Image
+        run: |
+          docker-compose -f docker-compose.yml build actix_api
+          docker tag actix_api ghcr.io/juliog922/actix_api:latest
+          docker tag actix_api ghcr.io/juliog922/actix_api:${{ github.sha }}
+          docker push ghcr.io/juliog922/actix_api:latest
+          docker push ghcr.io/juliog922/actix_api:${{ github.sha }}
 
