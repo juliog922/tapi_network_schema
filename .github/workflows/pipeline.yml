@@ -57,3 +57,4 @@ jobs:
           docker push ghcr.io/juliog922/actix_api:latest
           docker push ghcr.io/juliog922/actix_api:${{ github.sha }}
 
+
