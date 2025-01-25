@@ -4,7 +4,11 @@ use actix_api::logic::requester::DataSource;
 use std::collections::HashMap;
 use std::io::Result;
 use std::sync::Arc;
+use std::env;
+use dotenv::dotenv;
 use tokio::sync::Mutex;
+
+
 
 /// Main entry point for the Actix web server.
 ///
@@ -20,6 +24,13 @@ use tokio::sync::Mutex;
 ///   - On failure, an `io::Error` is returned.
 #[main]
 async fn main() -> Result<()> {
+    dotenv().ok();
+
+    let port: u16 = env::var("API_PORT").ok().and_then(|val| {
+        val.parse().ok()
+    }).unwrap_or(8080);
+    let host: String = env::var("API_HOST").unwrap_or("0.0.0.0".to_string());
+
     let host_dictionary: Arc<Mutex<HashMap<String, DataSource>>> =
         Arc::new(Mutex::new(HashMap::new()));
     // Create a shared, thread-safe dictionary to hold host parameters
@@ -41,7 +52,9 @@ async fn main() -> Result<()> {
             .service(actix_api::routes::delete_host::delete_host) // Register route for deleting a host
             .service(actix_api::routes::by_files::upload_services)
     })
-    .bind(("0.0.0.0", 8080))? // Bind the server to 0.0.0.0:8080
+    .bind(
+        (host.as_str(), port)
+    )? // Bind the server to 0.0.0.0:8080
     .run() // Start the server
     .await // Await the server's completion
 }
