@@ -4,9 +4,13 @@ use wasm_bindgen::JsValue;
 use web_sys::{File, FormData, Blob, BlobPropertyBag};
 use serde_json::{Value, from_str, json};
 use serde::{Deserialize, Serialize};
+use lazy_static::lazy_static;
+use std::option_env;
 
-const API_URL: &'static str = "/api";
-//const API_URL: &'static str = "http://localhost:8080";
+lazy_static! {
+    static ref API_URL: &'static str = option_env!("API_URL").unwrap_or("/api");
+}
+
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct Device {
@@ -59,7 +63,7 @@ pub struct CustomAuth {
 ///
 /// * `Result<Value, Error>` - Returns the JSON schema as a `Value` if successful, or an error if the request fails.
 pub async fn get_schema(ip: String, service_uuid: String) -> Result<Value, Error> {
-    let response = Request::get(&format!("{}/get_schema/{}/{}",API_URL, &ip, &service_uuid))
+    let response = Request::get(&format!("{}/get_schema/{}/{}",*API_URL, &ip, &service_uuid))
         .send()
         .await?;
     let text = response.text().await?;
@@ -77,7 +81,7 @@ pub async fn get_schema(ip: String, service_uuid: String) -> Result<Value, Error
 ///
 /// * `Result<Value, Error>` - Returns the JSON schema as a `Value` if successful, or an error if the request fails.
 pub async fn get_services(ip: String) -> Result<Value, Error> {
-    let response = Request::get(&format!("{}/get_services/{}",API_URL, &ip))
+    let response = Request::get(&format!("{}/get_services/{}",*API_URL, &ip))
         .send()
         .await?;
     let text = response.text().await?;
@@ -97,7 +101,7 @@ pub async fn get_services(ip: String) -> Result<Value, Error> {
 pub async fn add_device(
     device: Device,
 ) -> Result<Value, String> {
-    if let Ok(builder) = Request::post(&format!("{}/add_host", API_URL))
+    if let Ok(builder) = Request::post(&format!("{}/add_host", *API_URL))
         .header("Accept", "application/json")
         .json(&json!(device)) {
             if let Ok(response) = builder.send().await {
@@ -124,7 +128,7 @@ pub async fn add_device(
 ///
 /// * `Result<Value, Error>` - Returns the list of devices as a `Value` if successful, or an error if the request fails.
 pub async fn get_devices() -> Result<Value, Error> {
-    let response = Request::get(&format!("{}/get_hosts", API_URL))
+    let response = Request::get(&format!("{}/get_hosts", *API_URL))
         .send()
         .await?;
     let text = response.text().await?;
@@ -142,7 +146,7 @@ pub async fn get_devices() -> Result<Value, Error> {
 ///
 /// * `Result<Value, Error>` - Returns the server's response as a `Value` if successful, or an error if the request fails.
 pub async fn delete_device(id: &str) -> Result<Value, Error> {
-    let response = Request::delete(&format!("{}/delete_host/{}",API_URL, id))
+    let response = Request::delete(&format!("{}/delete_host/{}",*API_URL, id))
         .send()
         .await?;
     let text = response.text().await?;
@@ -184,7 +188,7 @@ pub async fn upload_connectivity_files(
     form_data.append_with_blob("json", &json_blob).map_err(|e| e.as_string().unwrap_or("Error al agregar el JSON al FormData".to_string()))?;
 
     // Construir la solicitud POST con los archivos
-    let builder = Request::post(&format!("{}/upload_services", API_URL))
+    let builder = Request::post(&format!("{}/upload_services", *API_URL))
         .header("Accept", "multipart/form-data")
         .body(form_data) // Usamos `body` para adjuntar FormData
         .map_err(|e| format!("Error al crear la solicitud: {}", e))?;

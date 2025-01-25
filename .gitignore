@@ -1,15 +1,66 @@
-# Rust
-target/
+# Trunk
+dist/
+
+# Archivos generados por Cargo
+/target/
+/**/target/
+*.rs.bk
+
+# Archivos de configuración y metadatos locales
+/.cargo/
 Cargo.lock
+
+# Archivos generados por compiladores o herramientas
+*.dSYM
+*.exe
+*.exe~
+*.out
+*.log
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+
+# Archivos de entorno
+.env
+.env.*
+
+# Archivos del editor/IDE
 .idea/
 .vscode/
-*.rs.bk
 *.swp
+*.swo
+*.swn
+*.bak
+
+# Archivos del sistema operativo
 .DS_Store
+Thumbs.db
+desktop.ini
 
-actix_api/0077.json
-actix_api/example.json
-actix_api/thunder.json
+# Archivos temporales
+*.tmp
+*.temp
+*.pid
+*.seed
+*.old
+*.orig
+*.rej
+*.~*
 
-# Trunk
-yew_front/dist
+# Archivos de prueba o datos temporales
+/tests/**/*.log
+/tests/**/*.tmp
+
+# Archivos relacionados con contenedores
+.dockerignore
+docker-compose.override.yml
+
+# Otros archivos comunes
+*.iml
+*.pyc
+*.pyo
+*.class
+*.jar
+*.war

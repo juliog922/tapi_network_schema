@@ -1,16 +1,13 @@
-name: TAPI Tests
+name: Tests
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
 
 jobs:
-  run-cargo-test:
-    name: Run Cargo Test
+  api-test:
+    name: Run API Tests
     runs-on: self-hosted  # Asegura que se ejecuta en tu runner self-hosted
     steps:
       - name: Checkout repository
