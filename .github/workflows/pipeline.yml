@@ -27,14 +27,15 @@ jobs:
           cd actix_api
           cargo test
 
-  build-and-push-image:
-    name: Build and Push Docker Image
+  build-and-push-images:
     runs-on: ubuntu-latest
+    needs:
+      - unit-test
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log in to the Container registry
+      - name: Log in to the Container Registry
         uses: docker/login-action@v3
         with:
           registry: https://ghcr.io
@@ -42,19 +43,32 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push yew_front Image
-        run: |
-          docker-compose -f docker-compose.yml build yew_front
-          docker tag yew_front ghcr.io/juliog922/yew_front:latest
-          docker tag yew_front ghcr.io/juliog922/yew_front:${{ github.sha }}
-          docker push ghcr.io/juliog922/yew_front:latest
-          docker push ghcr.io/juliog922/yew_front:${{ github.sha }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ./yew_front  # Contexto apunta al directorio de Dockerfile de yew_front
+          file: ./yew_front/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/juliog922/yew_front:latest
+            ghcr.io/juliog922/yew_front:${{ github.sha }}
 
       - name: Build and Push actix_api Image
-        run: |
-          docker-compose -f docker-compose.yml build actix_api
-          docker tag actix_api ghcr.io/juliog922/actix_api:latest
-          docker tag actix_api ghcr.io/juliog922/actix_api:${{ github.sha }}
-          docker push ghcr.io/juliog922/actix_api:latest
-          docker push ghcr.io/juliog922/actix_api:${{ github.sha }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ./actix_api  # Contexto apunta al directorio de Dockerfile de actix_api
+          file: ./actix_api/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/juliog922/actix_api:latest
+            ghcr.io/juliog922/actix_api:${{ github.sha }}
 
+      - name: Build and Push nginx Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./nginx  # Contexto apunta al directorio de Dockerfile de nginx
+          file: ./nginx/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/juliog922/nginx:latest
+            ghcr.io/juliog922/nginx:${{ github.sha }}
 
