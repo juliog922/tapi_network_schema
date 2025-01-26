@@ -27,37 +27,48 @@ jobs:
           cd actix_api
           cargo test
 
-  build-and-push-image:
-    name: Build and Push Docker Image
+  build-and-push-images:
     runs-on: ubuntu-latest
+    needs:
+      - run-tests
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log in to the Container registry
+      - name: Log in to the Container Registry
         uses: docker/login-action@v3
         with:
           registry: https://ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
       - name: Build and Push yew_front Image
-        uses: hoverkraft-tech/compose-action@v2.1.0
+        uses: docker/build-push-action@v6
         with:
-          compose-file: ./docker-compose.yml
-          services: yew_front
-          up-flags: --build
-          down-flags: --volumes
+          context: ./yew_front  # Contexto apunta al directorio de Dockerfile de yew_front
+          file: ./yew_front/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/juliog922/yew_front:latest
+            ghcr.io/juliog922/yew_front:${{ github.sha }}
 
       - name: Build and Push actix_api Image
-        uses: hoverkraft-tech/compose-action@v2.1.0
+        uses: docker/build-push-action@v6
         with:
-          compose-file: ./docker-compose.yml
-          services: actix_api
-          up-flags: --build
-          down-flags: --volumes
+          context: ./actix_api  # Contexto apunta al directorio de Dockerfile de actix_api
+          file: ./actix_api/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/juliog922/actix_api:latest
+            ghcr.io/juliog922/actix_api:${{ github.sha }}
 
+      - name: Build and Push nginx Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./nginx  # Contexto apunta al directorio de Dockerfile de nginx
+          file: ./nginx/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/juliog922/nginx:latest
+            ghcr.io/juliog922/nginx:${{ github.sha }}
 
