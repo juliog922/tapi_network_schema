@@ -1,23 +1,13 @@
 services:
   yew_front:
-    build:
-      context: ./yew_front
-    expose:
-      - "8092"
-    volumes:
-      - ./yew_front:/app
+    image: ghcr.io/juliog922/yew_front:latest
     command: trunk serve --release --port 8092 --address 0.0.0.0 --no-autoreload
     networks:
       - app_network
     restart: always
 
   actix_api:
-    build:
-      context: ./actix_api
-    expose:
-      - "8080"
-    volumes:
-      - ./actix_api:/app
+    image: ghcr.io/juliog922/actix_api:latest
     command: cargo run --bin server --release
     environment:
       - API_PORT=8080
@@ -27,8 +17,7 @@ services:
     restart: always
 
   nginx:
-    build:
-      context: ./nginx
+    image: ghcr.io/juliog922/nginx:latest
     ports:
       - "8091:80"
     networks:
