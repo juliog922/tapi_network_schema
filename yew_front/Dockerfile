@@ -17,3 +17,5 @@ WORKDIR /app
 # Copy project files
 COPY . .
 
+EXPOSE 8092
+
