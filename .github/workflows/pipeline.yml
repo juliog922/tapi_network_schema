@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set Up Rust
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@stable
         with:
           profile: minimal
           toolchain: stable
@@ -45,7 +45,7 @@ jobs:
       - name: Build and Push yew_front Image
         uses: docker/build-push-action@v6
         with:
-          context: ./yew_front  # Contexto apunta al directorio de Dockerfile de yew_front
+          context: ./yew_front
           file: ./yew_front/Dockerfile
           push: true
           tags: |
@@ -55,20 +55,10 @@ jobs:
       - name: Build and Push actix_api Image
         uses: docker/build-push-action@v6
         with:
-          context: ./actix_api  # Contexto apunta al directorio de Dockerfile de actix_api
+          context: ./actix_api
           file: ./actix_api/Dockerfile
           push: true
           tags: |
             ghcr.io/juliog922/actix_api:latest
             ghcr.io/juliog922/actix_api:${{ github.sha }}
-
-      - name: Build and Push nginx Image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./nginx  # Contexto apunta al directorio de Dockerfile de nginx
-          file: ./nginx/Dockerfile
-          push: true
-          tags: |
-            ghcr.io/juliog922/nginx:latest
-            ghcr.io/juliog922/nginx:${{ github.sha }}
 
