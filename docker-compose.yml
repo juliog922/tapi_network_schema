@@ -17,7 +17,7 @@ services:
     restart: always
 
   nginx:
-    image: ghcr.io/juliog922/nginx:latest
+    image: nginx:latest
     ports:
       - "8091:80"
     volumes:
