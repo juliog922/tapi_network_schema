@@ -24,8 +24,7 @@ jobs:
 
       - name: Run Cargo Test in actix_api
         run: |
-          cd actix_api
-          cargo test
+          cargo test -p actix_api
 
   build-and-push-images:
     runs-on: ubuntu-latest
@@ -61,5 +60,27 @@ jobs:
           tags: |
             ghcr.io/juliog922/actix_api:latest
             ghcr.io/juliog922/actix_api:${{ github.sha }}
+
+      - name: Build and Push nginx Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./nginx
+          file: ./nginx/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/juliog922/nginx:latest
+            ghcr.io/juliog922/nginx:${{ github.sha }}
+  
+  deploy:
+    runs-on: self-hosted
+    needs:
+      - build-and-push-images
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Docker Stack Deploy
+      run: |
+        docker --context testing stack deploy -c compose.yml tapi
 
 
