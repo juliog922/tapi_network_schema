@@ -23,7 +23,7 @@ services:
   nginx:
     image: ghcr.io/juliog922/nginx:latest
     ports:
-      - "8093:80"
+      - "8091:80"
     networks:
       - app_network
     deploy:
