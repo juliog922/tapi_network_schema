@@ -53,10 +53,8 @@ pub fn get_file_path(
 
             Ok(file_path.to_string_lossy().to_string())
         }
-        Err(err) => {
-            Err(Error::from(
-                format!("File cannot be readed: {}", err).as_str(),
-            ))
-        }
+        Err(err) => Err(Error::from(
+            format!("File cannot be readed: {}", err).as_str(),
+        )),
     }
 }

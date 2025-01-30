@@ -1,14 +1,12 @@
+use actix_api::logic::requester::DataSource;
 use actix_cors::Cors;
 use actix_web::{main, web, App, HttpServer};
-use actix_api::logic::requester::DataSource;
+use dotenv::dotenv;
 use std::collections::HashMap;
+use std::env;
 use std::io::Result;
 use std::sync::Arc;
-use std::env;
-use dotenv::dotenv;
 use tokio::sync::Mutex;
-
-
 
 /// Main entry point for the Actix web server.
 ///
@@ -26,9 +24,10 @@ use tokio::sync::Mutex;
 async fn main() -> Result<()> {
     dotenv().ok();
 
-    let port: u16 = env::var("API_PORT").ok().and_then(|val| {
-        val.parse().ok()
-    }).unwrap_or(8080);
+    let port: u16 = env::var("API_PORT")
+        .ok()
+        .and_then(|val| val.parse().ok())
+        .unwrap_or(8080);
     let host: String = env::var("API_HOST").unwrap_or("0.0.0.0".to_string());
 
     let host_dictionary: Arc<Mutex<HashMap<String, DataSource>>> =
@@ -52,9 +51,7 @@ async fn main() -> Result<()> {
             .service(actix_api::routes::delete_host::delete_host) // Register route for deleting a host
             .service(actix_api::routes::by_files::upload_services)
     })
-    .bind(
-        (host.as_str(), port)
-    )? // Bind the server to 0.0.0.0:8080
+    .bind((host.as_str(), port))? // Bind the server to 0.0.0.0:8080
     .run() // Start the server
     .await // Await the server's completion
 }
@@ -65,12 +62,12 @@ async fn test_server() {
     use actix_web::test;
 
     let host_dictionary: Arc<Mutex<HashMap<String, DataSource>>> =
-    Arc::new(Mutex::new(HashMap::new()));
+        Arc::new(Mutex::new(HashMap::new()));
 
     let app = test::init_service(
         App::new()
             .app_data(web::Data::new(host_dictionary.clone()))
-            .service(actix_api::routes::get_hosts::get_hosts)
+            .service(actix_api::routes::get_hosts::get_hosts),
     )
     .await;
 
@@ -79,5 +76,4 @@ async fn test_server() {
     let resp = test::call_service(&app, req).await;
     println!("{}", resp.status());
     assert!(resp.status().is_success());
-
 }
