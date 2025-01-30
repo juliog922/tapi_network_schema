@@ -441,7 +441,7 @@ impl DeviceHandler {
     async fn get_oauth_token(url: &String, json: &HashMap<&str, String>) -> Result<String, Error> {
         println!("url: {} \n json: {:?}", url, json);
         let response = Self::custom_post_request(url, json).await;
-
+        println!("response: {:#?}", response);
         let token_response = match response {
             Ok(res) => res
                 .get("token")
@@ -451,6 +451,7 @@ impl DeviceHandler {
                     res.get("accessSession")
                         .and_then(|t| t.as_str())
                         .map(String::from)
+                        .or_else(|| None)
                 }),
             Err(_) => None,
         };
