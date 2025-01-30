@@ -103,9 +103,6 @@ impl FilesHandler {
                 let file = File::open(&complete_path.complete_context_path).map_err(|err| {
                     Error::from(format!("File cannot be opened: {}", err).as_str())
                 })?;
-                let file = File::open(&complete_path.complete_context_path).map_err(|err| {
-                    Error::from(format!("File cannot be opened: {}", err).as_str())
-                })?;
                 let reader = BufReader::new(file);
                 let json_value: Value = serde_json::from_reader(reader).map_err(|err| {
                     Error::from(format!("File cannot be readed: {}", err).as_str())
@@ -137,18 +134,11 @@ impl FilesHandler {
                 let topology_file = File::open(&by_part_paths.topology_path).map_err(|err| {
                     Error::from(format!("File cannot be opened: {}", err).as_str())
                 })?;
-                let topology_file = File::open(&by_part_paths.topology_path).map_err(|err| {
-                    Error::from(format!("File cannot be opened: {}", err).as_str())
-                })?;
                 let topology_reader = BufReader::new(topology_file);
                 let topology: Value = serde_json::from_reader(topology_reader).map_err(|err| {
                     Error::from(format!("File cannot be readed: {}", err).as_str())
                 })?;
 
-                let connections_file =
-                    File::open(&by_part_paths.connections_path).map_err(|err| {
-                        Error::from(format!("File cannot be opened: {}", err).as_str())
-                    })?;
                 let connections_file =
                     File::open(&by_part_paths.connections_path).map_err(|err| {
                         Error::from(format!("File cannot be opened: {}", err).as_str())
@@ -196,9 +186,6 @@ impl FilesHandler {
                 })
             }
             FilesEnum::Complete(complete_path) => {
-                let file = File::open(&complete_path.complete_context_path).map_err(|err| {
-                    Error::from(format!("File cannot be opened: {}", err).as_str())
-                })?;
                 let file = File::open(&complete_path.complete_context_path).map_err(|err| {
                     Error::from(format!("File cannot be opened: {}", err).as_str())
                 })?;
@@ -253,7 +240,6 @@ impl DeviceHandler {
                 json.insert("grant_type", oauth.grant_type.clone());
 
                 token_oauth = Self::get_oauth_token(&url, &json).await?;
-                token_oauth = Self::get_oauth_token(&url, &json).await?;
             }
             Auth::Custom(custom_auth) => {
                 let url = format!(
@@ -272,7 +258,6 @@ impl DeviceHandler {
                     json.insert(key.as_str(), String::from(value.as_str().unwrap()));
                 }
 
-                token_custom = Self::get_oauth_token(&url, &json).await?;
                 token_custom = Self::get_oauth_token(&url, &json).await?;
             }
             _ => {}
@@ -454,6 +439,7 @@ impl DeviceHandler {
     /// * `Ok(String)` - The OAuth token if found.
     /// * `Err(Error)` - An error if both requests fail or if the token cannot be found.
     async fn get_oauth_token(url: &String, json: &HashMap<&str, String>) -> Result<String, Error> {
+        println!("url: {} \n json: {:?}", url, json);
         let response = Self::custom_post_request(url, json).await;
 
         let token_response = match response {
@@ -585,7 +571,6 @@ impl DeviceHandler {
                 json.insert("grant_type", oauth.grant_type.clone());
 
                 token_oauth = Self::get_oauth_token(&url, &json).await?;
-                token_oauth = Self::get_oauth_token(&url, &json).await?;
             }
             Auth::Custom(custom_auth) => {
                 let url = format!(
@@ -604,7 +589,6 @@ impl DeviceHandler {
                     json.insert(key.as_str(), String::from(value.as_str().unwrap()));
                 }
 
-                token_custom = Self::get_oauth_token(&url, &json).await?;
                 token_custom = Self::get_oauth_token(&url, &json).await?;
             }
             _ => {}
