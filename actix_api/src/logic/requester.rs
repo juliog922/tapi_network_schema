@@ -449,6 +449,7 @@ impl DeviceHandler {
         };
 
         if let Some(token) = token_response {
+            println!("{}", token);
             return Ok(token);
         }
 
@@ -460,7 +461,7 @@ impl DeviceHandler {
             .ok_or_else(|| Error::from("Cannot find Token in oauth2 response"))?
             .as_str()
             .unwrap();
-
+        println!("{}", token);
         Ok(String::from(token))
     }
 
