@@ -81,9 +81,9 @@ impl FilesHandler {
         match file_enum {
             FilesEnum::ByPart(by_part_paths) => {
                 let connectivity_services_file =
-                    File::open(&by_part_paths.connectivity_services_path).map_err(
-                        |err| Error::from(format!("File cannot be opened: {}", err).as_str()),
-                    )?;
+                    File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
+                        Error::from(format!("File cannot be opened: {}", err).as_str())
+                    })?;
                 let connectivity_services_reader = BufReader::new(connectivity_services_file);
                 let connectivity_services_value: Value =
                     serde_json::from_reader(connectivity_services_reader).map_err(|err| {
@@ -97,10 +97,9 @@ impl FilesHandler {
                 Ok(connectivity_services)
             }
             FilesEnum::Complete(complete_path) => {
-                let file = File::open(&complete_path.complete_context_path)
-                    .map_err(|err| {
-                        Error::from(format!("File cannot be opened: {}", err).as_str())
-                    })?;
+                let file = File::open(&complete_path.complete_context_path).map_err(|err| {
+                    Error::from(format!("File cannot be opened: {}", err).as_str())
+                })?;
                 let reader = BufReader::new(file);
                 let json_value: Value = serde_json::from_reader(reader).map_err(|err| {
                     Error::from(format!("File cannot be readed: {}", err).as_str())
@@ -129,19 +128,18 @@ impl FilesHandler {
     ) -> Result<Context, Error> {
         match file_enum {
             FilesEnum::ByPart(by_part_paths) => {
-                let topology_file = File::open(&by_part_paths.topology_path)
-                    .map_err(|err| {
-                        Error::from(format!("File cannot be opened: {}", err).as_str())
-                    })?;
+                let topology_file = File::open(&by_part_paths.topology_path).map_err(|err| {
+                    Error::from(format!("File cannot be opened: {}", err).as_str())
+                })?;
                 let topology_reader = BufReader::new(topology_file);
                 let topology: Value = serde_json::from_reader(topology_reader).map_err(|err| {
                     Error::from(format!("File cannot be readed: {}", err).as_str())
                 })?;
 
-                let connections_file = File::open(&by_part_paths.connections_path)
-                    .map_err(|err| {
-                    Error::from(format!("File cannot be opened: {}", err).as_str())
-                })?;
+                let connections_file =
+                    File::open(&by_part_paths.connections_path).map_err(|err| {
+                        Error::from(format!("File cannot be opened: {}", err).as_str())
+                    })?;
                 let connections_reader = BufReader::new(connections_file);
                 let connections_value: Value = serde_json::from_reader(connections_reader)
                     .map_err(|err| {
@@ -150,9 +148,9 @@ impl FilesHandler {
                 let connections = connections_value.as_array().cloned().unwrap_or_default();
 
                 let connectivity_services_file =
-                    File::open(&by_part_paths.connectivity_services_path).map_err(
-                        |err| Error::from(format!("File cannot be opened: {}", err).as_str()),
-                    )?;
+                    File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
+                        Error::from(format!("File cannot be opened: {}", err).as_str())
+                    })?;
                 let connectivity_services_reader = BufReader::new(connectivity_services_file);
                 let connectivity_services_value: Value =
                     serde_json::from_reader(connectivity_services_reader).map_err(|err| {
@@ -182,10 +180,9 @@ impl FilesHandler {
                 })
             }
             FilesEnum::Complete(complete_path) => {
-                let file = File::open(&complete_path.complete_context_path)
-                    .map_err(|err| {
-                        Error::from(format!("File cannot be opened: {}", err).as_str())
-                    })?;
+                let file = File::open(&complete_path.complete_context_path).map_err(|err| {
+                    Error::from(format!("File cannot be opened: {}", err).as_str())
+                })?;
                 let reader = BufReader::new(file);
                 let json_value: Value = serde_json::from_reader(reader).map_err(|err| {
                     Error::from(format!("File cannot be readed: {}", err).as_str())
@@ -236,14 +233,7 @@ impl DeviceHandler {
                 json.insert("password", oauth.password.clone());
                 json.insert("grant_type", oauth.grant_type.clone());
 
-                let response = Self::custom_post_request(&url, &json).await?;
-                token_oauth = String::from(
-                    response
-                        .get("token")
-                        .ok_or_else(|| Error::from("Cannot find Token in oauth2 response"))?
-                        .as_str()
-                        .unwrap(),
-                );
+                token_oauth = Self::get_oauth_token(&url, &json).await?;
             }
             Auth::Custom(custom_auth) => {
                 let url = format!(
@@ -262,14 +252,7 @@ impl DeviceHandler {
                     json.insert(key.as_str(), String::from(value.as_str().unwrap()));
                 }
 
-                let response = Self::custom_post_request(&url, &json).await?;
-                token_custom = String::from(
-                    response
-                        .get("token")
-                        .ok_or_else(|| Error::from("Cannot find Token in oauth2 response"))?
-                        .as_str()
-                        .unwrap(),
-                );
+                token_custom = Self::get_oauth_token(&url, &json).await?;
             }
             _ => {}
         }
@@ -408,6 +391,79 @@ impl DeviceHandler {
             .map_err(|_| Error::from("Json Error"))?
     }
 
+    /// Sends a PUT request with JSON data and returns the response as a `Value`.
+    ///
+    /// # Arguments
+    /// - `url`: A reference to the URL for the POST request.
+    /// - `json`: A reference to a `HashMap` containing the JSON payload for the POST request.
+    ///
+    /// # Returns
+    /// A `Result` containing the deserialized JSON response as a `Value`, or an `Error`.
+    ///
+    /// # Notes
+    /// - The client accepts invalid SSL certificates.
+    /// - If the request or response parsing fails, appropriate errors are returned.
+    async fn custom_put_request(
+        url: &String,
+        json: &HashMap<&str, String>,
+    ) -> Result<Value, Error> {
+        Client::builder()
+            .danger_accept_invalid_certs(true) // Accept invalid certificates.
+            .build()
+            .unwrap() // Handle client build error.
+            .put(url) // Set up the GET request.
+            .json(&json)
+            .send()
+            .await
+            .map_err(|_| Error::from("Request Error"))?
+            .json()
+            .await
+            .map_err(|_| Error::from("Json Error"))?
+    }
+
+    /// Attempts to retrieve an OAuth token using a POST request.
+    /// If the POST request fails or does not return a valid token, a PUT request is attempted.
+    /// The function first looks for the token in the "token" field, and if not found, in the "accessSession" field.
+    ///
+    /// # Arguments
+    /// * `url` - A reference to a string containing the request URL.
+    /// * `json` - A reference to a hashmap containing the JSON request body.
+    ///
+    /// # Returns
+    /// * `Ok(String)` - The OAuth token if found.
+    /// * `Err(Error)` - An error if both requests fail or if the token cannot be found.
+    async fn get_oauth_token(url: &String, json: &HashMap<&str, String>) -> Result<String, Error> {
+        let response = Self::custom_post_request(url, json).await;
+
+        let token_response = match response {
+            Ok(res) => res
+                .get("token")
+                .and_then(|t| t.as_str())
+                .map(String::from)
+                .or_else(|| {
+                    res.get("accessSession")
+                        .and_then(|t| t.as_str())
+                        .map(String::from)
+                }),
+            Err(_) => None,
+        };
+
+        if let Some(token) = token_response {
+            return Ok(token);
+        }
+
+        // If POST fails, try with PUT
+        let response = Self::custom_put_request(url, json).await?;
+        let token = response
+            .get("token")
+            .or_else(|| response.get("accessSession"))
+            .ok_or_else(|| Error::from("Cannot find Token in oauth2 response"))?
+            .as_str()
+            .unwrap();
+
+        Ok(String::from(token))
+    }
+
     /// Sends a GET request with basic authentication and returns the response as a `Value`.
     ///
     /// # Arguments
@@ -506,14 +562,7 @@ impl DeviceHandler {
                 json.insert("password", oauth.password.clone());
                 json.insert("grant_type", oauth.grant_type.clone());
 
-                let response = Self::custom_post_request(&url, &json).await?;
-                token_oauth = String::from(
-                    response
-                        .get("token")
-                        .ok_or_else(|| Error::from("Cannot find Token in oauth2 response"))?
-                        .as_str()
-                        .unwrap(),
-                );
+                token_oauth = Self::get_oauth_token(&url, &json).await?;
             }
             Auth::Custom(custom_auth) => {
                 let url = format!(
@@ -532,14 +581,7 @@ impl DeviceHandler {
                     json.insert(key.as_str(), String::from(value.as_str().unwrap()));
                 }
 
-                let response = Self::custom_post_request(&url, &json).await?;
-                token_custom = String::from(
-                    response
-                        .get("token")
-                        .ok_or_else(|| Error::from("Cannot find Token in oauth2 response"))?
-                        .as_str()
-                        .unwrap(),
-                );
+                token_custom = Self::get_oauth_token(&url, &json).await?;
             }
             _ => {}
         }

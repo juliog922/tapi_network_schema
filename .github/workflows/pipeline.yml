@@ -81,6 +81,6 @@ jobs:
 
     - name: Docker Stack Deploy
       run: |
-        docker --context testing stack deploy -c compose.yml tapi
+        docker --context testing stack deploy -c compose.yml tapi --with-registry-auth
 
 

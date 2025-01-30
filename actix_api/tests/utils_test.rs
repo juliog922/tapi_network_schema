@@ -1,8 +1,8 @@
 /// Module containing unit tests for the `find_name` function.
 #[cfg(test)]
 mod tests {
-    use serde_json::json;
     use actix_api::utils::find_name;
+    use serde_json::json;
 
     /// Tests the `find_name` function with valid and invalid inputs.
     ///
@@ -21,7 +21,7 @@ mod tests {
         });
         let name = find_name(&json_data, "SERVICE_NAME".to_string());
         assert_eq!(name, "\"My Service\"");
-        
+
         let unknown_name = find_name(&json_data, "NON_EXISTENT".to_string());
         assert_eq!(unknown_name, "UNKNOWN");
     }

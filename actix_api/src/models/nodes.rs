@@ -97,9 +97,14 @@ impl Node {
         }
         // Add parent edge points for the base endpoint.
         for owned_node_edge_point in &self.owned_node_edge_points {
-            if !owned_node_edge_point.connection_end_points.is_empty() && !owned_node_edge_point.connection_end_points[0]
-                .client_node_edge_points.is_empty() && owned_node_edge_point.connection_end_points[0].client_node_edge_points[0]
-                .node_edge_point_uuid == base_endpoint.node_edge_point_uuid  {
+            if !owned_node_edge_point.connection_end_points.is_empty()
+                && !owned_node_edge_point.connection_end_points[0]
+                    .client_node_edge_points
+                    .is_empty()
+                && owned_node_edge_point.connection_end_points[0].client_node_edge_points[0]
+                    .node_edge_point_uuid
+                    == base_endpoint.node_edge_point_uuid
+            {
                 let possible_id = base_endpoint.id.map(|id| id + 1);
                 base_endpoint_vector.push(BaseEndpoint {
                     node_edge_point_uuid: owned_node_edge_point.node_edge_point_uuid.clone(),
