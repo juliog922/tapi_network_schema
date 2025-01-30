@@ -84,6 +84,9 @@ impl FilesHandler {
                     File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
                         Error::from(format!("File cannot be opened: {}", err).as_str())
                     })?;
+                    File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
+                        Error::from(format!("File cannot be opened: {}", err).as_str())
+                    })?;
                 let connectivity_services_reader = BufReader::new(connectivity_services_file);
                 let connectivity_services_value: Value =
                     serde_json::from_reader(connectivity_services_reader).map_err(|err| {
@@ -97,6 +100,9 @@ impl FilesHandler {
                 Ok(connectivity_services)
             }
             FilesEnum::Complete(complete_path) => {
+                let file = File::open(&complete_path.complete_context_path).map_err(|err| {
+                    Error::from(format!("File cannot be opened: {}", err).as_str())
+                })?;
                 let file = File::open(&complete_path.complete_context_path).map_err(|err| {
                     Error::from(format!("File cannot be opened: {}", err).as_str())
                 })?;
@@ -131,11 +137,18 @@ impl FilesHandler {
                 let topology_file = File::open(&by_part_paths.topology_path).map_err(|err| {
                     Error::from(format!("File cannot be opened: {}", err).as_str())
                 })?;
+                let topology_file = File::open(&by_part_paths.topology_path).map_err(|err| {
+                    Error::from(format!("File cannot be opened: {}", err).as_str())
+                })?;
                 let topology_reader = BufReader::new(topology_file);
                 let topology: Value = serde_json::from_reader(topology_reader).map_err(|err| {
                     Error::from(format!("File cannot be readed: {}", err).as_str())
                 })?;
 
+                let connections_file =
+                    File::open(&by_part_paths.connections_path).map_err(|err| {
+                        Error::from(format!("File cannot be opened: {}", err).as_str())
+                    })?;
                 let connections_file =
                     File::open(&by_part_paths.connections_path).map_err(|err| {
                         Error::from(format!("File cannot be opened: {}", err).as_str())
@@ -148,6 +161,9 @@ impl FilesHandler {
                 let connections = connections_value.as_array().cloned().unwrap_or_default();
 
                 let connectivity_services_file =
+                    File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
+                        Error::from(format!("File cannot be opened: {}", err).as_str())
+                    })?;
                     File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
                         Error::from(format!("File cannot be opened: {}", err).as_str())
                     })?;
@@ -180,6 +196,9 @@ impl FilesHandler {
                 })
             }
             FilesEnum::Complete(complete_path) => {
+                let file = File::open(&complete_path.complete_context_path).map_err(|err| {
+                    Error::from(format!("File cannot be opened: {}", err).as_str())
+                })?;
                 let file = File::open(&complete_path.complete_context_path).map_err(|err| {
                     Error::from(format!("File cannot be opened: {}", err).as_str())
                 })?;
@@ -234,6 +253,7 @@ impl DeviceHandler {
                 json.insert("grant_type", oauth.grant_type.clone());
 
                 token_oauth = Self::get_oauth_token(&url, &json).await?;
+                token_oauth = Self::get_oauth_token(&url, &json).await?;
             }
             Auth::Custom(custom_auth) => {
                 let url = format!(
@@ -252,6 +272,7 @@ impl DeviceHandler {
                     json.insert(key.as_str(), String::from(value.as_str().unwrap()));
                 }
 
+                token_custom = Self::get_oauth_token(&url, &json).await?;
                 token_custom = Self::get_oauth_token(&url, &json).await?;
             }
             _ => {}
@@ -564,6 +585,7 @@ impl DeviceHandler {
                 json.insert("grant_type", oauth.grant_type.clone());
 
                 token_oauth = Self::get_oauth_token(&url, &json).await?;
+                token_oauth = Self::get_oauth_token(&url, &json).await?;
             }
             Auth::Custom(custom_auth) => {
                 let url = format!(
@@ -582,6 +604,7 @@ impl DeviceHandler {
                     json.insert(key.as_str(), String::from(value.as_str().unwrap()));
                 }
 
+                token_custom = Self::get_oauth_token(&url, &json).await?;
                 token_custom = Self::get_oauth_token(&url, &json).await?;
             }
             _ => {}
