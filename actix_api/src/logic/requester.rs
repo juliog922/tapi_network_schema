@@ -420,11 +420,11 @@ impl DeviceHandler {
             .put(url) // Set up the GET request.
             .json(&json)
             .send()
-            .await
-            .map_err(|_| Error::from("Request Error"))?
+            .await?
+            //.map_err(|_| Error::from("Request Error"))?
             .json()
-            .await
-            .map_err(|_| Error::from("Json Error"))?
+            .await?
+            //.map_err(|_| Error::from("Json Error"))?
     }
 
     /// Attempts to retrieve an OAuth token using a POST request.
@@ -457,7 +457,7 @@ impl DeviceHandler {
         };
         println!("token_response: {:?}", token_response);
         if let Some(token) = token_response {
-            println!("toke: {}", token);
+            println!("token: {}", token);
             return Ok(token);
         }
 
