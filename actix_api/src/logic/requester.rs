@@ -462,8 +462,10 @@ impl DeviceHandler {
         }
 
         // If POST fails, try with PUT
-        let response = Self::custom_put_request(url, json).await?;
+        let response = Self::custom_put_request(url, json).await;
+
         println!("response: {:?}", response);
+        let response = response?;
         let token = response
             .get("token")
             .or_else(|| response.get("accessSession"))
