@@ -392,9 +392,12 @@ impl DeviceHandler {
             .send()
             .await
             .map_err(|_| Error::from("Request Error"))?
-            .json()
+            //.text()
+            .json::<Value>()
             .await
-            .map_err(|_| Error::from("Json Error"))?
+            .map_err(|_| Error::from("Json Error"))
+
+        //serde_json::from_str(&response).map_err(|e| Error::_custom(format!("{:?}", e)))?
     }
 
     /// Sends a PUT request with JSON data and returns the response as a `Value`.
@@ -422,9 +425,10 @@ impl DeviceHandler {
             .send()
             .await
             .map_err(|e| Error::_custom(format!("{:?}", e)))?
-            .json()
+            .json::<Value>()
             .await
-            .map_err(|e| Error::_custom(format!("{:?}", e)))?
+            .map_err(|e| Error::_custom(format!("{:?}", e)))
+
     }
 
     /// Attempts to retrieve an OAuth token using a POST request.
