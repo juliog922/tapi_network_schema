@@ -420,11 +420,11 @@ impl DeviceHandler {
             .put(url) // Set up the GET request.
             .json(&json)
             .send()
-            .await?
-            //.map_err(|_| Error::from("Request Error"))?
+            .await
+            .map_err(|e| Error::_custom(format!("{:?}", e)))?
             .json()
-            .await?
-            //.map_err(|_| Error::from("Json Error"))?
+            .await
+            .map_err(|e| Error::_custom(format!("{:?}", e)))?
     }
 
     /// Attempts to retrieve an OAuth token using a POST request.
