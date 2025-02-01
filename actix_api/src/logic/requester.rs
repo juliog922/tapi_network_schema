@@ -84,6 +84,9 @@ impl FilesHandler {
                     File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
                         Error::from(format!("File cannot be opened: {}", err).as_str())
                     })?;
+                    File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
+                        Error::from(format!("File cannot be opened: {}", err).as_str())
+                    })?;
                 let connectivity_services_reader = BufReader::new(connectivity_services_file);
                 let connectivity_services_value: Value =
                     serde_json::from_reader(connectivity_services_reader).map_err(|err| {
@@ -148,6 +151,9 @@ impl FilesHandler {
                 let connections = connections_value.as_array().cloned().unwrap_or_default();
 
                 let connectivity_services_file =
+                    File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
+                        Error::from(format!("File cannot be opened: {}", err).as_str())
+                    })?;
                     File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
                         Error::from(format!("File cannot be opened: {}", err).as_str())
                     })?;
@@ -386,9 +392,12 @@ impl DeviceHandler {
             .send()
             .await
             .map_err(|_| Error::from("Request Error"))?
-            .json()
+            //.text()
+            .json::<Value>()
             .await
-            .map_err(|_| Error::from("Json Error"))?
+            .map_err(|_| Error::from("Json Error"))
+
+        //serde_json::from_str(&response).map_err(|e| Error::_custom(format!("{:?}", e)))?
     }
 
     /// Sends a PUT request with JSON data and returns the response as a `Value`.
@@ -415,10 +424,11 @@ impl DeviceHandler {
             .json(&json)
             .send()
             .await
-            .map_err(|_| Error::from("Request Error"))?
-            .json()
+            .map_err(|e| Error::_custom(format!("{:?}", e)))?
+            .json::<Value>()
             .await
-            .map_err(|_| Error::from("Json Error"))?
+            .map_err(|e| Error::_custom(format!("{:?}", e)))
+
     }
 
     /// Attempts to retrieve an OAuth token using a POST request.
@@ -433,8 +443,9 @@ impl DeviceHandler {
     /// * `Ok(String)` - The OAuth token if found.
     /// * `Err(Error)` - An error if both requests fail or if the token cannot be found.
     async fn get_oauth_token(url: &String, json: &HashMap<&str, String>) -> Result<String, Error> {
+        println!("url: {} \n json: {:?}", url, json);
         let response = Self::custom_post_request(url, json).await;
-
+        println!("response: {:?}", response);
         let token_response = match response {
             Ok(res) => res
                 .get("token")
@@ -444,23 +455,28 @@ impl DeviceHandler {
                     res.get("accessSession")
                         .and_then(|t| t.as_str())
                         .map(String::from)
+                        .or_else(|| None)
                 }),
             Err(_) => None,
         };
-
+        println!("token_response: {:?}", token_response);
         if let Some(token) = token_response {
+            println!("token: {}", token);
             return Ok(token);
         }
 
         // If POST fails, try with PUT
-        let response = Self::custom_put_request(url, json).await?;
+        let response = Self::custom_put_request(url, json).await;
+
+        println!("response: {:?}", response);
+        let response = response?;
         let token = response
             .get("token")
             .or_else(|| response.get("accessSession"))
             .ok_or_else(|| Error::from("Cannot find Token in oauth2 response"))?
             .as_str()
             .unwrap();
-
+        println!("{}", token);
         Ok(String::from(token))
     }
 
