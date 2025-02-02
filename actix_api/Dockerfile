@@ -7,6 +7,10 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Set environment variables for OpenSSL
+ENV OPENSSL_DIR=/usr/lib/x86_64-linux-gnu
+ENV PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
+
 # Install rustup and configure the environment
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
