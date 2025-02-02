@@ -1,14 +1,19 @@
 # Dockerfile for Actix API
-FROM rustlang/rust:nightly-slim
+FROM rust:latest
+
+# Install rustup and configure the environment
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Install Rust tools
+RUN rustup update
+RUN rustup toolchain install stable
+RUN rustup default stable
 
 # Create and set working directory
 WORKDIR /app
 
-# Configure the environment
-ENV PATH="/root/.cargo/bin:${PATH}"
-
 # Copy project files
 COPY . .
-RUN cargo fetch
 
 EXPOSE 8080
