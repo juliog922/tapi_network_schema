@@ -34,7 +34,10 @@ async fn schema_by_service(
     if let Some(data_source) = cloned_data_source_dictionary.get(&id) {
         let context = Requester::get_service_context(data_source, &service_uuid)
             .await
-            .map_err(|_| error::ErrorNotAcceptable("Cannot extract Services from data_sources"))?;
+            .map_err(|err| {
+                log::error!("{}", err.to_string());
+                error::ErrorNotAcceptable("Cannot extract Services from data_sources")
+            })?;
         let topology = context.topology.clone();
         let connections = context.connections.clone();
         let service_value = context.connectivity_service.clone();
@@ -45,7 +48,10 @@ async fn schema_by_service(
         let service = Service::connectivity_service_build(&service_value, &connection_vector);
 
         let schema = build_schema(&service, &link_vector, &node_vector, &connection_vector)
-            .map_err(|_| error::ErrorNotAcceptable("Cannot Build Services from data_sources"))?;
+            .map_err(|err| {
+                log::error!("{}", err.to_string());
+                error::ErrorNotAcceptable("Cannot Build Services from data_sources")
+            })?;
 
         Ok(HttpResponse::Ok().json(schema))
     } else {

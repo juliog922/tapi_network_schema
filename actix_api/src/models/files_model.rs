@@ -1,8 +1,8 @@
 use actix_multipart::form::{json::Json, tempfile::TempFile, MultipartForm};
 use serde::{Deserialize, Serialize};
 
-use crate::error::Error;
 use crate::logic::file_handler::get_file_path;
+use crate::AppError;
 
 /// Metadata associated with the uploaded files, including an identifier.
 #[derive(Debug, Deserialize)]
@@ -54,7 +54,7 @@ impl UploadForm {
     /// # Returns
     /// - `FilesEnum::Complete` if a complete context file is provided.
     /// - `FilesEnum::ByPart` if topology, connections, and connectivity services files are provided.
-    pub fn to_filesenum(&self) -> Result<FilesEnum, Error> {
+    pub fn to_filesenum(&self) -> Result<FilesEnum, AppError> {
         if self.complete_context_file.is_some() {
             Ok(FilesEnum::Complete(Complete::from_uploadform(self)?))
         } else {
@@ -71,7 +71,7 @@ impl Complete {
     ///
     /// # Returns
     /// A `Complete` instance with the file path resolved.
-    pub fn from_uploadform(form: &UploadForm) -> Result<Self, Error> {
+    pub fn from_uploadform(form: &UploadForm) -> Result<Self, AppError> {
         let id = form.json.id.clone();
 
         Ok(Self {
@@ -93,7 +93,7 @@ impl ByPart {
     ///
     /// # Returns
     /// A `ByPart` instance with the paths of all part files resolved.
-    pub fn from_uploadform(form: &UploadForm) -> Result<Self, Error> {
+    pub fn from_uploadform(form: &UploadForm) -> Result<Self, AppError> {
         let id = form.json.id.clone();
 
         Ok(Self {

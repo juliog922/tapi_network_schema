@@ -1,4 +1,4 @@
-use crate::error::Error;
+use crate::AppError;
 use actix_multipart::form::tempfile::TempFile;
 use serde_json::Value;
 use std::fs::File;
@@ -38,7 +38,7 @@ pub fn get_file_path(
     complete_context_file: &TempFile,
     id: &String,
     file_name: &str,
-) -> Result<String, Error> {
+) -> Result<String, AppError> {
     match read_json_from_file(complete_context_file) {
         Ok(value) => {
             let base_path = Path::new("data");
@@ -46,15 +46,13 @@ pub fn get_file_path(
             let file_path = base_path.join(format!("{}_{}.json", id, file_name));
             // Create the output file
             let file = File::create(&file_path)
-                .map_err(|err| Error::from(format!("File cannot be created: {}", err).as_str()))?;
+                .map_err(|err| AppError::database_error(err.to_string()))?;
             // Write the JSON data to the file
             serde_json::to_writer_pretty(file, &value)
-                .map_err(|err| Error::from(format!("File cannot be writed: {}", err).as_str()))?;
+                .map_err(|err| AppError::database_error(err.to_string()))?;
 
             Ok(file_path.to_string_lossy().to_string())
         }
-        Err(err) => Err(Error::from(
-            format!("File cannot be readed: {}", err).as_str(),
-        )),
+        Err(err) => Err(AppError::database_error(err.to_string())),
     }
 }

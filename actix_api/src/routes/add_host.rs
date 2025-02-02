@@ -25,6 +25,7 @@ pub async fn add_host(
 ) -> Result<HttpResponse, Error> {
     // Validate the IP address or hostname
     if validate_host(&request_device.ip).is_err() {
+        log::error!("Host cannot be added: {}", &request_device.ip);
         return Err(error::ErrorBadRequest("Host cannot be added"));
     }
 
