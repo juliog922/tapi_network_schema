@@ -5,10 +5,7 @@ FROM rustlang/rust:nightly-slim
 WORKDIR /app
 
 # Configure the environment
-COPY Cargo.toml Cargo.lock ./
 ENV PATH="/root/.cargo/bin:${PATH}"
-
-RUN cargo fetch
 
 # Install trunk and dependencies
 RUN rustup target add wasm32-unknown-unknown
@@ -17,6 +14,7 @@ RUN cargo install --locked trunk
 
 # Copy project files
 COPY . .
+RUN cargo fetch
 
 EXPOSE 8092
 

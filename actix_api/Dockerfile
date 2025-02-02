@@ -5,12 +5,10 @@ FROM rustlang/rust:nightly-slim
 WORKDIR /app
 
 # Configure the environment
-COPY Cargo.toml Cargo.lock ./
 ENV PATH="/root/.cargo/bin:${PATH}"
-
-RUN cargo fetch
 
 # Copy project files
 COPY . .
+RUN cargo fetch
 
 EXPOSE 8080
