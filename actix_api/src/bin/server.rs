@@ -23,17 +23,18 @@ use tokio::sync::Mutex;
 #[main]
 async fn main() -> Result<()> {
     dotenv().ok();
+    env_logger::init(); // Initialize the logger
 
     let port: u16 = env::var("API_PORT")
         .ok()
         .and_then(|val| val.parse().ok())
         .unwrap_or(8080);
+
     let host: String = env::var("API_HOST").unwrap_or("0.0.0.0".to_string());
 
+    // Create a shared, thread-safe dictionary to hold host parameters
     let host_dictionary: Arc<Mutex<HashMap<String, DataSource>>> =
         Arc::new(Mutex::new(HashMap::new()));
-    // Create a shared, thread-safe dictionary to hold host parameters
-    //let host_dictionary: Arc<Mutex<HashMap<String, HostParameters>>> = Arc::new(Mutex::new(HashMap::new()));
 
     // Start the HTTP server
     HttpServer::new(move || {
@@ -43,17 +44,16 @@ async fn main() -> Result<()> {
         App::new()
             .wrap(cors) // Apply CORS configuration
             .app_data(web::Data::new(host_dictionary.clone())) // Share `host_dictionary` with application
-            .service(actix_api::routes::fetch::save_schema) // Register route for fetching and saving schema
-            .service(actix_api::routes::get_services::connectivity_services) // Register route for connectivity services
+            .service(actix_api::routes::get_services::connectivity_services)
             .service(actix_api::routes::get_schema::schema_by_service)
-            .service(actix_api::routes::get_hosts::get_hosts) // Register route for getting hosts
-            .service(actix_api::routes::add_host::add_host) // Register route for adding a new host
-            .service(actix_api::routes::delete_host::delete_host) // Register route for deleting a host
+            .service(actix_api::routes::get_hosts::get_hosts)
+            .service(actix_api::routes::add_host::add_host)
+            .service(actix_api::routes::delete_host::delete_host)
             .service(actix_api::routes::by_files::upload_services)
     })
-    .bind((host.as_str(), port))? // Bind the server to 0.0.0.0:8080
-    .run() // Start the server
-    .await // Await the server's completion
+    .bind((host.as_str(), port))? // Bind the server
+    .run()
+    .await
 }
 
 #[cfg(test)]

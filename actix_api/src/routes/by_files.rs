@@ -25,10 +25,10 @@ pub async fn upload_services(
 
     data_source_dictionary.insert(
         form.json.id.to_string(),
-        DataSource::FilesEnum(
-            form.to_filesenum()
-                .map_err(|_| error::ErrorNotAcceptable("Cannot parse FilesEnum"))?,
-        ),
+        DataSource::FilesEnum(form.to_filesenum().map_err(|_| {
+            log::error!("Cannot parse FilesEnum {:?}", &form);
+            error::ErrorNotAcceptable("Cannot parse FilesEnum")
+        })?),
     );
 
     Ok(
