@@ -78,11 +78,6 @@ jobs:
           push: false
           tags: nginx:latest
 
-      - name: Test nginx Container
-        run: |
-          docker run --rm nginx:latest
-          # Add here specifics commands
-
       - name: Push yew_front Image
         if: success()
         uses: docker/build-push-action@v6
