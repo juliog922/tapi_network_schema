@@ -15,6 +15,8 @@ services:
       - API_PORT=8080
       - API_HOST=0.0.0.0
       - RUST_LOG=info
+    depends_on:
+      - surrealdb
     networks:
       - app_network
     deploy:
@@ -27,9 +29,37 @@ services:
       - "8091:80"
     networks:
       - app_network
+    depends_on:
+      - actix_api
+      - yew_front
     deploy:
       update_config:
         order: start-first
+
+  surrealdb:
+    image: surrealdb/surrealdb:latest
+    user: root
+    ports:
+      - 8000:8000
+    entrypoint: 
+      - /surreal 
+      - start 
+      - --log
+      - info
+      - surrealkv://var/lib/surrealdb/data
+    volumes:
+      - db-data:/var/lib/surrealdb/data
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD","/surreal", "is-ready", "--conn", "http://localhost:8000"]
+      interval: 15s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+volumes:
+  db-data:
 
 networks:
   app_network:

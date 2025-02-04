@@ -26,7 +26,7 @@ jobs:
         run: |
           cargo test -p actix_api
 
-  build-and-push-images:
+  build-and-test-images:
     runs-on: ubuntu-latest
     needs:
       - unit-test
@@ -41,7 +41,50 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push yew_front Image
+      - name: Build yew_front Image
+        id: build_yew_front
+        uses: docker/build-push-action@v6
+        with:
+          context: ./yew_front
+          file: ./yew_front/Dockerfile
+          push: false
+          tags: yew_front:latest
+
+      - name: Test yew_front Container
+        run: |
+          docker run --rm yew_front:latest
+          # Add here specifics commands
+
+      - name: Build actix_api Image
+        id: build_actix_api
+        uses: docker/build-push-action@v6
+        with:
+          context: ./actix_api
+          file: ./actix_api/Dockerfile
+          push: false
+          tags: actix_api:latest
+
+      - name: Test actix_api Container
+        run: |
+          docker run --rm actix_api:latest
+          # Add here specifics commands
+
+      - name: Build nginx Image
+        id: build_nginx
+        uses: docker/build-push-action@v6
+        with:
+          context: ./nginx
+          file: ./nginx/Dockerfile
+          push: false
+          tags: nginx:latest
+
+      - name: Test nginx Container
+        run: |
+          docker run --rm nginx:latest
+          # Add here specifics commands
+
+      - name: Push yew_front Image
+        if: success()
         uses: docker/build-push-action@v6
         with:
           context: ./yew_front
@@ -51,7 +94,8 @@ jobs:
             ghcr.io/juliog922/yew_front:latest
             ghcr.io/juliog922/yew_front:${{ github.sha }}
 
-      - name: Build and Push actix_api Image
+      - name: Push actix_api Image
+        if: success()
         uses: docker/build-push-action@v6
         with:
           context: ./actix_api
@@ -61,7 +105,8 @@ jobs:
             ghcr.io/juliog922/actix_api:latest
             ghcr.io/juliog922/actix_api:${{ github.sha }}
 
-      - name: Build and Push nginx Image
+      - name: Push nginx Image
+        if: success()
         uses: docker/build-push-action@v6
         with:
           context: ./nginx
@@ -70,17 +115,15 @@ jobs:
           tags: |
             ghcr.io/juliog922/nginx:latest
             ghcr.io/juliog922/nginx:${{ github.sha }}
-  
+
   deploy:
     runs-on: self-hosted
     needs:
-      - build-and-push-images
+      - build-and-test-images
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Docker Stack Deploy
-      run: |
-        docker --context testing stack deploy -c compose.yml tapi --with-registry-auth
-
-
+      - name: Docker Stack Deploy
+        run: |
+          docker --context testing stack deploy -c compose.yml tapi --with-registry-auth
