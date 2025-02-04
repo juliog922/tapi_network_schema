@@ -1,8 +1,8 @@
-use crate::error::Error;
 use crate::models::{
     devices::{Auth, Device},
     files_model::FilesEnum,
 };
+use crate::AppError;
 use reqwest::{Client, RequestBuilder};
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
@@ -36,10 +36,10 @@ impl Requester {
     ///
     /// # Returns
     /// A `Result` containing a vector of `Value` objects representing the services, or an `Error`.
-    pub async fn get_services(data_source: &DataSource) -> Result<Vec<Value>, Error> {
+    pub async fn get_services(data_source: &DataSource) -> Result<Vec<Value>, AppError> {
         match data_source {
             DataSource::Device(device) => DeviceHandler::get_services(device).await,
-            DataSource::FilesEnum(file_enum) => FilesHandler::get_services(file_enum),
+            DataSource::FilesEnum(file_enum) => FilesHandler::get_services(file_enum).await,
         }
     }
 
@@ -54,13 +54,13 @@ impl Requester {
     pub async fn get_service_context(
         data_source: &DataSource,
         service_uuid: &String,
-    ) -> Result<Context, Error> {
+    ) -> Result<Context, AppError> {
         match data_source {
             DataSource::Device(device) => {
                 DeviceHandler::get_service_context(device, service_uuid).await
             }
             DataSource::FilesEnum(file_enum) => {
-                FilesHandler::get_service_context(file_enum, service_uuid)
+                FilesHandler::get_service_context(file_enum, service_uuid).await
             }
         }
     }
@@ -77,21 +77,18 @@ impl FilesHandler {
     ///
     /// # Returns
     /// A `Result` containing a vector of `Value` objects representing the services, or an `Error`.
-    pub fn get_services(file_enum: &FilesEnum) -> Result<Vec<Value>, Error> {
+    pub async fn get_services(file_enum: &FilesEnum) -> Result<Vec<Value>, AppError> {
         match file_enum {
             FilesEnum::ByPart(by_part_paths) => {
                 let connectivity_services_file =
-                    File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
-                        Error::from(format!("File cannot be opened: {}", err).as_str())
-                    })?;
-                    File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
-                        Error::from(format!("File cannot be opened: {}", err).as_str())
-                    })?;
+                    File::open(&by_part_paths.connectivity_services_path)
+                        .map_err(|err| AppError::database_error(err.to_string()))?;
+                File::open(&by_part_paths.connectivity_services_path)
+                    .map_err(|err| AppError::database_error(err.to_string()))?;
                 let connectivity_services_reader = BufReader::new(connectivity_services_file);
                 let connectivity_services_value: Value =
-                    serde_json::from_reader(connectivity_services_reader).map_err(|err| {
-                        Error::from(format!("File cannot be readed: {}", err).as_str())
-                    })?;
+                    serde_json::from_reader(connectivity_services_reader)
+                        .map_err(|err| AppError::validation_error(err.to_string()))?;
                 let connectivity_services = connectivity_services_value
                     .as_array()
                     .cloned()
@@ -100,17 +97,15 @@ impl FilesHandler {
                 Ok(connectivity_services)
             }
             FilesEnum::Complete(complete_path) => {
-                let file = File::open(&complete_path.complete_context_path).map_err(|err| {
-                    Error::from(format!("File cannot be opened: {}", err).as_str())
-                })?;
+                let file = File::open(&complete_path.complete_context_path)
+                    .map_err(|err| AppError::database_error(err.to_string()))?;
                 let reader = BufReader::new(file);
-                let json_value: Value = serde_json::from_reader(reader).map_err(|err| {
-                    Error::from(format!("File cannot be readed: {}", err).as_str())
-                })?;
+                let json_value: Value = serde_json::from_reader(reader)
+                    .map_err(|err| AppError::validation_error(err.to_string()))?;
                 let connectivity_services = json_value
                                                             .pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")
                                                             .and_then(Value::as_array)
-                                                            .ok_or_else(|| Error::from("Cannot find connectivity-context"))?
+                                                            .ok_or_else(|| AppError::database_error("Cannot find connectivity-context"))?
                                                             .clone();
                 Ok(connectivity_services)
             }
@@ -125,43 +120,34 @@ impl FilesHandler {
     ///
     /// # Returns
     /// A `Result` containing a `Context` object or an `Error`.
-    pub fn get_service_context(
+    pub async fn get_service_context(
         file_enum: &FilesEnum,
         service_uuid: &str,
-    ) -> Result<Context, Error> {
+    ) -> Result<Context, AppError> {
         match file_enum {
             FilesEnum::ByPart(by_part_paths) => {
-                let topology_file = File::open(&by_part_paths.topology_path).map_err(|err| {
-                    Error::from(format!("File cannot be opened: {}", err).as_str())
-                })?;
+                let topology_file = File::open(&by_part_paths.topology_path)
+                    .map_err(|err| AppError::database_error(err.to_string()))?;
                 let topology_reader = BufReader::new(topology_file);
-                let topology: Value = serde_json::from_reader(topology_reader).map_err(|err| {
-                    Error::from(format!("File cannot be readed: {}", err).as_str())
-                })?;
+                let topology: Value = serde_json::from_reader(topology_reader)
+                    .map_err(|err| AppError::validation_error(err.to_string()))?;
 
-                let connections_file =
-                    File::open(&by_part_paths.connections_path).map_err(|err| {
-                        Error::from(format!("File cannot be opened: {}", err).as_str())
-                    })?;
+                let connections_file = File::open(&by_part_paths.connections_path)
+                    .map_err(|err| AppError::database_error(err.to_string()))?;
                 let connections_reader = BufReader::new(connections_file);
                 let connections_value: Value = serde_json::from_reader(connections_reader)
-                    .map_err(|err| {
-                        Error::from(format!("File cannot be readed: {}", err).as_str())
-                    })?;
+                    .map_err(|err| AppError::validation_error(err.to_string()))?;
                 let connections = connections_value.as_array().cloned().unwrap_or_default();
 
                 let connectivity_services_file =
-                    File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
-                        Error::from(format!("File cannot be opened: {}", err).as_str())
-                    })?;
-                    File::open(&by_part_paths.connectivity_services_path).map_err(|err| {
-                        Error::from(format!("File cannot be opened: {}", err).as_str())
-                    })?;
+                    File::open(&by_part_paths.connectivity_services_path)
+                        .map_err(|err| AppError::database_error(err.to_string()))?;
+                File::open(&by_part_paths.connectivity_services_path)
+                    .map_err(|err| AppError::database_error(err.to_string()))?;
                 let connectivity_services_reader = BufReader::new(connectivity_services_file);
                 let connectivity_services_value: Value =
-                    serde_json::from_reader(connectivity_services_reader).map_err(|err| {
-                        Error::from(format!("File cannot be readed: {}", err).as_str())
-                    })?;
+                    serde_json::from_reader(connectivity_services_reader)
+                        .map_err(|err| AppError::validation_error(err.to_string()))?;
                 let connectivity_services = connectivity_services_value
                     .as_array()
                     .cloned()
@@ -176,7 +162,9 @@ impl FilesHandler {
                             .map(|uuid_str| uuid_str == service_uuid)
                             .unwrap_or(false)
                     })
-                    .ok_or_else(|| Error::from("There is not any Service with that id"))?
+                    .ok_or_else(|| {
+                        AppError::validation_error("There is not any Service with that id")
+                    })?
                     .clone();
 
                 Ok(Context {
@@ -186,13 +174,11 @@ impl FilesHandler {
                 })
             }
             FilesEnum::Complete(complete_path) => {
-                let file = File::open(&complete_path.complete_context_path).map_err(|err| {
-                    Error::from(format!("File cannot be opened: {}", err).as_str())
-                })?;
+                let file = File::open(&complete_path.complete_context_path)
+                    .map_err(|err| AppError::database_error(err.to_string()))?;
                 let reader = BufReader::new(file);
-                let json_value: Value = serde_json::from_reader(reader).map_err(|err| {
-                    Error::from(format!("File cannot be readed: {}", err).as_str())
-                })?;
+                let json_value: Value = serde_json::from_reader(reader)
+                    .map_err(|err| AppError::validation_error(err.to_string()))?;
 
                 context_by_context_json(json_value, service_uuid)
             }
@@ -211,7 +197,7 @@ impl DeviceHandler {
     ///
     /// # Returns
     /// A `Result` containing a vector of `Value` objects representing the services, or an `Error`.
-    pub async fn get_services(device: &Device) -> Result<Vec<Value>, Error> {
+    pub async fn get_services(device: &Device) -> Result<Vec<Value>, AppError> {
         let services_url = format!(
             "https://{}{}/restconf/data/tapi-common:context/tapi-connectivity:connectivity-context?fields=connectivity-service(uuid)",
             &device.ip, &device.port.map(|s| format!(":{}", s)).unwrap_or_default()
@@ -252,7 +238,7 @@ impl DeviceHandler {
                 let auth_body = custom_auth
                     .auth_body
                     .as_object()
-                    .ok_or_else(|| Error::from("Auth body its not a Hashmap"))?;
+                    .ok_or_else(|| AppError::validation_error("Auth body its not a Hashmap"))?;
                 let mut json = HashMap::new();
                 for (key, value) in auth_body {
                     json.insert(key.as_str(), String::from(value.as_str().unwrap()));
@@ -277,18 +263,18 @@ impl DeviceHandler {
         } {
             let connectivity_services = services_uuid_json
                 .pointer("/tapi-connectivity:connectivity-context/connectivity-service")
-                .ok_or(Error::from("Connectivity Context Not Found"))?
+                .ok_or(AppError::validation_error("Connectivity Context Not Found"))?
                 .as_array()
-                .ok_or(Error::from("Invalid Connectivity Service"))?
+                .ok_or(AppError::validation_error("Invalid Connectivity Service"))?
                 .clone();
 
             let mut services_vector: Vec<Value> = vec![];
             for service in connectivity_services {
                 let service_uuid = service
                     .get("uuid")
-                    .ok_or(Error::from("UUID Not Found"))?
+                    .ok_or(AppError::validation_error("UUID Not Found"))?
                     .as_str()
-                    .ok_or(Error::from("Invalid UUID"))?;
+                    .ok_or(AppError::validation_error("Invalid UUID"))?;
 
                 let service_url = format!(
                     "https://{}{}/restconf/data/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service={}",
@@ -312,7 +298,7 @@ impl DeviceHandler {
                 };
                 let service_data = &service_json
                     .get("tapi-connectivity:connectivity-service")
-                    .ok_or(Error::from("Service Data Not Found"))?
+                    .ok_or(AppError::validation_error("Service Data Not Found"))?
                     .as_array()
                     .unwrap()[0];
                 services_vector.push(service_data.clone()); // Add the service data to the vector.
@@ -335,7 +321,7 @@ impl DeviceHandler {
             let connectivity_services = json
                                                         .pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")
                                                         .and_then(Value::as_array)
-                                                        .ok_or_else(|| Error::from("Cannot find connectivity-context"))?
+                                                        .ok_or_else(|| AppError::validation_error("Cannot find connectivity-context"))?
                                                         .clone();
 
             Ok(connectivity_services)
@@ -382,7 +368,7 @@ impl DeviceHandler {
     async fn custom_post_request(
         url: &String,
         json: &HashMap<&str, String>,
-    ) -> Result<Value, Error> {
+    ) -> Result<Value, AppError> {
         Client::builder()
             .danger_accept_invalid_certs(true) // Accept invalid certificates.
             .build()
@@ -391,11 +377,11 @@ impl DeviceHandler {
             .json(&json)
             .send()
             .await
-            .map_err(|_| Error::from("Request Error"))?
+            .map_err(|err| AppError::request_error(err.to_string()))?
             //.text()
             .json::<Value>()
             .await
-            .map_err(|_| Error::from("Json Error"))
+            .map_err(|err| AppError::validation_error(err.to_string()))
 
         //serde_json::from_str(&response).map_err(|e| Error::_custom(format!("{:?}", e)))?
     }
@@ -415,7 +401,7 @@ impl DeviceHandler {
     async fn custom_put_request(
         url: &String,
         json: &HashMap<&str, String>,
-    ) -> Result<Value, Error> {
+    ) -> Result<Value, AppError> {
         Client::builder()
             .danger_accept_invalid_certs(true) // Accept invalid certificates.
             .build()
@@ -424,11 +410,10 @@ impl DeviceHandler {
             .json(&json)
             .send()
             .await
-            .map_err(|e| Error::_custom(format!("{:?}", e)))?
+            .map_err(|err| AppError::request_error(err.to_string()))?
             .json::<Value>()
             .await
-            .map_err(|e| Error::_custom(format!("{:?}", e)))
-
+            .map_err(|err| AppError::validation_error(err.to_string()))
     }
 
     /// Attempts to retrieve an OAuth token using a POST request.
@@ -442,10 +427,12 @@ impl DeviceHandler {
     /// # Returns
     /// * `Ok(String)` - The OAuth token if found.
     /// * `Err(Error)` - An error if both requests fail or if the token cannot be found.
-    async fn get_oauth_token(url: &String, json: &HashMap<&str, String>) -> Result<String, Error> {
-        println!("url: {} \n json: {:?}", url, json);
+    async fn get_oauth_token(
+        url: &String,
+        json: &HashMap<&str, String>,
+    ) -> Result<String, AppError> {
         let response = Self::custom_post_request(url, json).await;
-        println!("response: {:?}", response);
+
         let token_response = match response {
             Ok(res) => res
                 .get("token")
@@ -455,28 +442,26 @@ impl DeviceHandler {
                     res.get("accessSession")
                         .and_then(|t| t.as_str())
                         .map(String::from)
-                        .or_else(|| None)
+                        .or(None)
                 }),
             Err(_) => None,
         };
-        println!("token_response: {:?}", token_response);
+
         if let Some(token) = token_response {
-            println!("token: {}", token);
             return Ok(token);
         }
 
         // If POST fails, try with PUT
         let response = Self::custom_put_request(url, json).await;
 
-        println!("response: {:?}", response);
         let response = response?;
         let token = response
             .get("token")
             .or_else(|| response.get("accessSession"))
-            .ok_or_else(|| Error::from("Cannot find Token in oauth2 response"))?
+            .ok_or_else(|| AppError::validation_error("Cannot find Token in oauth2 response"))?
             .as_str()
             .unwrap();
-        println!("{}", token);
+
         Ok(String::from(token))
     }
 
@@ -496,17 +481,15 @@ impl DeviceHandler {
         url: &String,
         username: String,
         password: Option<String>,
-    ) -> Result<Value, Error> {
+    ) -> Result<Value, AppError> {
         Self::client_get_builder(url)
             .basic_auth(username, password)
             .send()
             .await
-            .map_err(|err| Error::from(format!("Error on request {}", err).as_str()))?
+            .map_err(|err| AppError::request_error(err.to_string()))?
             .json::<Value>()
             .await
-            .map_err(|err| {
-                Error::from(format!("Error transforming request in Json {}", err).as_str())
-            })
+            .map_err(|err| AppError::validation_error(err.to_string()))
     }
 
     /// Sends a GET request with bearer token authentication and returns the response as a `Value`.
@@ -520,17 +503,15 @@ impl DeviceHandler {
     ///
     /// # Errors
     /// - Returns an error if the request fails or the response cannot be parsed as JSON.
-    async fn token_request(url: &String, token: &str) -> Result<Value, Error> {
+    async fn token_request(url: &String, token: &str) -> Result<Value, AppError> {
         Self::client_get_builder(url)
             .bearer_auth(token)
             .send()
             .await
-            .map_err(|err| Error::from(format!("Error on request {}", err).as_str()))?
+            .map_err(|err| AppError::request_error(err.to_string()))?
             .json::<Value>()
             .await
-            .map_err(|err| {
-                Error::from(format!("Error transforming request in Json {}", err).as_str())
-            })
+            .map_err(|err| AppError::validation_error(err.to_string()))
     }
 
     /// Retrieve the context of a specific service from a device.
@@ -544,7 +525,7 @@ impl DeviceHandler {
     pub async fn get_service_context(
         device: &Device,
         service_uuid: &String,
-    ) -> Result<Context, Error> {
+    ) -> Result<Context, AppError> {
         let topology_by_uuid_url =format!(
             "https://{}{}/restconf/data/tapi-common:context/tapi-topology:topology-context?fields=topology(uuid)",
             &device.ip, &device.port.map(|s| format!(":{}", s)).unwrap_or_default()
@@ -591,7 +572,7 @@ impl DeviceHandler {
                 let auth_body = custom_auth
                     .auth_body
                     .as_object()
-                    .ok_or_else(|| Error::from("Auth body its not a Hashmap"))?;
+                    .ok_or_else(|| AppError::validation_error("Auth body its not a Hashmap"))?;
                 let mut json = HashMap::new();
                 for (key, value) in auth_body {
                     json.insert(key.as_str(), String::from(value.as_str().unwrap()));
@@ -612,18 +593,18 @@ impl DeviceHandler {
             // Parse the context and the topology UUID.
             let topologies = topology_uuids_json
                 .pointer("/tapi-topology:topology-context/topology")
-                .ok_or(Error::from("Topology Context Not Found"))?
+                .ok_or(AppError::validation_error("Topology Context Not Found"))?
                 .as_array()
-                .ok_or(Error::from("Invalid Topology"))?;
+                .ok_or(AppError::validation_error("Invalid Topology"))?;
             // Verify that there is exactly one topology UUID.
             if topologies.len() != 1 {
-                return Err(Error::from("There is more or less than one topology uuid"));
+                return Err(AppError::validation_error("There is more or less than one topology uuid"));
             }
             let topology_uuid = topologies[0]
                 .get("uuid")
-                .ok_or(Error::from("Topology UUID Not Found"))?
+                .ok_or(AppError::validation_error("Topology UUID Not Found"))?
                 .as_str()
-                .ok_or(Error::from("Invalid str UUID"))?;
+                .ok_or(AppError::validation_error("Invalid str UUID"))?;
             // Construct the URLs for links and nodes.
             let link_url = format!(
                 "https://{}{}/tapi/data/tapi-common:context/tapi-topology:topology-context/topology={}/link",
@@ -651,11 +632,11 @@ impl DeviceHandler {
             let mut topology_hashmap: Map<String, Value> = Map::new();
             topology_hashmap.insert(
                 "link".to_string(),
-                link_json.get("tapi-topology:link").ok_or(Error::from("tapi-topology:link Not Found"))?.clone(),
+                link_json.get("tapi-topology:link").ok_or(AppError::validation_error("tapi-topology:link Not Found"))?.clone(),
             );
             topology_hashmap.insert(
                 "node".to_string(),
-                node_json.get("tapi-topology:node").ok_or(Error::from("tapi-topology:node Not Found"))?.clone(),
+                node_json.get("tapi-topology:node").ok_or(AppError::validation_error("tapi-topology:node Not Found"))?.clone(),
             );
 
             let topology_object: Value = Value::Object(topology_hashmap);
@@ -668,7 +649,7 @@ impl DeviceHandler {
                 Auth::Oauth2(_) => Self::token_request(&connections_url, token_oauth.as_str()).await?,
             }
             .as_array()
-            .ok_or(Error::from("Connections cannot convert into array"))?
+            .ok_or(AppError::validation_error("Connections cannot convert into array"))?
             .clone();
 
             // Construct the JSON for services.
@@ -685,7 +666,7 @@ impl DeviceHandler {
 
             let connectivity_service = &service_json
                 .get("tapi-connectivity:connectivity-service")
-                .ok_or(Error::from("Service Data Not Found"))?
+                .ok_or(AppError::validation_error("Service Data Not Found"))?
                 .as_array()
                 .unwrap()[0];
 
@@ -724,11 +705,11 @@ impl DeviceHandler {
 ///
 /// # Returns
 /// A `Result` containing a `Context` object or an `Error`.
-fn context_by_context_json(json: Value, service_uuid: &str) -> Result<Context, Error> {
+fn context_by_context_json(json: Value, service_uuid: &str) -> Result<Context, AppError> {
     let connectivity_services = json
         .pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")
         .and_then(Value::as_array)
-        .ok_or_else(|| Error::from("Cannot find connectivity-context"))?
+        .ok_or_else(|| AppError::validation_error("Cannot find connectivity-context"))?
         .clone();
     let connectivity_service = connectivity_services
         .iter()
@@ -739,17 +720,17 @@ fn context_by_context_json(json: Value, service_uuid: &str) -> Result<Context, E
                 .map(|uuid_str| uuid_str == service_uuid)
                 .unwrap_or(false)
         })
-        .ok_or_else(|| Error::from("There is not any Service with that id"))?
+        .ok_or_else(|| AppError::validation_error("There is not any Service with that id"))?
         .clone();
 
     let connections = json
         .pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connection")
         .and_then(Value::as_array)
-        .ok_or_else(|| Error::from("Cannot find connections-context"))?
+        .ok_or_else(|| AppError::validation_error("Cannot find connections-context"))?
         .clone();
     let topology = json
         .pointer("/tapi-common:context/tapi-topology:topology-context/topology")
-        .ok_or_else(|| Error::from("Cannot find connections-context"))?
+        .ok_or_else(|| AppError::validation_error("Cannot find connections-context"))?
         .clone();
 
     Ok(Context {

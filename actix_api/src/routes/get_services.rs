@@ -27,9 +27,10 @@ async fn connectivity_services(
     let cloned_data_source_dictionary = cloned_data_source_dictionary.lock().await;
     // Lock the host dictionary for reading.
     if let Some(data_source) = cloned_data_source_dictionary.get(&id) {
-        let services_value = Requester::get_services(data_source)
-            .await
-            .map_err(|_| error::ErrorNotAcceptable("Cannot extract Services from data_sources"))?;
+        let services_value = Requester::get_services(data_source).await.map_err(|err| {
+            log::error!("{}", err.to_string());
+            error::ErrorNotAcceptable("Cannot extract Services from data_sources")
+        })?;
         let services = connectivity_services_vector_build(&services_value);
 
         Ok(HttpResponse::Ok().json(json!(services)))

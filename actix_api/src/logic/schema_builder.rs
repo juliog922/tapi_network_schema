@@ -2,7 +2,6 @@ use serde_json::{json, Value};
 
 use super::endpoint_builder::build_endpoint_vector;
 use crate::{
-    error::Error,
     models::{
         connections::Connection,
         connectivity_services::Service,
@@ -11,6 +10,7 @@ use crate::{
         nodes::Node,
         schema::{Inventory, NodeResponse, Schema, ServiceResponse},
     },
+    AppError,
 };
 
 /// Builds the schema for a connectivity service, including its nodes, inventories, and endpoints.
@@ -22,13 +22,13 @@ use crate::{
 /// - `connection_vector`: A reference to a vector of `Connection` objects representing connections.
 ///
 /// # Returns
-/// A `Result` containing a serialized JSON value representing the schema or an `Error`.
+/// A `Result` containing a serialized JSON value representing the schema or an `aPPError`.
 pub fn build_schema(
     service: &Service,
     link_vector: &Vec<Link>,
     node_vector: &Vec<Node>,
     connection_vector: &Vec<Connection>,
-) -> Result<Value, Error> {
+) -> Result<Value, AppError> {
     let mut node_response_vector: Vec<NodeResponse> = Vec::new();
     let mut inventories_response_vector: Vec<Inventory> = Vec::new();
 
