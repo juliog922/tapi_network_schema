@@ -15,8 +15,12 @@ services:
       - API_PORT=8080
       - API_HOST=0.0.0.0
       - RUST_LOG=info
-    depends_on:
-      - surrealdb
+      - POSTGRES_HOST=db
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=app
+      - POSTGRES_PORT=5432
+      - POSTGRES_SSLMODE=disable
     networks:
       - app_network
     deploy:
@@ -29,44 +33,36 @@ services:
       - "8091:80"
     networks:
       - app_network
-    depends_on:
-      - actix_api
-      - yew_front
     deploy:
       update_config:
         order: start-first
-
-  surrealdb:
-    image: surrealdb/surrealdb:latest
-    user: root
-    ports:
-      - "8000:8000"
-    entrypoint: 
-      - /surreal 
-      - start
-      - --bind
-      - 0.0.0.0:8000 
-      - --log
-      - info
-      - --user
-      - $SURREAL_USER
-      - --pass
-      - $SURREAL_PASSWORD
-      - surrealkv://var/lib/surrealdb/data
+  
+  db:
+    image: postgres
+    user: postgres
     volumes:
-      - db-data:/var/lib/surrealdb/data
+      - db-data:/var/lib/postgresql/data
+    secrets:
+      - db-password
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     networks:
       - app_network
     healthcheck:
-      test: ["CMD","/surreal", "is-ready", "--conn", "http://localhost:8000"]
-      interval: 15s
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: 30s
-      timeout: 10s
 
 volumes:
   db-data:
-
+  letsencrypt:
+  
 networks:
   app_network:
     driver: overlay
+
+secrets:
+  db-password:
+    external: true
