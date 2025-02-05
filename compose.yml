@@ -40,12 +40,18 @@ services:
     image: surrealdb/surrealdb:latest
     user: root
     ports:
-      - 8000:8000
+      - "8000:8000"
     entrypoint: 
       - /surreal 
-      - start 
+      - start
+      - --bind
+      - 0.0.0.0:8000 
       - --log
       - info
+      - --user
+      - $SURREAL_USER
+      - --pass
+      - $SURREAL_PASSWORD
       - surrealkv://var/lib/surrealdb/data
     volumes:
       - db-data:/var/lib/surrealdb/data
