@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
-use crate::logic::requester::DataSource;
+use crate::handlers::requester::DataSource;
 
 /// HTTP GET endpoint to retrieve a list of all hosts with their details.
 ///

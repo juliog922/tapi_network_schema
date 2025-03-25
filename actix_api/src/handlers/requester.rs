@@ -1,12 +1,10 @@
-use crate::models::{
-    devices::{Auth, Device},
-    files_model::FilesEnum,
-};
+use crate::models::files_model::FilesEnum;
+use crate::models::devices::{Auth, Device};
+use crate::handlers::http::HttpHandler;
 use crate::AppError;
-use reqwest::{Client, RequestBuilder};
+
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
-use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
 
@@ -209,57 +207,26 @@ impl DeviceHandler {
             &device.port.map(|s| format!(":{}", s)).unwrap_or_default()
         );
 
-        let mut token_oauth: String = String::default();
-        let mut token_custom: String = String::default();
+        let mut token: String = String::default();
 
         match &device.auth {
-            Auth::Oauth2(oauth) => {
-                let url = format!(
-                    "https://{}{}{}",
-                    &device.ip,
-                    &device.port.map(|s| format!(":{}", s)).unwrap_or_default(),
-                    &oauth.auth_sufix
-                );
-                let mut json = HashMap::new();
-                json.insert("username", oauth.username.clone());
-                json.insert("password", oauth.password.clone());
-                json.insert("grant_type", oauth.grant_type.clone());
+            Auth::Token(token_auth) => {
 
-                token_oauth = Self::get_oauth_token(&url, &json).await?;
-            }
-            Auth::Custom(custom_auth) => {
-                let url = format!(
-                    "https://{}{}{}",
-                    &device.ip,
-                    &device.port.map(|s| format!(":{}", s)).unwrap_or_default(),
-                    &custom_auth.auth_sufix
-                );
-
-                let auth_body = custom_auth
-                    .auth_body
-                    .as_object()
-                    .ok_or_else(|| AppError::validation_error("Auth body its not a Hashmap"))?;
-                let mut json = HashMap::new();
-                for (key, value) in auth_body {
-                    json.insert(key.as_str(), String::from(value.as_str().unwrap()));
-                }
-
-                token_custom = Self::get_oauth_token(&url, &json).await?;
+                token = HttpHandler::get_token(&device.get_full_auth_url(), &token_auth.auth_body).await?;
             }
             _ => {}
         }
 
         if let Ok(services_uuid_json) = match &device.auth {
             Auth::Basic(basic_auth) => {
-                Self::basic_request(
+                HttpHandler::basic_request(
                     &services_url,
                     basic_auth.username.clone(),
                     Some(basic_auth.password.clone()),
                 )
                 .await
             }
-            Auth::Oauth2(_) => Self::token_request(&services_url, token_oauth.as_str()).await,
-            Auth::Custom(_) => Self::token_request(&services_url, token_custom.as_str()).await,
+            Auth::Token(_) => HttpHandler::token_request(&services_url, token.as_str()).await,
         } {
             let connectivity_services = services_uuid_json
                 .pointer("/tapi-connectivity:connectivity-context/connectivity-service")
@@ -282,18 +249,15 @@ impl DeviceHandler {
                 );
                 let service_json = match &device.auth {
                     Auth::Basic(basic_auth) => {
-                        Self::basic_request(
+                        HttpHandler::basic_request(
                             &service_url,
                             basic_auth.username.clone(),
                             Some(basic_auth.password.clone()),
                         )
                         .await?
                     }
-                    Auth::Oauth2(_) => {
-                        Self::token_request(&service_url, token_oauth.as_str()).await?
-                    }
-                    Auth::Custom(_) => {
-                        Self::token_request(&service_url, token_custom.as_str()).await?
+                    Auth::Token(_) => {
+                        HttpHandler::token_request(&service_url, token.as_str()).await?
                     }
                 };
                 let service_data = &service_json
@@ -307,17 +271,15 @@ impl DeviceHandler {
         } else {
             let json = match &device.auth {
                 Auth::Basic(basic_auth) => {
-                    Self::basic_request(
+                    HttpHandler::basic_request(
                         &context_url,
                         basic_auth.username.clone(),
                         Some(basic_auth.password.clone()),
                     )
                     .await?
                 }
-                Auth::Oauth2(_) => Self::token_request(&context_url, token_oauth.as_str()).await?,
-                Auth::Custom(_) => Self::token_request(&context_url, token_custom.as_str()).await?,
+                Auth::Token(_) => HttpHandler::token_request(&context_url, token.as_str()).await?,
             };
-            //println!("{}", json);
             let connectivity_services = json
                                                         .pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")
                                                         .and_then(Value::as_array)
@@ -326,192 +288,6 @@ impl DeviceHandler {
 
             Ok(connectivity_services)
         }
-    }
-
-    /// Builds a `RequestBuilder` for a GET request with specific configurations.
-    ///
-    /// # Arguments
-    /// - `url`: A reference to the URL for the GET request.
-    ///
-    /// # Returns
-    /// A `RequestBuilder` configured with the specified URL and headers.
-    ///
-    /// # Notes
-    /// - The client accepts invalid SSL certificates.
-    /// - Gzip, Brotli, and Deflate encodings are enabled for the request.
-    /// - Adds headers for `Accept` and `Accept-Encoding` to handle JSON data and compression.
-    fn client_get_builder(url: &String) -> RequestBuilder {
-        Client::builder()
-            .danger_accept_invalid_certs(true) // Accept invalid certificates.
-            .gzip(true) // Enable gzip encoding.
-            .brotli(true) // Enable brotli encoding.
-            .deflate(true) // Enable deflate encoding.
-            .build()
-            .unwrap() // Handle client build error.
-            .get(url) // Set up the GET request.
-            .header("Accept", "application/yang-data+json")
-            .header("Accept-Encoding", "gzip, deflate, br")
-    }
-
-    /// Sends a POST request with JSON data and returns the response as a `Value`.
-    ///
-    /// # Arguments
-    /// - `url`: A reference to the URL for the POST request.
-    /// - `json`: A reference to a `HashMap` containing the JSON payload for the POST request.
-    ///
-    /// # Returns
-    /// A `Result` containing the deserialized JSON response as a `Value`, or an `Error`.
-    ///
-    /// # Notes
-    /// - The client accepts invalid SSL certificates.
-    /// - If the request or response parsing fails, appropriate errors are returned.
-    async fn custom_post_request(
-        url: &String,
-        json: &HashMap<&str, String>,
-    ) -> Result<Value, AppError> {
-        Client::builder()
-            .danger_accept_invalid_certs(true) // Accept invalid certificates.
-            .build()
-            .unwrap() // Handle client build error.
-            .post(url) // Set up the GET request.
-            .json(&json)
-            .send()
-            .await
-            .map_err(|err| AppError::request_error(err.to_string()))?
-            //.text()
-            .json::<Value>()
-            .await
-            .map_err(|err| AppError::validation_error(err.to_string()))
-
-        //serde_json::from_str(&response).map_err(|e| Error::_custom(format!("{:?}", e)))?
-    }
-
-    /// Sends a PUT request with JSON data and returns the response as a `Value`.
-    ///
-    /// # Arguments
-    /// - `url`: A reference to the URL for the POST request.
-    /// - `json`: A reference to a `HashMap` containing the JSON payload for the POST request.
-    ///
-    /// # Returns
-    /// A `Result` containing the deserialized JSON response as a `Value`, or an `Error`.
-    ///
-    /// # Notes
-    /// - The client accepts invalid SSL certificates.
-    /// - If the request or response parsing fails, appropriate errors are returned.
-    async fn custom_put_request(
-        url: &String,
-        json: &HashMap<&str, String>,
-    ) -> Result<Value, AppError> {
-        Client::builder()
-            .danger_accept_invalid_certs(true) // Accept invalid certificates.
-            .build()
-            .unwrap() // Handle client build error.
-            .put(url) // Set up the GET request.
-            .json(&json)
-            .send()
-            .await
-            .map_err(|err| AppError::request_error(err.to_string()))?
-            .json::<Value>()
-            .await
-            .map_err(|err| AppError::validation_error(err.to_string()))
-    }
-
-    /// Attempts to retrieve an OAuth token using a POST request.
-    /// If the POST request fails or does not return a valid token, a PUT request is attempted.
-    /// The function first looks for the token in the "token" field, and if not found, in the "accessSession" field.
-    ///
-    /// # Arguments
-    /// * `url` - A reference to a string containing the request URL.
-    /// * `json` - A reference to a hashmap containing the JSON request body.
-    ///
-    /// # Returns
-    /// * `Ok(String)` - The OAuth token if found.
-    /// * `Err(Error)` - An error if both requests fail or if the token cannot be found.
-    async fn get_oauth_token(
-        url: &String,
-        json: &HashMap<&str, String>,
-    ) -> Result<String, AppError> {
-        let response = Self::custom_post_request(url, json).await;
-
-        let token_response = match response {
-            Ok(res) => res
-                .get("token")
-                .and_then(|t| t.as_str())
-                .map(String::from)
-                .or_else(|| {
-                    res.get("accessSession")
-                        .and_then(|t| t.as_str())
-                        .map(String::from)
-                        .or(None)
-                }),
-            Err(_) => None,
-        };
-
-        if let Some(token) = token_response {
-            return Ok(token);
-        }
-
-        // If POST fails, try with PUT
-        let response = Self::custom_put_request(url, json).await;
-
-        let response = response?;
-        let token = response
-            .get("token")
-            .or_else(|| response.get("accessSession"))
-            .ok_or_else(|| AppError::validation_error("Cannot find Token in oauth2 response"))?
-            .as_str()
-            .unwrap();
-
-        Ok(String::from(token))
-    }
-
-    /// Sends a GET request with basic authentication and returns the response as a `Value`.
-    ///
-    /// # Arguments
-    /// - `url`: A reference to the URL for the GET request.
-    /// - `username`: The username for basic authentication.
-    /// - `password`: An optional password for basic authentication.
-    ///
-    /// # Returns
-    /// A `Result` containing the deserialized JSON response as a `Value`, or an `Error`.
-    ///
-    /// # Errors
-    /// - Returns an error if the request fails or the response cannot be parsed as JSON.
-    async fn basic_request(
-        url: &String,
-        username: String,
-        password: Option<String>,
-    ) -> Result<Value, AppError> {
-        Self::client_get_builder(url)
-            .basic_auth(username, password)
-            .send()
-            .await
-            .map_err(|err| AppError::request_error(err.to_string()))?
-            .json::<Value>()
-            .await
-            .map_err(|err| AppError::validation_error(err.to_string()))
-    }
-
-    /// Sends a GET request with bearer token authentication and returns the response as a `Value`.
-    ///
-    /// # Arguments
-    /// - `url`: A reference to the URL for the GET request.
-    /// - `token`: The bearer token for authentication.
-    ///
-    /// # Returns
-    /// A `Result` containing the deserialized JSON response as a `Value`, or an `Error`.
-    ///
-    /// # Errors
-    /// - Returns an error if the request fails or the response cannot be parsed as JSON.
-    async fn token_request(url: &String, token: &str) -> Result<Value, AppError> {
-        Self::client_get_builder(url)
-            .bearer_auth(token)
-            .send()
-            .await
-            .map_err(|err| AppError::request_error(err.to_string()))?
-            .json::<Value>()
-            .await
-            .map_err(|err| AppError::validation_error(err.to_string()))
     }
 
     /// Retrieve the context of a specific service from a device.
@@ -543,52 +319,21 @@ impl DeviceHandler {
             &device.port.map(|s| format!(":{}", s)).unwrap_or_default()
         );
 
-        let mut token_oauth: String = String::default();
-        let mut token_custom: String = String::default();
+        let mut token: String = String::default();
 
         match &device.auth {
-            Auth::Oauth2(oauth) => {
-                let url = format!(
-                    "https://{}{}{}",
-                    &device.ip,
-                    &device.port.map(|s| format!(":{}", s)).unwrap_or_default(),
-                    &oauth.auth_sufix
-                );
-                let mut json = HashMap::new();
-                json.insert("username", oauth.username.clone());
-                json.insert("password", oauth.password.clone());
-                json.insert("grant_type", oauth.grant_type.clone());
+            Auth::Token(token_auth) => {
 
-                token_oauth = Self::get_oauth_token(&url, &json).await?;
-            }
-            Auth::Custom(custom_auth) => {
-                let url = format!(
-                    "https://{}{}{}",
-                    &device.ip,
-                    &device.port.map(|s| format!(":{}", s)).unwrap_or_default(),
-                    &custom_auth.auth_sufix
-                );
-
-                let auth_body = custom_auth
-                    .auth_body
-                    .as_object()
-                    .ok_or_else(|| AppError::validation_error("Auth body its not a Hashmap"))?;
-                let mut json = HashMap::new();
-                for (key, value) in auth_body {
-                    json.insert(key.as_str(), String::from(value.as_str().unwrap()));
-                }
-
-                token_custom = Self::get_oauth_token(&url, &json).await?;
-            }
+                token = HttpHandler::get_token(&device.get_full_auth_url(), &token_auth.auth_body).await?;
+            },
             _ => {}
         }
 
         match async {
             // Obtain the JSON of topologies based on the authentication method.
             let topology_uuids_json = match &device.auth {
-                Auth::Basic(basic_auth) => Self::basic_request(&topology_by_uuid_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
-                Auth::Custom(_) => Self::token_request(&topology_by_uuid_url, token_custom.as_str()).await?,
-                Auth::Oauth2(_) => Self::token_request(&topology_by_uuid_url, token_oauth.as_str()).await?,
+                Auth::Basic(basic_auth) => HttpHandler::basic_request(&topology_by_uuid_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Token(_) => HttpHandler::token_request(&topology_by_uuid_url, token.as_str()).await?,
             };
             // Parse the context and the topology UUID.
             let topologies = topology_uuids_json
@@ -617,15 +362,13 @@ impl DeviceHandler {
 
             // Retrieve the data for links and nodes.
             let link_json = match &device.auth {
-                Auth::Basic(basic_auth) => Self::basic_request(&link_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
-                Auth::Custom(_) => Self::token_request(&link_url, token_custom.as_str()).await?,
-                Auth::Oauth2(_) => Self::token_request(&link_url, token_oauth.as_str()).await?,
+                Auth::Basic(basic_auth) => HttpHandler::basic_request(&link_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Token(_) => HttpHandler::token_request(&link_url, token.as_str()).await?,
             };
 
             let node_json = match &device.auth {
-                Auth::Basic(basic_auth) => Self::basic_request(&nodes_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
-                Auth::Custom(_) => Self::token_request(&nodes_url, token_custom.as_str()).await?,
-                Auth::Oauth2(_) => Self::token_request(&nodes_url, token_oauth.as_str()).await?,
+                Auth::Basic(basic_auth) => HttpHandler::basic_request(&nodes_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Token(_) => HttpHandler::token_request(&nodes_url, token.as_str()).await?,
             };
 
             // Construct the topology hashmap.
@@ -644,9 +387,8 @@ impl DeviceHandler {
 
             // Retrieve the connections.
             let connections = match &device.auth {
-                Auth::Basic(basic_auth) => Self::basic_request(&connections_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
-                Auth::Custom(_) => Self::token_request(&connections_url, token_custom.as_str()).await?,
-                Auth::Oauth2(_) => Self::token_request(&connections_url, token_oauth.as_str()).await?,
+                Auth::Basic(basic_auth) => HttpHandler::basic_request(&connections_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Token(_) => HttpHandler::token_request(&connections_url, token.as_str()).await?,
             }
             .as_array()
             .ok_or(AppError::validation_error("Connections cannot convert into array"))?
@@ -659,9 +401,8 @@ impl DeviceHandler {
             );
 
             let service_json = match &device.auth {
-                Auth::Basic(basic_auth) => Self::basic_request(&service_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
-                Auth::Custom(_) => Self::token_request(&service_url, token_custom.as_str()).await?,
-                Auth::Oauth2(_) => Self::token_request(&service_url, token_oauth.as_str()).await?,
+                Auth::Basic(basic_auth) => HttpHandler::basic_request(&service_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Token(_) => HttpHandler::token_request(&service_url, token.as_str()).await?,
             };
 
             let connectivity_service = &service_json
@@ -682,13 +423,11 @@ impl DeviceHandler {
         {
             // If the `async` block executes successfully, continue normally.
             Ok(context) => Ok(context),
-            Err(err) => {
-                println!("{:?}", err);
+            Err(_) => {
                 // If an error occurs, execute the `else` block.
                 let json = match &device.auth {
-                    Auth::Basic(basic_auth) => Self::basic_request(&context_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
-                    Auth::Custom(_) => Self::token_request(&context_url, token_custom.as_str()).await?,
-                    Auth::Oauth2(_) => Self::token_request(&context_url, token_oauth.as_str()).await?,
+                    Auth::Basic(basic_auth) => HttpHandler::basic_request(&context_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                    Auth::Token(_) => HttpHandler::token_request(&context_url, token.as_str()).await?,
                 };
 
                 context_by_context_json(json, service_uuid)

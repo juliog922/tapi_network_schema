@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
-use crate::logic::requester::{DataSource, Requester};
+use crate::handlers::requester::{DataSource, Requester};
 use crate::{
     logic::connection_builder::connection_vector_build, logic::link_builder::link_vector_build,
     logic::node_builder::node_vector_building, logic::schema_builder::build_schema,

@@ -21,6 +21,8 @@ enum Route {
     NodeSchema {ip: String, uuid: String, name: String},
     #[at("/info")]
     Info,
+    #[at("/login")]
+    Login,
 }
 
 fn switch(route: Route) -> Html {
@@ -32,6 +34,7 @@ fn switch(route: Route) -> Html {
         Route::AddDevices => html!{ <pages::add_devices::AddDevices/>},
         Route::UploadFiles => html!{<pages::upload_files::UploadFiles/>},
         Route::Info => html!{ <pages::info::Info/>},
+        Route::Login => html!{ <pages::login::Login/>},
     }
     
 }

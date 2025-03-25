@@ -15,9 +15,11 @@ mod tests {
             "ip": "10.95.87.21",
             "port": 18010,
             "auth": {
-                "username": "123",
-                "password": "Zte2024!"
-            }
+                "username": "tapi",
+                "password": "2025_T3st",
+                "foo":"bar"
+            },
+            "foo":"bar"
         }
         "#;
 
@@ -36,19 +38,21 @@ mod tests {
         }
     }
 
-    /// Test case for creating a `Device` with Custom Authentication
+    /// Test case for creating a `Device` with Token Authentication
     #[test]
-    fn test_custom_device() {
-        // Example JSON data for Custom Authentication
+    fn test_token_device() {
+        // Example JSON data for Token Authentication
         let json_data = r#"
         {
             "ip": "10.95.86.185",
             "auth": {
                 "auth_body": {
                     "username": "admin",
-                    "password": "Telef@12!"
+                    "password": "Telef@12!",
+                    "foo":"bar"
                 },
-                "auth_sufix": "/tron/api/v1/tokens"
+                "auth_uri": "/tron/api/v1/tokens",
+                "foo":"bar"
             }
         }
         "#;
@@ -62,40 +66,9 @@ mod tests {
 
         // Match the type of authentication used in the device
         match device.auth {
-            // Check if it uses Custom Authentication
-            Auth::Custom(_) => assert!(true), // Pass if it's CustomAuth
-            _ => panic!("There isn't Custom Authentication here"), // Fail if it's not CustomAuth
-        }
-    }
-
-    /// Test case for creating a `Device` with OAuth2 Authentication
-    #[test]
-    fn test_oauth2_device() {
-        // Example JSON data for OAuth2 Authentication
-        let json_data = r#"
-        {
-            "ip": "10.95.87.21",
-            "auth": {
-                "username": "admin",
-                "password": "Devops1.!",
-                "grant_type": "client_credentials",
-                "auth_sufix": "/rest-gateway/rest/api/v1/auth/token"
-            }
-        }
-        "#;
-
-        // Convert the JSON string into a serde_json::Value
-        let json_value: Value =
-            from_str(&json_data).expect("Json test data cannot be transformed to Value type");
-
-        // Create a `Device` instance from the JSON `Value`
-        let device: Device = serde_json::from_value(json_value).expect("Device cannot be created");
-
-        // Match the type of authentication used in the device
-        match device.auth {
-            // Check if it uses OAuth2 Authentication
-            Auth::Oauth2(_) => assert!(true), // Pass if it's Oauth2Auth
-            _ => panic!("There isn't OAuth2 Authentication here"), // Fail if it's not Oauth2Auth
+            // Check if it uses Token Authentication
+            Auth::Token(_) => assert!(true), // Pass if it's TokenAuth
+            _ => panic!("There isn't Token Authentication here"), // Fail if it's not TokenAuth
         }
     }
 }

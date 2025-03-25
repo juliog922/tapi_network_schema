@@ -2,12 +2,16 @@ pub mod logic; // Expose to bin
 pub mod models; // Expose to make tests
 pub mod routes; // Expose to bin
 pub mod utils; // Expose to make tests
+pub mod handlers;
+pub mod impls;
 
 use std::fmt;
 
 /// Enum representing various application errors.
 #[derive(Debug)]
 pub enum AppError {
+    // Server Error
+    ServerError(String),
     /// Error in HTTP connection
     RequestError(String),
 
@@ -22,9 +26,18 @@ pub enum AppError {
 
     ///Error on database interaction
     DatabaseError(String),
+
+    ///Error on Encryption
+    EncryptionError(String),
 }
 
 impl AppError {
+    /// Constructor for ServerError.
+    pub fn server_error(msg: impl Into<String>) -> Self {
+        let message = msg.into();
+        AppError::RequestError(message)
+    }
+
     /// Constructor for RequestError.
     pub fn request_error(msg: impl Into<String>) -> Self {
         let message = msg.into();
@@ -54,17 +67,25 @@ impl AppError {
         let message = msg.into();
         AppError::DatabaseError(message)
     }
+
+    /// Constructor for EncryptionError.
+    pub fn encryption_error(msg: impl Into<String>) -> Self {
+        let message = msg.into();
+        AppError::EncryptionError(message)
+    }
 }
 
 impl fmt::Display for AppError {
     /// Formats the `AppError` enum into a human-readable string.
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            AppError::ServerError(msg) => write!(f, "{}", msg),
             AppError::RequestError(msg) => write!(f, "{}", msg),
             AppError::ValidationError(msg) => write!(f, "{}", msg),
             AppError::LogicError(msg) => write!(f, "{}", msg),
             AppError::ModelError(msg) => write!(f, "{}", msg),
             AppError::DatabaseError(msg) => write!(f, "{}", msg),
+            AppError::EncryptionError(msg) => write!(f, "{}", msg),
         }
     }
 }

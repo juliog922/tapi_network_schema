@@ -4,3 +4,5 @@ pub mod delete_host;
 pub mod get_hosts;
 pub mod get_schema;
 pub mod get_services;
+pub mod add_device;
+pub mod add_user_schema;

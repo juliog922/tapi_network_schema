@@ -16,7 +16,6 @@ services:
       - API_HOST=0.0.0.0
       - RUST_LOG=info
       - POSTGRES_HOST=db
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
       - POSTGRES_USER=postgres
       - POSTGRES_DB=app
       - POSTGRES_PORT=5432
@@ -37,32 +36,8 @@ services:
       update_config:
         order: start-first
   
-  db:
-    image: postgres
-    user: postgres
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    secrets:
-      - db-password
-    environment:
-      - POSTGRES_DB=app
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-    networks:
-      - app_network
-    healthcheck:
-      test: [ "CMD", "pg_isready" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  db-data:
-  letsencrypt:
-  
 networks:
   app_network:
     driver: overlay
 
-secrets:
-  db-password:
-    external: true
+    

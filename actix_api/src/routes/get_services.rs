@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
-use crate::logic::requester::{DataSource, Requester};
+use crate::handlers::requester::{DataSource, Requester};
 use crate::logic::services_builder::connectivity_services_vector_build;
 
 /// HTTP GET endpoint to retrieve JSON data for a specified id.

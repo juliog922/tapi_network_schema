@@ -1,8 +1,10 @@
 pub mod connections;
 pub mod connectivity_services;
-pub mod devices;
 pub mod endpoint;
+pub mod devices;
 pub mod files_model;
 pub mod links;
 pub mod nodes;
 pub mod schema;
+pub mod tapi_uris;
+pub mod user;

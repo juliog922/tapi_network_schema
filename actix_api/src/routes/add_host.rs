@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
-use crate::logic::requester::DataSource;
+use crate::handlers::requester::DataSource;
 use crate::models::devices::Device;
 
 /// HTTP POST endpoint to add a new host to the host dictionary.
