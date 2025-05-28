@@ -8,10 +8,14 @@ services:
       - app_network
 
   actix_api:
+    ports:
+        - "8080:8080"
     build:
       context: ./actix_api
       dockerfile: Dockerfile
-    command: cargo run --bin server --release
+    entrypoint: "/usr/local/bin/server"
+    depends_on:
+      - db
     environment:
       API_PORT: "8080"
       API_HOST: "0.0.0.0"
@@ -23,6 +27,16 @@ services:
       POSTGRES_PORT: "5432"
       POSTGRES_SSLMODE: "disable"
       DATABASE_URL: postgres://postgres:testing01!@db:5432/app?sslmode=disable
+    networks:
+      - app_network
+  
+  gateway:
+    ports:
+        - "8081:8081"
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    entrypoint: "/usr/local/bin/gateway"
     networks:
       - app_network
 

@@ -1,0 +1,27 @@
+# api-gateway-config.yaml
+
+routes:
+  - name: actix_api_test
+    path: /api/{id}/{schema}
+    method: POST
+    upstream_url: http://actix_api:8080/{id}/{schema}
+    auth_required: true
+    rate_limit: 
+      requests_per_minute: 5
+
+  - name: actix_api_add_device
+    path: /api/add_device
+    method: POST
+    upstream_url: http://actix_api:8080/add_device
+    auth_required: true
+    rate_limit: 
+      requests_per_minute: 60
+
+global:
+  cors:
+    enabled: true
+    allowed_origins: ["*"]
+    allowed_methods: ["GET", "POST", "PUT", "DELETE"]
+  timeout: 30
+  logging:
+    level: info

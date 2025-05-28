@@ -10,7 +10,7 @@ up-all:
 
 # Levanta el backend (actix_api) junto con la base de datos
 up-back:
-	docker-compose -f $(COMPOSE_FILE) up -d actix_api db
+	docker-compose -f $(COMPOSE_FILE) up -d gateway actix_api db --build
 
 # Levanta solo el servicio de la base de datos
 up-db:
@@ -27,6 +27,8 @@ down:
 # Baja todos los servicios y elimina volúmenes e imágenes
 down-clean:
 	docker-compose -f $(COMPOSE_FILE) down -v --rmi all
+	docker builder prune -af
+	docker buildx prune -af
 
 db-shell:
 	docker-compose -f $(COMPOSE_FILE) exec db psql -U postgres -d app
