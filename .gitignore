@@ -8,7 +8,6 @@ dist/
 
 # Archivos de configuración y metadatos locales
 /.cargo/
-Cargo.lock
 
 # Archivos generados por compiladores o herramientas
 *.dSYM
