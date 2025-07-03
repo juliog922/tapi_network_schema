@@ -1,11 +1,11 @@
-pub mod sidebar;
 pub mod add_basic_form;
-pub mod add_oauth_form;
 pub mod add_custom_form;
-pub mod input;
+pub mod add_oauth_form;
 pub mod alert;
-pub mod select;
 pub mod button;
-pub mod nodes;
 pub mod footer_legend;
+pub mod input;
+pub mod nodes;
+pub mod select;
+pub mod sidebar;
 pub mod upload_form;

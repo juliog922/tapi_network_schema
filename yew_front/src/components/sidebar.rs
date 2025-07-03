@@ -63,11 +63,7 @@ pub fn sidebar() -> Html {
     };
 
     // Determine the CSS class for the menu based on the expanded state
-    let menu_classes = if *expanded {
-        "menu expanded"
-    } else {
-        "menu"
-    };
+    let menu_classes = if *expanded { "menu expanded" } else { "menu" };
 
     // Determine the CSS class for the hamburger menu based on the expanded state
     let hamburger_classes = if *expanded {
@@ -78,7 +74,7 @@ pub fn sidebar() -> Html {
 
     html! {
         <nav class="navbar">
-            // Hamburger menu icon to toggle the sidebar 
+            // Hamburger menu icon to toggle the sidebar
             <div class={hamburger_classes} onclick={toggle_expanded}>
                 <div></div>
                 <div></div>

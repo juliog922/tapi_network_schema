@@ -1,10 +1,8 @@
-use yew::prelude::*;
 use crate::components::{
+    add_basic_form::AddBasicForm, add_custom_form::AddCustomForm, add_oauth_form::AddOauthForm,
     sidebar::SideBar,
-    add_basic_form::AddBasicForm,
-    add_oauth_form::AddOauthForm,
-    add_custom_form::AddCustomForm,
 };
+use yew::prelude::*;
 
 #[function_component(AddDevices)]
 pub fn add_devices() -> Html {

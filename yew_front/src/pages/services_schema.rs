@@ -1,5 +1,5 @@
-use yew::{prelude::*, platform::spawn_local};
 use serde_json::Value;
+use yew::{platform::spawn_local, prelude::*};
 use yew_router::prelude::*;
 
 use crate::api::connection::get_services;
@@ -17,7 +17,7 @@ pub struct Props {
 pub fn schema(props: &Props) -> Html {
     let ip = props.device_ip.clone();
     let json_data = use_state(|| None);
-    let search_query = use_state(|| String::new());
+    let search_query = use_state(String::new);
 
     // Fetch JSON data on component mount
     {
@@ -28,7 +28,9 @@ pub fn schema(props: &Props) -> Html {
             spawn_local(async move {
                 match get_services(ip_clone.clone()).await {
                     Ok(fetched_json) => json_clone.set(Some(fetched_json)),
-                    Err(_) => json_clone.set(Some(serde_json::json!({"error": "Failed to fetch JSON"}))),
+                    Err(_) => {
+                        json_clone.set(Some(serde_json::json!({"error": "Failed to fetch JSON"})))
+                    }
                 }
             });
             || ()
@@ -56,7 +58,9 @@ pub fn schema(props: &Props) -> Html {
                             .unwrap_or("")
                             .to_string();
 
-                        if uuid.to_lowercase().contains(&query) || name.to_lowercase().contains(&query) {
+                        if uuid.to_lowercase().contains(&query)
+                            || name.to_lowercase().contains(&query)
+                        {
                             Some(serde_json::json!({ "uuid": uuid, "name": name }))
                         } else {
                             None

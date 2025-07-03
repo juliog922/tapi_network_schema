@@ -1,10 +1,10 @@
-use yew::prelude::*;
 use yew::html::Html;
+use yew::prelude::*;
 
 #[function_component(FooterLegend)]
 pub fn footer_legend() -> Html {
     let is_expanded = use_state(|| false);
-    
+
     let toggle_expanded = {
         let is_expanded = is_expanded.clone();
         Callback::from(move |_| is_expanded.set(!*is_expanded))

@@ -1,8 +1,5 @@
+use crate::components::{sidebar::SideBar, upload_form::UploadForm};
 use yew::prelude::*;
-use crate::components::{
-    sidebar::SideBar,
-    upload_form::UploadForm
-};
 
 /// A component for the "Add Devices" page.
 ///
@@ -24,7 +21,7 @@ pub fn upload_files() -> Html {
         <div class="upload-files-page">
             // Render the sidebar component
             <SideBar />
-            
+
             <div class="main-content">
                 // Render the form for adding new devices
                 <UploadForm />

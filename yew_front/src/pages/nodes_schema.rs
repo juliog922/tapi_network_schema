@@ -1,10 +1,6 @@
 use yew::prelude::*;
 
-use crate::components::{
-    sidebar::SideBar,
-    nodes::Nodes,
-    footer_legend::FooterLegend,
-};
+use crate::components::{footer_legend::FooterLegend, nodes::Nodes, sidebar::SideBar};
 
 /// Properties for the `NodeSchema` component.
 #[derive(PartialEq, Properties)]
@@ -21,7 +17,6 @@ pub struct Props {
 
 #[function_component(NodeSchema)]
 pub fn node_schema(props: &Props) -> Html {
-
     html! {
         <div class="node-page">
             // Render the sidebar component for navigation
@@ -37,7 +32,7 @@ pub fn node_schema(props: &Props) -> Html {
             </div>
 
             <Nodes device_ip={props.device_ip.clone()} service_uuid={props.service_uuid.clone()} />
-            
+
             <FooterLegend />
         </div>
     }

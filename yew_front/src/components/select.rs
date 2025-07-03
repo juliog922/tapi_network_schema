@@ -35,7 +35,7 @@ pub fn select(props: &Props) -> Html {
     let html_id = format!("edit-{}", props.name);
     // Clone the current value for use in the select options
     let value = props.value.clone();
-    
+
     html! {
         <>
             // Render the label associated with the dropdown

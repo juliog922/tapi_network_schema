@@ -1,9 +1,9 @@
-use yew::{prelude::*, platform::spawn_local};
-use yew_router::prelude::*;
-use web_sys::{HtmlInputElement, File};
-use crate::components::{alert::Alert, button::Button};
 use crate::api::connection::upload_connectivity_files;
+use crate::components::{alert::Alert, button::Button};
 use crate::Route;
+use web_sys::{File, HtmlInputElement};
+use yew::{platform::spawn_local, prelude::*};
+use yew_router::prelude::*;
 
 #[function_component(UploadForm)]
 pub fn upload_form() -> Html {
@@ -25,7 +25,6 @@ pub fn upload_form() -> Html {
     let topology = (*topology_handle).clone();
     let connections = (*connections_handle).clone();
     let connectivity_services = (*connectivity_services_handle).clone();
-    
 
     let on_change_id = {
         let id_handle = id_handle.clone();
@@ -38,7 +37,7 @@ pub fn upload_form() -> Html {
 
     let on_change_complete_context = {
         let complete_context_handle = complete_context_handle.clone();
-    
+
         Callback::from(move |e: Event| {
             // Convierte el `target` a `HtmlInputElement`
             if let Some(input) = e.target_dyn_into::<HtmlInputElement>() {
@@ -55,7 +54,7 @@ pub fn upload_form() -> Html {
 
     let on_change_topology = {
         let topology_handle = topology_handle.clone();
-    
+
         Callback::from(move |e: Event| {
             // Convierte el `target` a `HtmlInputElement`
             if let Some(input) = e.target_dyn_into::<HtmlInputElement>() {
@@ -72,7 +71,7 @@ pub fn upload_form() -> Html {
 
     let on_change_connections = {
         let connections_handle = connections_handle.clone();
-    
+
         Callback::from(move |e: Event| {
             // Convierte el `target` a `HtmlInputElement`
             if let Some(input) = e.target_dyn_into::<HtmlInputElement>() {
@@ -89,7 +88,7 @@ pub fn upload_form() -> Html {
 
     let on_change_connectivity_services = {
         let connectivity_services_handle = connectivity_services_handle.clone();
-    
+
         Callback::from(move |e: Event| {
             // Convierte el `target` a `HtmlInputElement`
             if let Some(input) = e.target_dyn_into::<HtmlInputElement>() {
@@ -143,8 +142,9 @@ pub fn upload_form() -> Html {
         if *use_complete_context {
             if let Some(context_file) = complete_context.clone() {
                 spawn_local(async move {
-                    success_message_handle.set(format!("Processing Response ..."));
-                    match upload_connectivity_files(None, None, None, Some(context_file), id).await {
+                    success_message_handle.set("Processing Response ...".to_string());
+                    match upload_connectivity_files(None, None, None, Some(context_file), id).await
+                    {
                         Ok(_) => {
                             cloned_navigator.push(&Route::Devices);
                         }
@@ -156,27 +156,38 @@ pub fn upload_form() -> Html {
             } else {
                 error_message_handle.set("Please upload the complete context file.".to_string());
             }
-        } else {
-            if let (Some(topology_file), Some(connections_file), Some(connectivity_services_file)) =
-                (topology.clone(), connections.clone(), connectivity_services.clone())
-            {
-                spawn_local(async move {
-                    match upload_connectivity_files(Some(topology_file), Some(connections_file), Some(connectivity_services_file), None, id).await {
-                        Ok(_) => {
-                            cloned_navigator.push(&Route::Devices);
-                        }
-                        Err(e) => {
-                            error_message_handle.set(format!("Error during upload: {}", e));
-                        }
+        } else if let (
+            Some(topology_file),
+            Some(connections_file),
+            Some(connectivity_services_file),
+        ) = (
+            topology.clone(),
+            connections.clone(),
+            connectivity_services.clone(),
+        ) {
+            spawn_local(async move {
+                match upload_connectivity_files(
+                    Some(topology_file),
+                    Some(connections_file),
+                    Some(connectivity_services_file),
+                    None,
+                    id,
+                )
+                .await
+                {
+                    Ok(_) => {
+                        cloned_navigator.push(&Route::Devices);
                     }
-                });
-            } else {
-                error_message_handle.set("Please upload all three files.".to_string());
-            }
+                    Err(e) => {
+                        error_message_handle.set(format!("Error during upload: {}", e));
+                    }
+                }
+            });
+        } else {
+            error_message_handle.set("Please upload all three files.".to_string());
         }
     });
 
-    
     // Render the form
     html! {
         <form class="upload-form-container" onsubmit={on_submit_upload}>

@@ -1,4 +1,5 @@
-use actix_api::logic::requester::DataSource;
+use actix_api::handlers::requester::DataSource;
+//use actix_api::handlers::database::DatabaseHandler;
 use actix_cors::Cors;
 use actix_web::{main, web, App, HttpServer};
 use dotenv::dotenv;
@@ -32,6 +33,14 @@ async fn main() -> Result<()> {
 
     let host: String = env::var("API_HOST").unwrap_or("0.0.0.0".to_string());
 
+    //let database_url: String = env::var("DATABASE_URL").unwrap_or("postgres://postgres:testing01!@db:5432/app?sslmode=disable".to_string());
+    //let database_handler = DatabaseHandler::new(database_url).await.map_err(|_| std::io::ErrorKind::NetworkUnreachable)?;
+
+    //sqlx::migrate!("./migrations")
+    //    .run(&database_handler.connection)
+    //     .await
+    //    .map_err(|err| std::io::ErrorKind::NetworkUnreachable)?;
+
     // Create a shared, thread-safe dictionary to hold host parameters
     let host_dictionary: Arc<Mutex<HashMap<String, DataSource>>> =
         Arc::new(Mutex::new(HashMap::new()));
@@ -44,12 +53,15 @@ async fn main() -> Result<()> {
         App::new()
             .wrap(cors) // Apply CORS configuration
             .app_data(web::Data::new(host_dictionary.clone())) // Share `host_dictionary` with application
+            //.app_data(web::Data::new(database_handler.clone()))
+            //.service(actix_api::routes::add_device::add_device)
             .service(actix_api::routes::get_services::connectivity_services)
             .service(actix_api::routes::get_schema::schema_by_service)
             .service(actix_api::routes::get_hosts::get_hosts)
             .service(actix_api::routes::add_host::add_host)
             .service(actix_api::routes::delete_host::delete_host)
             .service(actix_api::routes::by_files::upload_services)
+            .service(actix_api::routes::home::home)
     })
     .bind((host.as_str(), port))? // Bind the server
     .run()

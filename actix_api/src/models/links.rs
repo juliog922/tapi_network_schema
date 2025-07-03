@@ -43,6 +43,7 @@ impl Link {
                 .map(|node_edge_point| BaseEndpoint {
                     node_edge_point_uuid: node_edge_point.node_edge_point_uuid.clone(),
                     node_uuid: node_edge_point.node_uuid.clone(),
+                    mc_pool: None,
                     connection_end_point_uuid: None,
                     service_interface_point_uuid: None,
                     connection_uuid: None,

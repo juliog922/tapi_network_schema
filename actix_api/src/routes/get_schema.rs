@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
-use crate::logic::requester::{DataSource, Requester};
+use crate::handlers::requester::{DataSource, Requester};
 use crate::{
     logic::connection_builder::connection_vector_build, logic::link_builder::link_vector_build,
     logic::node_builder::node_vector_building, logic::schema_builder::build_schema,
@@ -35,7 +35,7 @@ async fn schema_by_service(
         let context = Requester::get_service_context(data_source, &service_uuid)
             .await
             .map_err(|err| {
-                log::error!("{}", err.to_string());
+                log::error!("{}", err);
                 error::ErrorNotAcceptable("Cannot extract Services from data_sources")
             })?;
         let topology = context.topology.clone();
@@ -49,7 +49,7 @@ async fn schema_by_service(
 
         let schema = build_schema(&service, &link_vector, &node_vector, &connection_vector)
             .map_err(|err| {
-                log::error!("{}", err.to_string());
+                log::error!("{}", err);
                 error::ErrorNotAcceptable("Cannot Build Services from data_sources")
             })?;
 

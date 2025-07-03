@@ -72,6 +72,7 @@ impl Service {
                         service_interface_point_uuid: Some(
                             end_point.service_interface_point_uuid.clone(),
                         ),
+                        mc_pool: None,
                         connection_uuid: None,
                         client_node_edge_point_uuid: None,
                         lower_connection: None,

@@ -1,3 +1,5 @@
+use serde::{Deserialize, Serialize};
+
 use super::endpoint::BaseEndpoint;
 
 /// Represents a node in the network with associated edge points and a unique identifier.
@@ -14,6 +16,20 @@ pub struct OwnedNodeEdgePoint {
     pub node_edge_point_uuid: String,
     pub inventory_id: String,
     pub connection_end_points: Vec<NodeConnectionEndPoint>,
+    pub mc_pool: Option<McPool>,
+}
+
+/// Represents an mc pool of an owned-node-edge-point.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct McPool {
+    pub occupied_spectrum: Vec<FrecuencyPair>,
+}
+
+/// Represents an edge point owned by a node.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct FrecuencyPair {
+    pub upper_frequency: i64,
+    pub lower_frequency: i64,
 }
 
 /// Represents a connection endpoint within a node.
@@ -47,7 +63,10 @@ impl Node {
                 if owned_node_edge_point.node_edge_point_uuid == base_endpoint.node_edge_point_uuid
                 {
                     base_endpoint.inventory_id = Some(owned_node_edge_point.inventory_id.clone());
-
+                    base_endpoint.mc_pool = owned_node_edge_point
+                        .mc_pool
+                        .as_ref()
+                        .map(|mc| mc.occupied_spectrum.clone());
                     for connection_end_point in owned_node_edge_point.connection_end_points.iter() {
                         if base_endpoint.connection_end_point_uuid.is_none()
                             || base_endpoint.connection_end_point_uuid.clone().unwrap()
@@ -79,6 +98,7 @@ impl Node {
                                     node_uuid: connection_end_point.client_node_edge_points[0]
                                         .node_uuid
                                         .clone(),
+                                    mc_pool: None,
                                     connection_end_point_uuid: None,
                                     service_interface_point_uuid: None,
                                     connection_uuid: None,
@@ -108,6 +128,7 @@ impl Node {
                 let possible_id = base_endpoint.id.map(|id| id + 1);
                 base_endpoint_vector.push(BaseEndpoint {
                     node_edge_point_uuid: owned_node_edge_point.node_edge_point_uuid.clone(),
+                    mc_pool: None,
                     node_uuid: self.node_uuid.clone(),
                     connection_end_point_uuid: None,
                     service_interface_point_uuid: None,

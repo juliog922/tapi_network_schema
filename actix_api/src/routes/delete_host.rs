@@ -4,7 +4,7 @@ use std::fs;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
-use crate::logic::requester::DataSource;
+use crate::handlers::requester::DataSource;
 use crate::models::files_model::FilesEnum;
 
 /// HTTP DELETE endpoint to remove a host from the host dictionary.

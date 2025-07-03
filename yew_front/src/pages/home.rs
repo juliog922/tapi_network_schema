@@ -52,7 +52,7 @@ fn expandable_section(props: &SectionProps) -> Html {
                     { if *expanded { props.content.clone() } else { html! {} } }
                 </section>
             </div>
-        </div>    
+        </div>
     }
 }
 
@@ -60,7 +60,7 @@ fn expandable_section(props: &SectionProps) -> Html {
 ///
 /// # Component Overview
 ///
-/// The `Home` component serves as the landing page for the application, showcasing the primary features, 
+/// The `Home` component serves as the landing page for the application, showcasing the primary features,
 /// functionality, and purpose of the tool. It integrates multiple `ExpandableSection` components to provide detailed
 /// information about the tool's capabilities and usage.
 ///
@@ -68,7 +68,7 @@ fn expandable_section(props: &SectionProps) -> Html {
 ///
 /// - **`SideBar`**: Displays a sidebar for navigation purposes.
 /// - **`ExpandableSection`**: Used to present different sections like Key Features, How It Works, and Why Use This Tool.
-/// 
+///
 /// # Sections
 ///
 /// - **Intro**: A brief introduction to the tool with an image and text.
@@ -83,7 +83,7 @@ pub fn home() -> Html {
         <div id="app">
             // Render the sidebar component
             <SideBar />
-            
+
             <div class="main-content">
                 <div class="intro">
                     <div class="text-container">

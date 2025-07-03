@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
-use crate::logic::requester::DataSource;
+use crate::handlers::requester::DataSource;
 use crate::models::files_model::UploadForm;
 
 /// Handles the `/upload_services` endpoint for uploading service data.

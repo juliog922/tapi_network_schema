@@ -1,0 +1,82 @@
+services:
+  yew_front:
+    build:
+      context: ./yew_front
+      dockerfile: Dockerfile
+    command: trunk serve --release --port 8092 --address 0.0.0.0 --no-autoreload
+    networks:
+      - app_network
+
+  actix_api:
+    ports:
+        - "8080:8080"
+    build:
+      context: ./actix_api
+      dockerfile: Dockerfile
+    entrypoint: "/usr/local/bin/server"
+    #depends_on:
+    #  - db
+    environment:
+      API_PORT: "8080"
+      API_HOST: "0.0.0.0"
+      RUST_LOG: "info"
+      POSTGRES_HOST: "db"
+      POSTGRES_PASSWORD: "testing01!"
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: "app"
+      POSTGRES_PORT: "5432"
+      POSTGRES_SSLMODE: "disable"
+      DATABASE_URL: postgres://postgres:testing01!@db:5432/app?sslmode=disable
+    networks:
+      - app_network
+  
+  #gateway:
+  #  ports:
+  #      - "8081:8081"
+  #  build:
+  #    context: ./gateway
+  #    dockerfile: Dockerfile
+  #  entrypoint: "/usr/local/bin/gateway"
+  #  networks:
+  #    - app_network
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    depends_on:
+      - actix_api
+      - yew_front
+    ports:
+      - "8091:80"
+    networks:
+      - app_network
+
+  #db:
+  #  image: postgres
+  #  user: postgres
+  #  ports:
+  #    - "5432:5432"
+  #  volumes:
+  #    - db-data:/var/lib/postgresql/data
+  #  environment:
+  #    POSTGRES_DB: "app"
+  #    POSTGRES_PASSWORD: "testing01!"
+  #    POSTGRES_USER: "postgres"
+  #    POSTGRES_PORT: "5432"
+  #    POSTGRES_SSLMODE: "disable"
+  #  networks:
+  #    - app_network
+  #  healthcheck:
+  #    test: ["CMD", "pg_isready"]
+  #    interval: 10s
+  #    timeout: 5s
+  #    retries: 5
+
+#volumes:
+#  db-data:
+#  letsencrypt:
+
+networks:
+  app_network:
+    driver: bridge
