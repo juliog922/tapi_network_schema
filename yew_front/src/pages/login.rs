@@ -1,12 +1,9 @@
-use yew::prelude::*;
 use crate::components::sidebar::SideBar;
 use web_sys::{console, HtmlInputElement};
+use yew::prelude::*;
 
 #[function_component(Login)]
 pub fn login() -> Html {
-    let x: String =  String::default();
-    let y: Vec<String> = x.chars().into_iter().map(|c| c.to_string()).collect();
-
     let show_password = use_state(|| false);
 
     let toggle_password = {
@@ -27,8 +24,6 @@ pub fn login() -> Html {
             console::log_1(&format!("Username: {}, Password: {}", *username, *password).into());
         }
     });
-
-    
 
     html! {
         <div class="login-container">

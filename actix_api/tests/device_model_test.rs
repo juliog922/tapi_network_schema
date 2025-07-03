@@ -25,7 +25,7 @@ mod tests {
 
         // Convert the JSON string into a serde_json::Value
         let json_value: Value =
-            from_str(&json_data).expect("Json test data cannot be transformed to Value type");
+            from_str(json_data).expect("Json test data cannot be transformed to Value type");
 
         // Create a `Device` instance from the JSON `Value`
         let device: Device = serde_json::from_value(json_value).expect("Device cannot be created");
@@ -59,7 +59,7 @@ mod tests {
 
         // Convert the JSON string into a serde_json::Value
         let json_value: Value =
-            from_str(&json_data).expect("Json test data cannot be transformed to Value type");
+            from_str(json_data).expect("Json test data cannot be transformed to Value type");
 
         // Create a `Device` instance from the JSON `Value`
         let device: Device = serde_json::from_value(json_value).expect("Device cannot be created");

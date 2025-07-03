@@ -1,6 +1,6 @@
-use yew::prelude::*;
 use crate::components::sidebar::SideBar;
 use std::rc::Rc;
+use yew::prelude::*;
 
 /// The `Info` component provides a detailed informational page with a rotating viewport
 /// for images and corresponding descriptive sections for different aspects of the TAPI schema.
@@ -40,7 +40,7 @@ pub fn info() -> Html {
         <div class="info-page">
             // Render the sidebar component for navigation
             <SideBar />
-            
+
             <main class="info-main">
                 // Rotating viewport for images associated with each slide
                 <div class="info-rotating-viewport">
@@ -50,7 +50,7 @@ pub fn info() -> Html {
                         </div>
                     })}
                 </div>
-                
+
                 // Sections containing titles and descriptions for each slide
                 {for slides.iter().map(|slide| html! {
                     <section class="info-section">

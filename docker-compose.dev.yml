@@ -14,8 +14,8 @@ services:
       context: ./actix_api
       dockerfile: Dockerfile
     entrypoint: "/usr/local/bin/server"
-    depends_on:
-      - db
+    #depends_on:
+    #  - db
     environment:
       API_PORT: "8080"
       API_HOST: "0.0.0.0"
@@ -30,49 +30,52 @@ services:
     networks:
       - app_network
   
-  gateway:
-    ports:
-        - "8081:8081"
-    build:
-      context: ./gateway
-      dockerfile: Dockerfile
-    entrypoint: "/usr/local/bin/gateway"
-    networks:
-      - app_network
+  #gateway:
+  #  ports:
+  #      - "8081:8081"
+  #  build:
+  #    context: ./gateway
+  #    dockerfile: Dockerfile
+  #  entrypoint: "/usr/local/bin/gateway"
+  #  networks:
+  #    - app_network
 
   nginx:
     build:
       context: ./nginx
       dockerfile: Dockerfile
+    depends_on:
+      - actix_api
+      - yew_front
     ports:
       - "8091:80"
     networks:
       - app_network
 
-  db:
-    image: postgres
-    user: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: "app"
-      POSTGRES_PASSWORD: "testing01!"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PORT: "5432"
-      POSTGRES_SSLMODE: "disable"
-    networks:
-      - app_network
-    healthcheck:
-      test: ["CMD", "pg_isready"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  #db:
+  #  image: postgres
+  #  user: postgres
+  #  ports:
+  #    - "5432:5432"
+  #  volumes:
+  #    - db-data:/var/lib/postgresql/data
+  #  environment:
+  #    POSTGRES_DB: "app"
+  #    POSTGRES_PASSWORD: "testing01!"
+  #    POSTGRES_USER: "postgres"
+  #    POSTGRES_PORT: "5432"
+  #    POSTGRES_SSLMODE: "disable"
+  #  networks:
+  #    - app_network
+  #  healthcheck:
+  #    test: ["CMD", "pg_isready"]
+  #    interval: 10s
+  #    timeout: 5s
+  #    retries: 5
 
-volumes:
-  db-data:
-  letsencrypt:
+#volumes:
+#  db-data:
+#  letsencrypt:
 
 networks:
   app_network:

@@ -15,7 +15,7 @@ pub struct Props {
 
 /// A functional component for rendering a button.
 ///
-/// This component creates a styled button with customizable text, type, and click behavior. 
+/// This component creates a styled button with customizable text, type, and click behavior.
 /// The `btn_type` determines the button type attribute (e.g., "button", "submit", "reset").
 /// The `class` property allows for custom CSS styling.
 /// The `message` property sets the button text.
@@ -25,12 +25,15 @@ pub fn button(props: &Props) -> Html {
     // Clone the onclick callback if provided
     let onclick = props.onclick.clone();
     // Set button type to "button" if not provided
-    let btn_type = props.btn_type.clone().unwrap_or_else(|| "button".to_string());
-    
+    let btn_type = props
+        .btn_type
+        .clone()
+        .unwrap_or_else(|| "button".to_string());
+
     html! {
-        <button 
-            type={btn_type} 
-            class={format!("button {}", props.class)} 
+        <button
+            type={btn_type}
+            class={format!("button {}", props.class)}
             onclick={onclick}
         >
             { &props.message }

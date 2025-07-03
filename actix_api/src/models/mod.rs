@@ -1,7 +1,7 @@
 pub mod connections;
 pub mod connectivity_services;
-pub mod endpoint;
 pub mod devices;
+pub mod endpoint;
 pub mod files_model;
 pub mod links;
 pub mod nodes;

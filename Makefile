@@ -55,3 +55,5 @@ prod-down:
 prod-deploy:
 	docker --context testing stack deploy -c compose.yml tapi --with-registry-auth
 
+run-cmd:
+	@cd $(path) && "./run.cmd"

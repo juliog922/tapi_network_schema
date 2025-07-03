@@ -1,5 +1,5 @@
+use crate::utils::{find_token_key, xml_to_json};
 use crate::AppError;
-use crate::utils::{xml_to_json, find_token_key};
 use reqwest::{Client, RequestBuilder};
 
 use serde_json::Value;
@@ -14,9 +14,9 @@ pub enum ContentType {
 impl ContentType {
     /// Determina el tipo de contenido basado en el Content-Type del header
     pub fn from_header(content_type: &str) -> Self {
-        if content_type.contains("application/json") {
+        if content_type.contains("json") {
             ContentType::Json
-        } else if content_type.contains("application/xml") || content_type.contains("text/xml") {
+        } else if content_type.contains("xml") {
             ContentType::Xml
         } else {
             ContentType::Unsupported
@@ -54,29 +54,29 @@ impl HttpHandler {
 
     async fn handle_content_type(response: reqwest::Response) -> Result<Value, AppError> {
         let headers = response.headers().clone();
-            
+
         // Obtener el tipo de contenido del header
         let content_type_header = headers
             .get(reqwest::header::CONTENT_TYPE)
             .and_then(|ct| ct.to_str().ok())
             .unwrap_or("");
-        
+
         let content_type = ContentType::from_header(content_type_header);
-        
+
         match content_type {
-            ContentType::Json => {
-                response
+            ContentType::Json => response
                 .json::<Value>()
                 .await
-                .map_err(|err| AppError::validation_error(err.to_string()))
+                .map_err(|err| AppError::validation_error(err.to_string())),
+            ContentType::Xml => xml_to_json(
+                &response
+                    .text()
+                    .await
+                    .map_err(|err| AppError::RequestError(err.to_string()))?,
+            ),
+            ContentType::Unsupported => {
+                Err(AppError::validation_error(content_type_header.to_string()))
             }
-            ContentType::Xml => {
-                xml_to_json(
-                    &response.text().await
-                    .map_err(|err| AppError::RequestError(err.to_string()))?
-                )
-            },
-            ContentType::Unsupported => Err(AppError::validation_error(content_type_header.to_string())),
         }
     }
 
@@ -92,10 +92,7 @@ impl HttpHandler {
     /// # Notes
     /// - The client accepts invalid SSL certificates.
     /// - If the request or response parsing fails, appropriate errors are returned.
-    pub async fn custom_post_request(
-        url: &String,
-        json: &Value,
-    ) -> Result<Value, AppError> {
+    pub async fn custom_post_request(url: &String, json: &Value) -> Result<Value, AppError> {
         let response = Client::builder()
             .danger_accept_invalid_certs(true) // Accept invalid certificates.
             .build()
@@ -104,9 +101,11 @@ impl HttpHandler {
             .json(&json)
             .send()
             .await
+            .map_err(|err| AppError::request_error(err.to_string()))?
+            .error_for_status()
             .map_err(|err| AppError::request_error(err.to_string()))?;
 
-        Ok(Self::handle_content_type(response).await?)
+        Self::handle_content_type(response).await
     }
 
     /// Sends a PUT request with JSON data and returns the response as a `Value`.
@@ -121,10 +120,7 @@ impl HttpHandler {
     /// # Notes
     /// - The client accepts invalid SSL certificates.
     /// - If the request or response parsing fails, appropriate errors are returned.
-    pub async fn custom_put_request(
-        url: &String,
-        json: &Value,
-    ) -> Result<Value, AppError> {
+    pub async fn custom_put_request(url: &String, json: &Value) -> Result<Value, AppError> {
         let response = Client::builder()
             .danger_accept_invalid_certs(true) // Accept invalid certificates.
             .build()
@@ -133,9 +129,11 @@ impl HttpHandler {
             .json(&json)
             .send()
             .await
+            .map_err(|err| AppError::request_error(err.to_string()))?
+            .error_for_status()
             .map_err(|err| AppError::request_error(err.to_string()))?;
 
-        Ok(Self::handle_content_type(response).await?)
+        Self::handle_content_type(response).await
     }
 
     /// Attempts to retrieve an token using a PUT/POST request.
@@ -149,49 +147,42 @@ impl HttpHandler {
     /// # Returns
     /// * `Ok(String)` - The token if found.
     /// * `Err(Error)` - An error if both requests fail or if the token cannot be found.
-    pub async fn get_token(
-        url: &String,
-        json: &Value,
-    ) -> Result<String, AppError> {
+    pub async fn get_token(url: &String, json: &Value) -> Result<String, AppError> {
         let response = Self::custom_post_request(url, json).await;
 
-        match response {
-            Ok(res) => {
-                match find_token_key(&res) {
-                    Some(token_key) => {
-                        return Ok(res
-                            .get(token_key)
-                            .ok_or_else(|| AppError::validation_error("Cannot find Token key in POST response"))?
-                            .as_str()
-                            .unwrap()
-                            .to_string()
-                        );
-                    },
-                    None => {
-                        return Err(AppError::validation_error("Cannot find Token key in POST response"));
-                    },
-                }
-                
-            },
-            Err(_) => {},
-        }
+        if let Ok(res) = response { match find_token_key(&res) {
+            Some(token_key) => {
+                return Ok(res
+                    .get(token_key)
+                    .ok_or_else(|| {
+                        AppError::validation_error("Cannot find Token key in POST response")
+                    })?
+                    .as_str()
+                    .unwrap()
+                    .to_string());
+            }
+            None => {
+                return Err(AppError::validation_error(
+                    "Cannot find Token key in POST response",
+                ));
+            }
+        } }
 
         // If POST fails, try with PUT
-        let response = Self::custom_put_request(url, json).await.map_err(|_| AppError::validation_error("Device has not response to POST/PUT request"))?;
+        let response = Self::custom_put_request(url, json).await.map_err(|_| {
+            AppError::validation_error("Device has not response to POST/PUT request")
+        })?;
 
         match find_token_key(&response) {
-            Some(token_key) => {
-                Ok(
-                    response
-                        .get(token_key)
-                        .ok_or_else(|| AppError::validation_error("Cannot find Token key in PUT response"))?
-                        .as_str()
-                        .unwrap()
-                        .to_string()
-                )
-
-            },
-            None => Err(AppError::validation_error("Cannot find Token key in PUT response")),
+            Some(token_key) => Ok(response
+                .get(token_key)
+                .ok_or_else(|| AppError::validation_error("Cannot find Token key in PUT response"))?
+                .as_str()
+                .unwrap()
+                .to_string()),
+            None => Err(AppError::validation_error(
+                "Cannot find Token key in PUT response",
+            )),
         }
     }
 
@@ -216,9 +207,11 @@ impl HttpHandler {
             .basic_auth(username, password)
             .send()
             .await
+            .map_err(|err| AppError::request_error(err.to_string()))?
+            .error_for_status()
             .map_err(|err| AppError::request_error(err.to_string()))?;
-    
-        Ok(Self::handle_content_type(response).await?)
+
+        Self::handle_content_type(response).await
     }
 
     /// Sends a GET request with bearer token authentication and returns the response as a `Value`.
@@ -233,13 +226,14 @@ impl HttpHandler {
     /// # Errors
     /// - Returns an error if the request fails or the response cannot be parsed as JSON.
     pub async fn token_request(url: &String, token: &str) -> Result<Value, AppError> {
-        Self::client_get_builder(url)
+        let response = Self::client_get_builder(url)
             .bearer_auth(token)
             .send()
             .await
             .map_err(|err| AppError::request_error(err.to_string()))?
-            .json::<Value>()
-            .await
-            .map_err(|err| AppError::validation_error(err.to_string()))
+            .error_for_status()
+            .map_err(|err| AppError::request_error(err.to_string()))?;
+
+        Self::handle_content_type(response).await
     }
 }

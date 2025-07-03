@@ -1,17 +1,16 @@
 use std::env;
 
 use actix_api::{
-    handlers::{
-        database::DatabaseHandler, http::HttpHandler
-    }, models::devices::{Auth, Device}, utils::is_reachable, AppError
+    handlers::{database::DatabaseHandler, http::HttpHandler},
+    models::devices::{Auth, Device},
+    utils::is_reachable,
+    AppError,
 };
 use serde_json::{from_str, Value};
 
-use pbkdf2::pbkdf2;
 use hmac::Hmac;
+use pbkdf2::pbkdf2;
 use sha2::Sha256;
-
-
 
 #[tokio::main]
 async fn main() -> Result<(), AppError> {
@@ -42,7 +41,8 @@ async fn main() -> Result<(), AppError> {
     "#;
 
     // Convert the JSON string into a serde_json::Value
-    let json_value: Value = from_str(&json_data).expect("Json test data cannot be transformed to Value type");
+    let json_value: Value =
+        from_str(json_data).expect("Json test data cannot be transformed to Value type");
 
     // Create a `Device` instance from the JSON `Value`
     let device: Device = serde_json::from_value(json_value).expect("Device cannot be created");
@@ -53,27 +53,40 @@ async fn main() -> Result<(), AppError> {
             Auth::Basic(_) => {
                 ret_ip = device.create_device(&database_handler).await?;
                 println!("{} device saved!", &ret_ip);
-            },
+            }
             Auth::Token(token_auth) => {
-                match HttpHandler::get_token(&device.get_full_auth_url(), &token_auth.auth_body).await {
+                match HttpHandler::get_token(&device.get_full_auth_url(), &token_auth.auth_body)
+                    .await
+                {
                     Ok(_) => {
                         ret_ip = device.create_device(&database_handler).await?;
                         println!("{} device saved!", &ret_ip);
-                    },
+                    }
                     Err(err) => {
-                        return Err(AppError::RequestError(format!("Device cannot be added. {}", err.to_string())));
+                        return Err(AppError::RequestError(format!(
+                            "Device cannot be added. {}",
+                            err
+                        )));
                     }
                 }
             }
         }
     } else {
-        return Err(AppError::RequestError(format!("{} is not reachable.", &device.ip)));
+        return Err(AppError::RequestError(format!(
+            "{} is not reachable.",
+            &device.ip
+        )));
     }
 
+    println!(
+        "This is your saved device: {:?}",
+        Device::read_one_by_ip(&database_handler, &device.ip).await?
+    );
 
-    println!("This is your saved device: {:?}", Device::read_one_by_ip(&database_handler, &device.ip).await?);
-
-    println!("Device {} deleted.", Device::delete_device(&database_handler, &device.ip).await?);
+    println!(
+        "Device {} deleted.",
+        Device::delete_device(&database_handler, &device.ip).await?
+    );
 
     Ok(())
 }

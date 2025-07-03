@@ -31,7 +31,7 @@ pub struct BasicAuth {
 /// Represents Token Authentication with an arbitrary body and authentication URI
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct TokenAuth {
-    pub auth_body: Value,   // A JSON object containing Token authentication data
+    pub auth_body: Value, // A JSON object containing Token authentication data
     pub auth_uri: String, // URI for Token authentication
 }
 
@@ -39,26 +39,32 @@ pub struct TokenAuth {
 
 impl Device {
     pub fn get_device_base_url(&self) -> String {
-        format!("http://{}{}", &self.ip, &self.port.map(|p| format!(":{}", p)).unwrap_or_default())
+        format!(
+            "http://{}{}",
+            &self.ip,
+            &self.port.map(|p| format!(":{}", p)).unwrap_or_default()
+        )
     }
 
     pub fn get_full_auth_url(&self) -> String {
         match &self.auth {
-            Auth::Basic(_) => {
-                self.get_device_base_url()
-            },
+            Auth::Basic(_) => self.get_device_base_url(),
             Auth::Token(token_auth) => {
-                format!("{}/{}", self.get_device_base_url(), &token_auth.auth_uri.strip_prefix("/").unwrap_or(&token_auth.auth_uri))
+                format!(
+                    "{}/{}",
+                    self.get_device_base_url(),
+                    &token_auth
+                        .auth_uri
+                        .strip_prefix("/")
+                        .unwrap_or(&token_auth.auth_uri)
+                )
             }
         }
-        
     }
 }
 
-
 impl std::fmt::Display for Device {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-
         match &self.auth {
             Auth::Basic(basic_auth) => {
                 write!(
@@ -70,9 +76,9 @@ impl std::fmt::Display for Device {
                     username: {},
                     password: {}, 
                 "#,
-                    self.ip, self.port , basic_auth.username, basic_auth.password
+                    self.ip, self.port, basic_auth.username, basic_auth.password
                 )
-            },
+            }
             Auth::Token(token_auth) => {
                 write!(
                     f,
@@ -83,13 +89,9 @@ impl std::fmt::Display for Device {
                     auth_body: {:?}, 
                     auth_uri: {:?},
                 "#,
-                    self.ip, self.port , token_auth.auth_body, token_auth.auth_uri
+                    self.ip, self.port, token_auth.auth_body, token_auth.auth_uri
                 )
             }
         }
-        
     }
 }
-
-
-

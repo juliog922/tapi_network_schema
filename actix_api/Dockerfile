@@ -4,22 +4,24 @@
 FROM rust:1.86-slim AS builder
 WORKDIR /usr/src/actix_api
 
-# Install build dependencies
+# Instala dependencias necesarias
 RUN apt-get update \
     && apt-get install -y pkg-config libssl-dev ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Cache dependencies by copying manifests first
+# Copia los manifiestos y código
 COPY Cargo.toml Cargo.lock ./
 COPY ./src ./src
 COPY ./data ./data
 COPY ./migrations ./migrations
+
+# Compila el binario en release
 RUN cargo build --release
 
 # 2. Runtime stage
 FROM debian:bookworm-slim
 
-# Install only required runtime libraries
+# Instala solo las librerías necesarias en producción
 RUN apt-get update \
     && apt-get install -y \
        libssl3 \
@@ -27,8 +29,17 @@ RUN apt-get update \
        iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the compiled binary
+# Crea el directorio esperado por el binario
+WORKDIR /app
+
+# Copia el binario compilado
 COPY --from=builder /usr/src/actix_api/target/release/server /usr/local/bin/server
 
-# Expose the port and set entrypoint
+# Copia la carpeta de datos
+COPY --from=builder /usr/src/actix_api/data ./data
+
+# Expone el puerto usado por Actix
 EXPOSE 8081
+
+# Usa el binario como punto de entrada
+ENTRYPOINT ["/usr/local/bin/server"]

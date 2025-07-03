@@ -1,9 +1,9 @@
 use crate::{
+    handlers::database::{DatabaseHandler, SqlxBindValue},
+    models::devices::{Auth, BasicAuth, Device, TokenAuth},
     AppError,
-    models::devices::{Device, Auth, TokenAuth, BasicAuth},
-    handlers::database::{DatabaseHandler, SqlxBindValue} 
 };
-use sqlx::{FromRow, postgres::PgRow, Row};
+use sqlx::{postgres::PgRow, FromRow, Row};
 
 impl<'r> FromRow<'r, PgRow> for Device {
     fn from_row(row: &'r PgRow) -> Result<Self, sqlx::Error> {
@@ -21,7 +21,9 @@ impl<'r> FromRow<'r, PgRow> for Device {
         let auth = match auth_type.as_str() {
             "basic" => {
                 // Se espera que auth_body contenga un objeto JSON con "username" y "password"
-                let username = auth_body.0.get("username")
+                let username = auth_body
+                    .0
+                    .get("username")
                     .and_then(|v| v.as_str())
                     .ok_or_else(|| sqlx::Error::ColumnDecode {
                         index: "auth_body.username".into(),
@@ -32,7 +34,9 @@ impl<'r> FromRow<'r, PgRow> for Device {
                     })?
                     .to_string();
 
-                let password = auth_body.0.get("password")
+                let password = auth_body
+                    .0
+                    .get("password")
                     .and_then(|v| v.as_str())
                     .ok_or_else(|| sqlx::Error::ColumnDecode {
                         index: "auth_body.password".into(),
@@ -75,7 +79,6 @@ impl<'r> FromRow<'r, PgRow> for Device {
 }
 
 impl Device {
-
     /// Convierte la instancia de Device en un vector de SqlxBindValue para usar en bind dinámico.
     /// El orden de los valores es: ip, port, auth_body, auth_type, auth_uri.
     pub fn to_bind_values(&self) -> Vec<SqlxBindValue> {
@@ -114,14 +117,22 @@ impl Device {
         binds
     }
 
-    pub async fn read_one_by_ip(database_handler: &DatabaseHandler, ip: impl Into<String>) -> Result<Self, AppError> {
-        database_handler.fetch_one::<Self>(
-            r#"SELECT ip, port, auth_type, auth_body, auth_uri FROM devices WHERE ip = $1"#, 
-            vec![SqlxBindValue::Str(ip.into()),]
-        ).await
+    pub async fn read_one_by_ip(
+        database_handler: &DatabaseHandler,
+        ip: impl Into<String>,
+    ) -> Result<Self, AppError> {
+        database_handler
+            .fetch_one::<Self>(
+                r#"SELECT ip, port, auth_type, auth_body, auth_uri FROM devices WHERE ip = $1"#,
+                vec![SqlxBindValue::Str(ip.into())],
+            )
+            .await
     }
 
-    pub async fn create_device(&self, database_handler: &DatabaseHandler) -> Result<String, AppError> {
+    pub async fn create_device(
+        &self,
+        database_handler: &DatabaseHandler,
+    ) -> Result<String, AppError> {
         let bind_values = self.to_bind_values();
         let (ip,): (String,) = database_handler.fetch_one(
             r#"INSERT INTO devices (ip, port, auth_type, auth_body, auth_uri) VALUES ($1, $2, $3, $4, $5) RETURNING ip"#,
@@ -130,11 +141,16 @@ impl Device {
         Ok(ip)
     }
 
-    pub async fn delete_device(database_handler: &DatabaseHandler, ip: impl Into<String>) -> Result<String, AppError> {
-        let (ip,): (String,) = database_handler.fetch_one(
-            r#"DELETE FROM devices WHERE ip = $1 RETURNING ip"#,
-            vec![SqlxBindValue::Str(ip.into()),],
-        ).await?;
+    pub async fn delete_device(
+        database_handler: &DatabaseHandler,
+        ip: impl Into<String>,
+    ) -> Result<String, AppError> {
+        let (ip,): (String,) = database_handler
+            .fetch_one(
+                r#"DELETE FROM devices WHERE ip = $1 RETURNING ip"#,
+                vec![SqlxBindValue::Str(ip.into())],
+            )
+            .await?;
         Ok(ip)
     }
 }

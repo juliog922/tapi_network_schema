@@ -1,9 +1,9 @@
 use gloo::utils::format::JsValueSerdeExt;
-use yew::{prelude::*, platform::spawn_local};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use wasm_bindgen::JsCast;
+use yew::{platform::spawn_local, prelude::*};
 
 use crate::api::connection::get_schema;
 
@@ -25,7 +25,9 @@ fn get_position(id: &str) -> Option<(f64, f64)> {
         y += el.offset_top() as f64;
 
         // Subimos al siguiente elemento padre
-        current = el.offset_parent().and_then(|p| p.dyn_into::<web_sys::HtmlElement>().ok());
+        current = el
+            .offset_parent()
+            .and_then(|p| p.dyn_into::<web_sys::HtmlElement>().ok());
     }
 
     Some((x, y))
@@ -40,6 +42,7 @@ pub struct NodesProps {
     pub service_uuid: String,
 }
 
+#[allow(clippy::too_many_arguments)]
 fn highlight_class(
     is_selected: bool,
     is_service: bool,
@@ -54,15 +57,11 @@ fn highlight_class(
         "selected"
     } else if is_service {
         "service-highlighted"
-    } else if is_client_highlighted {
-        "client-highlighted"
-    } else if is_parent_highlighted {
+    } else if is_client_highlighted | is_parent_highlighted {
         "client-highlighted"
     } else if is_connection_highlighted {
         "connection-highlighted"
-    } else if is_lower_highlighted {
-        "lower-highlighted"
-    } else if is_higher_highlighted {
+    } else if is_lower_highlighted | is_higher_highlighted {
         "lower-highlighted"
     } else if is_link_highlighted {
         "link-highlighted"
@@ -79,13 +78,35 @@ fn highlight_class(
 /// and `connection_end_point_uuid`.
 ///
 /// # Properties
-/// 
+///
 /// - `nodes`: A `serde_json::Value` representing the nodes to display.
 #[function_component(Nodes)]
 pub fn nodes(props: &NodesProps) -> Html {
-    let layer_protocol_qualifier_types: Vec<&str> = vec!["_DSR\"", "_ODU\"", "_ODU0\"", "_ODU1\"", "_ODU2\"", "_ODU2E\"", "_ODU3\"", "_ODU4\"", "_ODU_CN\"",
-     "_OTU\"", "_OTU_0\"", "_OTU_1\"", "_OTU_2\"", "_OTU_3\"", "_OTU_4\"",
-     "_OTSI\"", "_OTSIMC\"" , "_MC\"", "_UNSPECIFIED\"", "_OMS\"", "_OTS\"", ];
+    let layer_protocol_qualifier_types: Vec<&str> = vec![
+        "_10_GigE_WAN\"",
+        "_10_GigE_LAN\"",
+        "_DSR\"",
+        "_ODU\"",
+        "_ODU0\"",
+        "_ODU1\"",
+        "_ODU2\"",
+        "_ODU2E\"",
+        "_ODU3\"",
+        "_ODU4\"",
+        "_ODU_CN\"",
+        "_OTU\"",
+        "_OTU_0\"",
+        "_OTU_1\"",
+        "_OTU_2\"",
+        "_OTU_3\"",
+        "_OTU_4\"",
+        "_OTSI\"",
+        "_OTSIMC\"",
+        "_MC\"",
+        "_UNSPECIFIED\"",
+        "_OMS\"",
+        "_OTS\"",
+    ];
 
     let json_data = use_state(|| None);
     {
@@ -97,7 +118,9 @@ pub fn nodes(props: &NodesProps) -> Html {
             spawn_local(async move {
                 match get_schema(ip.clone(), service_uuid.clone().replace("\"", "")).await {
                     Ok(fetched_json) => json_clone.set(Some(fetched_json)),
-                    Err(_) => json_clone.set(Some(serde_json::json!({"error": "Failed to fetch JSON"}))),
+                    Err(_) => {
+                        json_clone.set(Some(serde_json::json!({"error": "Failed to fetch JSON"})))
+                    }
                 }
             });
             || ()
@@ -109,15 +132,15 @@ pub fn nodes(props: &NodesProps) -> Html {
     let is_modal_open = use_state(|| false);
 
     let selected_value = use_state(|| Option::<Value>::None);
-    let highlighted_link_uuids = use_state(|| HashSet::<String>::new());
-    let highlighted_lower_connections = use_state(|| HashSet::<String>::new());
-    let highlighted_higher_connections = use_state(|| HashSet::<String>::new());
-    let highlighted_connections_uuid = use_state(|| HashSet::<String>::new());
-    let highlighted_client_uuid = use_state(|| HashSet::<String>::new());
-    let highlighted_parent_uuid = use_state(|| HashSet::<String>::new());
-    let highlighted_service_uuid = use_state(|| HashSet::<String>::new());
+    let highlighted_link_uuids = use_state(HashSet::<String>::new);
+    let highlighted_lower_connections = use_state(HashSet::<String>::new);
+    let highlighted_higher_connections = use_state(HashSet::<String>::new);
+    let highlighted_connections_uuid = use_state(HashSet::<String>::new);
+    let highlighted_client_uuid = use_state(HashSet::<String>::new);
+    let highlighted_parent_uuid = use_state(HashSet::<String>::new);
+    let highlighted_service_uuid = use_state(HashSet::<String>::new);
 
-    let positions_pairs_vec = use_state(|| Vec::<((f64, f64), (f64, f64), String)>::new());
+    let positions_pairs_vec = use_state(Vec::<((f64, f64), (f64, f64), String)>::new);
 
     // Callback to handle right-click (context menu) events and update hover data
     let oncontextmenu = {
@@ -153,15 +176,15 @@ pub fn nodes(props: &NodesProps) -> Html {
         let highlighted_parent_uuid = highlighted_parent_uuid.clone();
         let highlighted_service_uuid = highlighted_service_uuid.clone();
         let positions_pairs_vec = positions_pairs_vec.clone();
- 
+
         let empty_value: Value = Value::default();
         let json_clone = json_data.clone();
         let json_data_value = (*json_clone).clone().unwrap_or(empty_value.clone()); // Clonar el valor para mantenerlo vivo
-        let nodes = json_data_value.get("nodes").unwrap_or(&empty_value).clone(); 
-        
-        Callback::from(move |ep: Value| {
+        let nodes = json_data_value.get("nodes").unwrap_or(&empty_value).clone();
 
-            let selected_postion = get_position(ep["node_edge_point_uuid"].as_str().unwrap()).unwrap();
+        Callback::from(move |ep: Value| {
+            let selected_postion =
+                get_position(ep["node_edge_point_uuid"].as_str().unwrap()).unwrap();
 
             selected_value.set(Some(ep.clone()));
             let mut new_highlighted_link_uuids: HashSet<String> = HashSet::new();
@@ -171,7 +194,8 @@ pub fn nodes(props: &NodesProps) -> Html {
             let mut new_highlighted_client_uuid: HashSet<String> = HashSet::new();
             let mut new_highlighted_parent_uuid: HashSet<String> = HashSet::new();
             let mut new_highlighted_service_uuid: HashSet<String> = HashSet::new();
-            let mut new_positions_pairs_vec: Vec::<((f64, f64), (f64, f64), String)> = Vec::new();
+            #[allow(clippy::type_complexity)]
+            let mut new_positions_pairs_vec: Vec<((f64, f64), (f64, f64), String)> = Vec::new();
 
             if let Some(nodes_array) = nodes.as_array() {
                 for node in nodes_array {
@@ -179,103 +203,135 @@ pub fn nodes(props: &NodesProps) -> Html {
                         for inventory in inventories {
                             if let Some(endpoints) = inventory["endpoints"].as_array() {
                                 for endpoint in endpoints {
-
                                     //Link UUID Check
                                     if let Some(link_uuid_guest) = endpoint.get("link_uuid") {
                                         if let Some(link_uuid_home) = ep.get("link_uuid") {
                                             if link_uuid_guest.eq(link_uuid_home) {
-                                                
-                                                new_positions_pairs_vec.push(
-                                                    (selected_postion, 
-                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap(),
-                                                    "brown".to_string()
+                                                new_positions_pairs_vec.push((
+                                                    selected_postion,
+                                                    get_position(
+                                                        endpoint["node_edge_point_uuid"]
+                                                            .as_str()
+                                                            .unwrap(),
                                                     )
-                                                );
-                                                new_highlighted_link_uuids.insert(link_uuid_guest.to_string());
-
+                                                    .unwrap(),
+                                                    "brown".to_string(),
+                                                ));
+                                                new_highlighted_link_uuids
+                                                    .insert(link_uuid_guest.to_string());
                                             }
                                         }
                                     }
 
                                     //Connection UUID and Service interface Point UUID
-                                    if let Some(connection_uuid_guest) = endpoint.get("connection_uuid") {
-                                        if let Some(connection_uuid_home) = ep.get("connection_uuid") {
+                                    if let Some(connection_uuid_guest) =
+                                        endpoint.get("connection_uuid")
+                                    {
+                                        if let Some(connection_uuid_home) =
+                                            ep.get("connection_uuid")
+                                        {
                                             if connection_uuid_guest.eq(connection_uuid_home) {
-
-                                                new_positions_pairs_vec.push(
-                                                    (selected_postion, 
-                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap(),
-                                                    "blue".to_string()
+                                                new_positions_pairs_vec.push((
+                                                    selected_postion,
+                                                    get_position(
+                                                        endpoint["node_edge_point_uuid"]
+                                                            .as_str()
+                                                            .unwrap(),
                                                     )
-                                                );
-                                                new_highlighted_connections_uuid.insert(connection_uuid_guest.to_string());
+                                                    .unwrap(),
+                                                    "blue".to_string(),
+                                                ));
+                                                new_highlighted_connections_uuid
+                                                    .insert(connection_uuid_guest.to_string());
 
-                                                if let Some(_) = endpoint.get("service_interface_point_uuid") {
-
-                                                    new_highlighted_service_uuid.insert(connection_uuid_guest.to_string());
-
+                                                if endpoint
+                                                    .get("service_interface_point_uuid")
+                                                    .is_some()
+                                                {
+                                                    new_highlighted_service_uuid
+                                                        .insert(connection_uuid_guest.to_string());
                                                 }
-
                                             }
                                         }
                                     }
 
                                     //Lower Connection
-                                    if let Some(lower_connection_home) = ep.get("lower_connection") {
-                                        if let Some(connection_uuid_guest) = endpoint.get("connection_uuid") {
+                                    if let Some(lower_connection_home) = ep.get("lower_connection")
+                                    {
+                                        if let Some(connection_uuid_guest) =
+                                            endpoint.get("connection_uuid")
+                                        {
                                             if lower_connection_home == connection_uuid_guest {
-
-                                                new_positions_pairs_vec.push(
-                                                    (selected_postion, 
-                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap(),
-                                                    "orangered".to_string()
+                                                new_positions_pairs_vec.push((
+                                                    selected_postion,
+                                                    get_position(
+                                                        endpoint["node_edge_point_uuid"]
+                                                            .as_str()
+                                                            .unwrap(),
                                                     )
-                                                );
-                                                new_highlighted_lower_connections.insert(connection_uuid_guest.to_string());
-
+                                                    .unwrap(),
+                                                    "orangered".to_string(),
+                                                ));
+                                                new_highlighted_lower_connections
+                                                    .insert(connection_uuid_guest.to_string());
                                             }
                                         }
                                     }
 
                                     //Higher Connection
                                     if let Some(connection_uuid_home) = ep.get("connection_uuid") {
-                                        if let Some(lower_connection_guest) = endpoint.get("lower_connection") {
+                                        if let Some(lower_connection_guest) =
+                                            endpoint.get("lower_connection")
+                                        {
                                             if lower_connection_guest == connection_uuid_home {
-
-                                                new_positions_pairs_vec.push(
-                                                    (selected_postion, 
-                                                    get_position(endpoint["node_edge_point_uuid"].as_str().unwrap()).unwrap(),
-                                                    "orangered".to_string()
+                                                new_positions_pairs_vec.push((
+                                                    selected_postion,
+                                                    get_position(
+                                                        endpoint["node_edge_point_uuid"]
+                                                            .as_str()
+                                                            .unwrap(),
                                                     )
-                                                );
-                                                new_highlighted_higher_connections.insert(lower_connection_guest.to_string());
-
+                                                    .unwrap(),
+                                                    "orangered".to_string(),
+                                                ));
+                                                new_highlighted_higher_connections
+                                                    .insert(lower_connection_guest.to_string());
                                             }
                                         }
                                     }
 
                                     //Client Connection
-                                    if let Some(client_node_edge_point_uuid_home) = ep.get("client_node_edge_point_uuid") {
-                                        if let Some(node_edge_point_uuid_guest) = endpoint.get("node_edge_point_uuid") {
-                                            if client_node_edge_point_uuid_home == node_edge_point_uuid_guest {
-
-                                                new_highlighted_client_uuid.insert(node_edge_point_uuid_guest.to_string());
-
+                                    if let Some(client_node_edge_point_uuid_home) =
+                                        ep.get("client_node_edge_point_uuid")
+                                    {
+                                        if let Some(node_edge_point_uuid_guest) =
+                                            endpoint.get("node_edge_point_uuid")
+                                        {
+                                            if client_node_edge_point_uuid_home
+                                                == node_edge_point_uuid_guest
+                                            {
+                                                new_highlighted_client_uuid
+                                                    .insert(node_edge_point_uuid_guest.to_string());
                                             }
                                         }
                                     }
 
                                     //Parent Connection
-                                    if let Some(client_node_edge_point_uuid_guest) = endpoint.get("client_node_edge_point_uuid") {
-                                        if let Some(node_edge_point_uuid_home) = ep.get("node_edge_point_uuid") {
-                                            if client_node_edge_point_uuid_guest == node_edge_point_uuid_home {
-
-                                                new_highlighted_parent_uuid.insert(client_node_edge_point_uuid_guest.to_string());
-
+                                    if let Some(client_node_edge_point_uuid_guest) =
+                                        endpoint.get("client_node_edge_point_uuid")
+                                    {
+                                        if let Some(node_edge_point_uuid_home) =
+                                            ep.get("node_edge_point_uuid")
+                                        {
+                                            if client_node_edge_point_uuid_guest
+                                                == node_edge_point_uuid_home
+                                            {
+                                                new_highlighted_parent_uuid.insert(
+                                                    client_node_edge_point_uuid_guest.to_string(),
+                                                );
                                             }
                                         }
                                     }
-
                                 }
                             }
                         }
@@ -292,9 +348,7 @@ pub fn nodes(props: &NodesProps) -> Html {
             highlighted_parent_uuid.set(new_highlighted_parent_uuid);
             highlighted_service_uuid.set(new_highlighted_service_uuid);
             positions_pairs_vec.set(new_positions_pairs_vec);
-            
-            })
-            
+        })
     };
 
     // Render nodes and their endpoints
@@ -302,62 +356,78 @@ pub fn nodes(props: &NodesProps) -> Html {
     let empty_value: Value = Value::default();
     let json_clone = json_data.clone();
     let json_data_value = (*json_clone).clone().unwrap_or(empty_value.clone()); // Clonar el valor para mantenerlo vivo
-    let nodes_response = json_data_value.get("nodes").unwrap_or(&empty_value); 
+    let nodes_response = json_data_value.get("nodes").unwrap_or(&empty_value);
     let nodes: &Vec<Value> = nodes_response.as_array().unwrap_or(&empty_array);
 
     // Function to format JSON values as pretty-printed strings
     fn format_json(value: &Value) -> String {
         match value {
             Value::Object(map) => {
-                let mut formatted_html = String::new();
+                let mut formatted_html = String::from("{");
                 for (key, val) in map {
                     formatted_html.push_str(&format!(
                         "<div><span class='key'>{}</span>: {}</div>",
                         key,
-                        format_json(val) // Llamada recursiva para manejar estructuras anidadas
+                        format_json(val)
                     ));
                 }
+                formatted_html.push('}');
                 formatted_html
             }
             Value::Array(arr) => {
                 let mut formatted_html = String::from("<div>[");
                 for item in arr {
-                    formatted_html.push_str(&format!("<div>{}</div>", format_json(item)));
+                    formatted_html.push_str(&format!(
+                        "<div class='array-item'>{}</div>",
+                        format_json(item)
+                    ));
                 }
                 formatted_html.push_str("</div>]");
                 formatted_html
             }
-            _ => format!("<span class='value'>{}</span>", value.to_string()), // Para valores simples
+            _ => format!("<span class='value'>{}</span>", value),
         }
     }
 
-    
-    let mut max_layer_hashmap_by_inventory: HashMap<String, usize> = HashMap::new(); 
+    let mut max_layer_hashmap_by_inventory: HashMap<String, usize> = HashMap::new();
     for node in nodes.iter() {
         let inventories = node["inventories"].as_array().unwrap_or(&empty_array);
-        
-        for inventory in inventories.iter(){
+
+        for inventory in inventories.iter() {
             let endpoints = inventory["endpoints"].as_array().unwrap_or(&empty_array);
-            let layer_protocol_qualifier_types_clone: Vec<&str> = layer_protocol_qualifier_types.clone();
+            let layer_protocol_qualifier_types_clone: Vec<&str> =
+                layer_protocol_qualifier_types.clone();
             for protocol_type in layer_protocol_qualifier_types_clone.into_iter() {
-                let max_count = endpoints.iter().filter(|endpoint| { 
-                    endpoint["layer_protocol_qualifier"].as_str().unwrap().to_string().to_uppercase().ends_with(protocol_type)
-                }).count();
+                let max_count = endpoints
+                    .iter()
+                    .filter(|endpoint| {
+                        endpoint["layer_protocol_qualifier"]
+                            .as_str()
+                            .unwrap()
+                            .to_string()
+                            .to_uppercase()
+                            .ends_with(protocol_type)
+                    })
+                    .count();
                 if max_layer_hashmap_by_inventory.contains_key(protocol_type) {
                     if max_layer_hashmap_by_inventory[protocol_type] < max_count {
-                        *max_layer_hashmap_by_inventory.get_mut(protocol_type).unwrap() = max_count;
+                        *max_layer_hashmap_by_inventory
+                            .get_mut(protocol_type)
+                            .unwrap() = max_count;
                     }
                 } else {
-                    max_layer_hashmap_by_inventory.insert(
-                        String::from(protocol_type),
-                        max_count
-                    );
+                    max_layer_hashmap_by_inventory.insert(String::from(protocol_type), max_count);
                 }
             }
         }
     }
 
-    web_sys::console::log_1(&wasm_bindgen::JsValue::from_serde(&serde_json::to_value(max_layer_hashmap_by_inventory.clone()).unwrap()).unwrap());
+    web_sys::console::log_1(
+        &wasm_bindgen::JsValue::from_serde(
+            &serde_json::to_value(max_layer_hashmap_by_inventory.clone()).unwrap(),
+        )
+        .unwrap(),
+    );
     let content = if json_data.is_none() {
         html! {
             <div class="loading-section">
@@ -378,7 +448,7 @@ pub fn nodes(props: &NodesProps) -> Html {
         html! {
             <div class="new-container-good">
                 <svg class="line-overlay" xmlns="http://www.w3.org/2000/svg">
-                        {   
+                        {
                             // Recorrer `postions_pairs_hashset` y dibujar una línea para cada par de puntos
                             for (*positions_pairs_vec).iter().map(|((x1, y1), (x2, y2), color)| {
                                 html! {
@@ -409,8 +479,8 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                     { format!("{}\n", inventory_id.replace("/", "\n").replace('"', "")) }
                                                 </h3>
                                                     <div class="endpoints-container-good">
-                                                        {   
-                                                            // Por cada capa en las capas / por cada numero en el rango del map de maximos por capa 
+                                                        {
+                                                            // Por cada capa en las capas / por cada numero en el rango del map de maximos por capa
                                                             layer_protocol_qualifier_types.iter().map(|layer| {
                                                                 let mut not_empty_endpoint = vec![];
                                                                 for ep in endpoints {
@@ -421,7 +491,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                                                 *value -= 1;
                                                                             }
                                                                         }
-                                                                
+
                                                                         let ep_json = ep.clone();
                                                                         let ep_json_str = ep.to_string();
                                                                         // Callback para manejar el clic derecho y prevenir el menú contextual
@@ -483,7 +553,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                                             }
                                                                         };
 
-                                                                        
+
 
                                                                         let is_higher_highlighted = {
                                                                             if let Some(lower_uuid) = ep.get("lower_connection") {
@@ -493,7 +563,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                                             }
                                                                         };
 
-                                                                        
+
 
                                                                         let is_lower_highlighted = {
                                                                             if let Some(connection_uuid) = ep.get("connection_uuid") {
@@ -515,12 +585,10 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                                             if let Some(protocol_qualifier) = ep["layer_protocol_qualifier"].as_str() {
                                                                                 if let Some(qualifier_index) = protocol_qualifier.find("QUALIFIER_") {
                                                                                     &protocol_qualifier[qualifier_index + "QUALIFIER_".len()..protocol_qualifier.len()-1]
+                                                                                } else if let Some(qualifier_index) = protocol_qualifier.find("TYPE_") {
+                                                                                    &protocol_qualifier[qualifier_index + "TYPE_".len()..protocol_qualifier.len()-1]
                                                                                 } else {
-                                                                                    if let Some(qualifier_index) = protocol_qualifier.find("TYPE_") {
-                                                                                        &protocol_qualifier[qualifier_index + "TYPE_".len()..protocol_qualifier.len()-1]
-                                                                                    } else {
-                                                                                        ""
-                                                                                    }
+                                                                                    ""
                                                                                 }
                                                                             } else {
                                                                                 ""
@@ -528,17 +596,13 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                                         };
 
                                                                         let id: &str = {
-                                                                            if let Some(node_edge_point_uuid) = ep["node_edge_point_uuid"].as_str() {
-                                                                                node_edge_point_uuid
-                                                                            } else {
-                                                                                ""
-                                                                            }
+                                                                            ep["node_edge_point_uuid"].as_str().unwrap_or_default()
                                                                         };
 
                                                                         not_empty_endpoint.push(html! {
                                                                             <div class="endpoint-wrapper">
                                                                                 <div
-                                                                                    id={format!("{}", id)}
+                                                                                    id={id.to_string()}
                                                                                     class={classes!(
                                                                                         "endpoint-square",
                                                                                         highlight_class(
@@ -562,7 +626,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                                                 <div class="endpoint-details">{format!("{} / {}", last_nepu, qualifier)}</div>
                                                                             </div>
                                                                         });
-                                                                    } 
+                                                                    }
                                                                 }
                                                                 let empty_endpoints = (0..*max_layer_hashmap.get(*layer).unwrap()).map(|_| {
                                                                     html!{
@@ -576,8 +640,8 @@ pub fn nodes(props: &NodesProps) -> Html {
                                                                     </>
                                                                 }
                                                             }).collect::<Vec<_>>()
- 
-                                                        }                                                       
+
+                                                        }
                                                     </div>
                                                 </div>
                                             }
@@ -606,8 +670,7 @@ pub fn nodes(props: &NodesProps) -> Html {
                         </div>
                     </div>
                 </div>
-            }    
-        </div>    
+            }
+        </div>
     }
 }
-

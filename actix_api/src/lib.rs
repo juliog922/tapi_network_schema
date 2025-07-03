@@ -1,9 +1,9 @@
+pub mod handlers;
+pub mod impls;
 pub mod logic; // Expose to bin
 pub mod models; // Expose to make tests
 pub mod routes; // Expose to bin
 pub mod utils; // Expose to make tests
-pub mod handlers;
-pub mod impls;
 
 use std::fmt;
 

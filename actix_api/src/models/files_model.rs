@@ -44,4 +44,3 @@ pub enum FilesEnum {
     Complete(Complete),
     ByPart(ByPart),
 }
-

@@ -1,13 +1,13 @@
-use yew::{prelude::*, platform::spawn_local};
+use yew::{platform::spawn_local, prelude::*};
 use yew_router::prelude::*;
 
+use crate::api::connection::{delete_device, get_devices};
 use crate::components::sidebar::SideBar;
 use crate::Route;
-use crate::api::connection::{get_devices, delete_device};
 
 /// A component for displaying a list of devices.
 ///
-/// The `Devices` component fetches and displays a list of devices from an API. 
+/// The `Devices` component fetches and displays a list of devices from an API.
 /// It includes options to view details about each device and delete devices from the list.
 ///
 /// The component handles the following:
@@ -29,7 +29,7 @@ use crate::api::connection::{get_devices, delete_device};
 pub fn devices() -> Html {
     // State to hold the fetched JSON data
     let json_data = use_state(|| None);
-    
+
     // Fetch JSON data on component mount
     {
         let json_clone = json_data.clone();
@@ -38,7 +38,9 @@ pub fn devices() -> Html {
             spawn_local(async move {
                 match get_devices().await {
                     Ok(fetched_json) => json_clone.set(Some(fetched_json)),
-                    Err(_) => json_clone.set(Some(serde_json::json!({"error": "Failed to fetch JSON"}))),
+                    Err(_) => {
+                        json_clone.set(Some(serde_json::json!({"error": "Failed to fetch JSON"})))
+                    }
                 }
             });
             || ()
@@ -57,7 +59,7 @@ pub fn devices() -> Html {
                                 if let Some(id) = device.get("id") {
                                     let id = id.as_str().unwrap_or("?").to_string();
                                     html! {
-                                        
+
                                         <div class="device-card" style={format!("animation-delay: {}s", index as f32 * 0.3)}>
                                             <div class="device-header">
                                                 <span class="device-icon">{"📁"}</span>
@@ -78,10 +80,7 @@ pub fn devices() -> Html {
                                                     if is_confirmed {
                                                         let id_clone = id.clone(); // Clone `ip` to move into async block
                                                         spawn_local(async move {
-                                                            match delete_device(&id_clone).await {
-                                                                Ok(_) => {
-                                                                },
-                                                                Err(_) => {},
+                                                            if delete_device(&id_clone).await.is_ok() {
                                                             }
                                                         });
                                                     }
@@ -94,7 +93,7 @@ pub fn devices() -> Html {
 
                                 } else {
                                     let ip = device["ip"].as_str().unwrap_or("?").to_string();
-                                    
+
                                     html! {
                                         <div class="device-card" style={format!("animation-delay: {}s", index as f32 * 0.3)}>
                                             <div class="device-header">
@@ -123,10 +122,7 @@ pub fn devices() -> Html {
                                                         if is_confirmed {
                                                             let ip_clone = ip.clone(); // Clone `ip` to move into async block
                                                             spawn_local(async move {
-                                                                match delete_device(&ip_clone).await {
-                                                                    Ok(_) => {},
-                                                                    Err(_) => {},
-                                                                }
+                                                                if delete_device(&ip_clone).await.is_ok() {}
                                                             });
                                                         }
                                                         web_sys::window().unwrap().location().reload().unwrap()
@@ -168,7 +164,7 @@ pub fn devices() -> Html {
         <div class="device-page">
             // Render the sidebar component
             <SideBar />
-            
+
             <div class="main-device-container">
                 // Render the devices HTML content
                 { devices_html }

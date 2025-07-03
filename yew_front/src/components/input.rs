@@ -7,13 +7,13 @@ pub struct Props {
     pub name: AttrValue,
     pub value: AttrValue,
     pub placeholder: AttrValue,
-    pub onchange: Callback<Event>
+    pub onchange: Callback<Event>,
 }
 
 #[function_component(Input)]
 pub fn input(props: &Props) -> Html {
     let html_id = format!("edit-{}", props.name);
-    html!{
+    html! {
         <>
             <label for={html_id.clone()}>{props.label.clone()}</label>
             <input

@@ -6,20 +6,18 @@ use sqlx::FromRow;
 
 #[derive(FromRow, Debug)]
 pub struct UserDB {
-    pub id: String
+    pub id: String,
 }
 
 // ==== Core ====
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct User {
-    pub id: String
+    pub id: String,
 }
 
 impl From<User> for UserDB {
     fn from(user: User) -> Self {
-        Self {
-            id: user.id
-        }
+        Self { id: user.id }
     }
 }

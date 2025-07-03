@@ -1,5 +1,5 @@
-use crate::models::files_model::{ByPart, Complete, UploadForm, FilesEnum};
 use crate::logic::file_handler::get_file_path;
+use crate::models::files_model::{ByPart, Complete, FilesEnum, UploadForm};
 use crate::AppError;
 
 impl UploadForm {

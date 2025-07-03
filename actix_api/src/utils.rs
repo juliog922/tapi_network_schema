@@ -1,7 +1,7 @@
 use crate::AppError;
 
-use std::str::FromStr;
 use std::process::Command;
+use std::str::FromStr;
 
 use minidom::Element;
 use regex::Regex;
@@ -10,10 +10,10 @@ use serde_json::{Map, Value};
 /// This function uses the system's `ping` command.
 /// - On Windows it uses `-n 1` to send 1 echo request.
 /// - On Unix‑like systems it uses `-c 1` to send 1 echo request.
-/// 
+///
 /// # Arguments
 /// - `ip`: A &str that represent an device ip
-/// 
+///
 /// # Returns
 /// `true` if the IP is reachable, otherwise `false`.
 pub fn is_reachable(ip: &str) -> bool {
@@ -105,15 +105,12 @@ fn convert_node(el: &Element) -> Option<Value> {
     let mut obj = Map::new();
 
     for (attr, value) in el.attrs() {
-        let key = format!("{}", attr);
+        let key = attr.to_string();
         obj.insert(key, Value::String(value.to_owned()));
     }
 
     if !text.is_empty() {
-        obj.insert(
-            "text".to_owned(),
-            Value::String(text.to_owned()),
-        );
+        obj.insert("text".to_owned(), Value::String(text.to_owned()));
     }
 
     for child in el.children() {
@@ -144,7 +141,10 @@ fn convert_node(el: &Element) -> Option<Value> {
 /// - A `Value` containing the structured JSON representation of the XML.
 fn xml_to_map(el: &Element) -> Value {
     let mut map = Map::new();
-    map.insert(el.name().to_string(), convert_node(el).unwrap_or(Value::Null));
+    map.insert(
+        el.name().to_string(),
+        convert_node(el).unwrap_or(Value::Null),
+    );
     Value::Object(map)
 }
 
@@ -157,16 +157,35 @@ fn xml_to_map(el: &Element) -> Value {
 /// - A `Result<Value, AppError>` containing the JSON representation or an error if parsing fails.
 pub fn xml_to_json(xml: &str) -> Result<Value, AppError> {
     let xml = ensure_namespace(xml);
-    let root = Element::from_str(&xml)
-        .map_err(|err| AppError::validation_error(err.to_string()))?;
+    let root =
+        Element::from_str(&xml).map_err(|err| AppError::validation_error(err.to_string()))?;
     Ok(xml_to_map(&root))
 }
 
-
+/// Attempts to find the most likely key containing a token in a JSON object.
+///
+/// Priority is given to any key that contains the word "token" (case-insensitive),
+/// and whose value is a non-empty string with no spaces and length > 8.
 pub fn find_token_key(value: &Value) -> Option<&str> {
-    value.as_object()?.iter().find_map(|(key, val)| {
+    let obj = value.as_object()?;
+
+    // First, search for a key that contains "token" and satisfies the conditions
+    for (key, val) in obj {
+        if key.to_lowercase().contains("token") {
+            if let Value::String(s) = val {
+                if s.len() > 8 && !s.contains(' ') {
+                    println!("Token {}", key.as_str());
+                    return Some(key.as_str());
+                }
+            }
+        }
+    }
+
+    // If none matched, fallback to the original heuristic
+    obj.iter().find_map(|(key, val)| {
         if let Value::String(s) = val {
             if s.len() > 8 && !s.contains(' ') {
+                println!("Token {}", key.as_str());
                 return Some(key.as_str());
             }
         }
@@ -174,15 +193,47 @@ pub fn find_token_key(value: &Value) -> Option<&str> {
     })
 }
 
+/// Recursively searches for a key in a `Value`, returning the first matching value found.
+///
+/// # Arguments
+/// * `key` - The key to search for (e.g., "rel").
+/// * `value` - The JSON `Value` to search within.
+///
+/// # Returns
+/// * `Option<Value>` - The value associated with the key, if found.
+pub fn find_key_recursively(key: &str, value: &Value) -> Option<Value> {
+    match value {
+        Value::Object(map) => {
+            // If the key exists directly in the map, return its value
+            if let Some(found) = map.get(key) {
+                return Some(found.clone());
+            }
+
+            // Otherwise, search recursively in the nested values
+            for v in map.values() {
+                if let Some(found) = find_key_recursively(key, v) {
+                    return Some(found);
+                }
+            }
+        }
+        Value::Array(arr) => {
+            // Search each item in the array
+            for item in arr {
+                if let Some(found) = find_key_recursively(key, item) {
+                    return Some(found);
+                }
+            }
+        }
+        _ => {} // Ignore primitive values
+    }
+
+    None
+}
+
 /// Module containing unit tests for the `find_name` function.
 #[cfg(test)]
 mod tests {
-    use super::{
-        find_name,
-        xml_to_json,
-        is_reachable,
-        find_token_key
-    };
+    use super::{find_key_recursively, find_name, find_token_key, is_reachable, xml_to_json};
     use serde_json::json;
 
     /// Tests the `find_name` function with valid and invalid inputs.
@@ -211,7 +262,7 @@ mod tests {
     fn test_google_ping() {
         assert!(is_reachable("google.com"))
     }
-    
+
     #[test]
     fn test_xml_to_json() {
         let xml = r#"<a attr1="1"><b><c attr2="001">some text</c></b></a>"#;
@@ -255,9 +306,9 @@ mod tests {
                     "Link": {
                         "rel": "restconf",
                         "href": "/restconf"
-                    }     
+                    }
                 }
-            }   
+            }
         );
 
         let result = xml_to_json(xml).unwrap();
@@ -307,5 +358,34 @@ mod tests {
         });
 
         assert_eq!(find_token_key(&json), None);
+    }
+
+    #[test]
+    fn test_find_key_recursively_in_array() {
+        let data = json!({
+            "links": [
+                {
+                    "rel": "restconf",
+                    "href": "/restconf/"
+                }
+            ]
+        });
+
+        let result = find_key_recursively("rel", &data);
+        assert_eq!(result, Some(json!("restconf")));
+    }
+
+    #[test]
+    fn test_key_not_found() {
+        let data = json!({
+            "some": {
+                "nested": {
+                    "structure": "value"
+                }
+            }
+        });
+
+        let result = find_key_recursively("rel", &data);
+        assert_eq!(result, None);
     }
 }

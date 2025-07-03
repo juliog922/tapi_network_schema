@@ -1,6 +1,7 @@
-use crate::models::files_model::FilesEnum;
-use crate::models::devices::{Auth, Device};
 use crate::handlers::http::HttpHandler;
+use crate::models::devices::{Auth, Device};
+use crate::models::files_model::FilesEnum;
+use crate::utils::find_key_recursively;
 use crate::AppError;
 
 use serde::{Deserialize, Serialize};
@@ -196,26 +197,51 @@ impl DeviceHandler {
     /// # Returns
     /// A `Result` containing a vector of `Value` objects representing the services, or an `Error`.
     pub async fn get_services(device: &Device) -> Result<Vec<Value>, AppError> {
-        let services_url = format!(
-            "https://{}{}/restconf/data/tapi-common:context/tapi-connectivity:connectivity-context?fields=connectivity-service(uuid)",
-            &device.ip, &device.port.map(|s| format!(":{}", s)).unwrap_or_default()
-        );
+        let mut token: String = String::default();
 
-        let context_url = format!(
-            "https://{}{}/restconf/data/tapi-common:context",
+        if let Auth::Token(token_auth) = &device.auth {
+            token = HttpHandler::get_token(&device.get_full_auth_url(), &token_auth.auth_body)
+                .await?;
+        }
+
+        let well_known_url = format!(
+            "https://{}{}/.well-known/host-meta/",
             &device.ip,
             &device.port.map(|s| format!(":{}", s)).unwrap_or_default()
         );
 
-        let mut token: String = String::default();
-
-        match &device.auth {
-            Auth::Token(token_auth) => {
-
-                token = HttpHandler::get_token(&device.get_full_auth_url(), &token_auth.auth_body).await?;
+        let well_known_json = match &device.auth {
+            Auth::Basic(basic_auth) => {
+                HttpHandler::basic_request(
+                    &well_known_url,
+                    basic_auth.username.clone(),
+                    Some(basic_auth.password.clone()),
+                )
+                .await?
             }
-            _ => {}
-        }
+            Auth::Token(_) => HttpHandler::token_request(&well_known_url, token.as_str()).await?,
+        };
+
+        let rel_default_value = Value::String("restconf".to_string());
+        let rel_value = find_key_recursively("rel", &well_known_json)
+            .unwrap_or_else(|| rel_default_value.clone());
+        let rel = rel_value
+            .as_str()
+            .ok_or(AppError::validation_error("Invalid Rel Value"))?;
+
+        let base_url = format!(
+            "https://{}{}/{}",
+            &device.ip,
+            &device.port.map(|s| format!(":{}", s)).unwrap_or_default(),
+            rel
+        );
+
+        let services_url = format!(
+            "{}/data/tapi-common:context/tapi-connectivity:connectivity-context?fields=connectivity-service(uuid)",
+            &base_url
+        );
+
+        let context_url = format!("{}/data/tapi-common:context", &base_url);
 
         if let Ok(services_uuid_json) = match &device.auth {
             Auth::Basic(basic_auth) => {
@@ -244,8 +270,8 @@ impl DeviceHandler {
                     .ok_or(AppError::validation_error("Invalid UUID"))?;
 
                 let service_url = format!(
-                    "https://{}{}/restconf/data/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service={}",
-                    &device.ip, &device.port.map(|s| format!(":{}", s)).unwrap_or_default(), service_uuid
+                    "{}/data/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service={}",
+                    &base_url, service_uuid
                 );
                 let service_json = match &device.auth {
                     Auth::Basic(basic_auth) => {
@@ -281,10 +307,10 @@ impl DeviceHandler {
                 Auth::Token(_) => HttpHandler::token_request(&context_url, token.as_str()).await?,
             };
             let connectivity_services = json
-                                                        .pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")
-                                                        .and_then(Value::as_array)
-                                                        .ok_or_else(|| AppError::validation_error("Cannot find connectivity-context"))?
-                                                        .clone();
+                .pointer("/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service")
+                .and_then(Value::as_array)
+                .ok_or_else(|| AppError::validation_error("Cannot find connectivity-context"))?
+                .clone();
 
             Ok(connectivity_services)
         }
@@ -302,32 +328,56 @@ impl DeviceHandler {
         device: &Device,
         service_uuid: &String,
     ) -> Result<Context, AppError> {
-        let topology_by_uuid_url =format!(
-            "https://{}{}/restconf/data/tapi-common:context/tapi-topology:topology-context?fields=topology(uuid)",
-            &device.ip, &device.port.map(|s| format!(":{}", s)).unwrap_or_default()
+        let mut token: String = String::default();
+
+        if let Auth::Token(token_auth) = &device.auth {
+            token = HttpHandler::get_token(&device.get_full_auth_url(), &token_auth.auth_body)
+                .await?;
+        }
+
+        let well_known_url = format!(
+            "https://{}{}/.well-known/host-meta",
+            &device.ip,
+            &device.port.map(|s| format!(":{}", s)).unwrap_or_default()
+        );
+
+        let well_known_json = match &device.auth {
+            Auth::Basic(basic_auth) => {
+                HttpHandler::basic_request(
+                    &well_known_url,
+                    basic_auth.username.clone(),
+                    Some(basic_auth.password.clone()),
+                )
+                .await?
+            }
+            Auth::Token(_) => HttpHandler::token_request(&well_known_url, token.as_str()).await?,
+        };
+
+        let rel_default_value = Value::String("restconf".to_string());
+        let rel_value = find_key_recursively("rel", &well_known_json)
+            .unwrap_or_else(|| rel_default_value.clone());
+        let rel = rel_value
+            .as_str()
+            .ok_or(AppError::validation_error("Invalid Rel Value"))?;
+
+        let base_url = format!(
+            "https://{}{}/{}",
+            &device.ip,
+            &device.port.map(|s| format!(":{}", s)).unwrap_or_default(),
+            rel
+        );
+
+        let topology_by_uuid_url = format!(
+            "{}/data/tapi-common:context/tapi-topology:topology-context?fields=topology(uuid)",
+            &base_url
         );
 
         let connections_url = format!(
-            "https://{}{}/restconf/data/tapi-common:context/tapi-connectivity:connectivity-context",
-            &device.ip,
-            &device.port.map(|s| format!(":{}", s)).unwrap_or_default()
+            "{}/data/tapi-common:context/tapi-connectivity:connectivity-context",
+            base_url
         );
 
-        let context_url = format!(
-            "https://{}{}/restconf/data/tapi-common:context",
-            &device.ip,
-            &device.port.map(|s| format!(":{}", s)).unwrap_or_default()
-        );
-
-        let mut token: String = String::default();
-
-        match &device.auth {
-            Auth::Token(token_auth) => {
-
-                token = HttpHandler::get_token(&device.get_full_auth_url(), &token_auth.auth_body).await?;
-            },
-            _ => {}
-        }
+        let context_url = format!("{}/data/tapi-common:context", base_url);
 
         match async {
             // Obtain the JSON of topologies based on the authentication method.
@@ -335,102 +385,375 @@ impl DeviceHandler {
                 Auth::Basic(basic_auth) => HttpHandler::basic_request(&topology_by_uuid_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
                 Auth::Token(_) => HttpHandler::token_request(&topology_by_uuid_url, token.as_str()).await?,
             };
+
             // Parse the context and the topology UUID.
             let topologies = topology_uuids_json
                 .pointer("/tapi-topology:topology-context/topology")
                 .ok_or(AppError::validation_error("Topology Context Not Found"))?
                 .as_array()
                 .ok_or(AppError::validation_error("Invalid Topology"))?;
+
             // Verify that there is exactly one topology UUID.
             if topologies.len() != 1 {
                 return Err(AppError::validation_error("There is more or less than one topology uuid"));
             }
+
             let topology_uuid = topologies[0]
-                .get("uuid")
-                .ok_or(AppError::validation_error("Topology UUID Not Found"))?
-                .as_str()
-                .ok_or(AppError::validation_error("Invalid str UUID"))?;
-            // Construct the URLs for links and nodes.
-            let link_url = format!(
-                "https://{}{}/tapi/data/tapi-common:context/tapi-topology:topology-context/topology={}/link",
-                &device.ip, &device.port.map(|s| format!(":{}", s)).unwrap_or_default(), topology_uuid
-            );
-            let nodes_url = format!(
-                "https://{}{}/tapi/data/tapi-common:context/tapi-topology:topology-context/topology={}/node",
-                &device.ip, &device.port.map(|s| format!(":{}", s)).unwrap_or_default(), topology_uuid
+                        .get("uuid")
+                        .ok_or(AppError::validation_error("Topology UUID Not Found"))?
+                        .as_str()
+                        .ok_or(AppError::validation_error("Invalid str UUID"))?;
+
+            let topology_fields_url = format!(
+                "{}/data/tapi-common:context/tapi-topology:topology-context/topology={topology_uuid}?fields=uuid;name;layer-protocol-name",
+                &base_url
             );
 
-            // Retrieve the data for links and nodes.
-            let link_json = match &device.auth {
-                Auth::Basic(basic_auth) => HttpHandler::basic_request(&link_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
-                Auth::Token(_) => HttpHandler::token_request(&link_url, token.as_str()).await?,
+            let topology_fields_json = match &device.auth {
+                Auth::Basic(basic_auth) => HttpHandler::basic_request(&topology_fields_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Token(_) => HttpHandler::token_request(&topology_fields_url, token.as_str()).await?,
             };
 
-            let node_json = match &device.auth {
-                Auth::Basic(basic_auth) => HttpHandler::basic_request(&nodes_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
-                Auth::Token(_) => HttpHandler::token_request(&nodes_url, token.as_str()).await?,
+            let topology_fields_array = topology_fields_json
+                .pointer("/tapi-topology:topology")
+                .ok_or(AppError::validation_error("Topology Context Not Found"))?
+                .as_array()
+                .ok_or(AppError::validation_error("Invalid Topology"))?;
+
+            // Verify that there is exactly one topology UUID.
+            if topology_fields_array.len() != 1 {
+                return Err(AppError::validation_error("There is more or less than one topology uuid"));
+            }
+
+            let topology_fields = topology_fields_array[0]
+                .as_object()
+                .ok_or(AppError::validation_error("Invalid Map Topology"))?;
+
+            let nodes_uuid_url = format!(
+                "{}/data/tapi-common:context/tapi-topology:topology-context/topology={topology_uuid}?fields=node(uuid)",
+                &base_url
+            );
+            // Obtain the JSON of nodes uuids based on the authentication method.
+            let node_uuids_json = match &device.auth {
+                Auth::Basic(basic_auth) => HttpHandler::basic_request(&nodes_uuid_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Token(_) => HttpHandler::token_request(&nodes_uuid_url, token.as_str()).await?,
             };
+            // Parse the context and the nodes UUIDs.
+            let node_uuids = {
+                let node_array = node_uuids_json
+                    .pointer("/tapi-topology:topology")
+                    .ok_or(AppError::validation_error("Node Context Not Found"))?
+                    .as_array()
+                    .ok_or(AppError::validation_error("Node Context Not Found"))?;
+
+                if node_array.len() > 1 {
+                    log::warn!("More than one topology found, using the first one.");
+                }
+
+                node_array[0]
+                    .pointer("/node")
+                    .ok_or(AppError::validation_error("Node Context Not Found"))?
+                    .as_array()
+                    .ok_or(AppError::validation_error("Invalid Node"))?
+            };
+
+            let mut nodes: Vec<Value> = vec![];
+            //Iterate over each node_uuid
+            for node_uuid_value in node_uuids {
+                let node_uuid = node_uuid_value
+                    .get("uuid")
+                    .ok_or(AppError::validation_error("Node UUID Not Found"))?
+                    .as_str()
+                    .ok_or(AppError::validation_error("Invalid str UUID"))?;
+
+                let node_by_uuid_url = format!(
+                    "{}/data/tapi-common:context/tapi-topology:topology-context/topology={topology_uuid}/node={node_uuid}",
+                    &base_url
+                );
+
+                let node_value = match &device.auth {
+                    Auth::Basic(basic_auth) => HttpHandler::basic_request(&node_by_uuid_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                    Auth::Token(_) => HttpHandler::token_request(&node_by_uuid_url, token.as_str()).await?,
+                };
+
+                let node_array = node_value
+                    .get("tapi-topology:node")
+                    .ok_or(AppError::validation_error("Node Not Found"))?
+                    .as_array()
+                    .ok_or(AppError::validation_error("Invalid Node"))?;
+
+                for node in node_array {
+                    nodes.push(node.clone());
+                }
+            }
+
+            let links_uuid_url = format!(
+                "{}/data/tapi-common:context/tapi-topology:topology-context/topology={topology_uuid}?fields=link(uuid)",
+                &base_url
+            );
+            // Obtain the JSON of links uuids based on the authentication method.
+            let link_uuids_json = match &device.auth {
+                Auth::Basic(basic_auth) => HttpHandler::basic_request(&links_uuid_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Token(_) => HttpHandler::token_request(&links_uuid_url, token.as_str()).await?,
+            };
+            // Parse the context and the links UUIDs.
+            let link_uuids = {
+                let link_array = link_uuids_json
+                    .pointer("/tapi-topology:topology")
+                    .ok_or(AppError::validation_error("Link Context Not Found"))?
+                    .as_array()
+                    .ok_or(AppError::validation_error("Link Context Not Found"))?;
+
+                if link_array.len() > 1 {
+                    log::warn!("More than one topology found, using the first one.");
+                }
+
+                link_array[0]
+                    .pointer("/link")
+                    .ok_or(AppError::validation_error("Link Context Not Found"))?
+                    .as_array()
+                    .ok_or(AppError::validation_error("Invalid Link"))?
+            };
+
+            let mut links: Vec<Value> = vec![];
+
+            //Iterate over each link_uuid
+            for link_uuid_value in link_uuids {
+                let link_uuid = link_uuid_value
+                    .get("uuid")
+                    .ok_or(AppError::validation_error("Link UUID Not Found"))?
+                    .as_str()
+                    .ok_or(AppError::validation_error("Invalid str UUID"))?;
+
+                let link_by_uuid_url = format!(
+                    "{}/data/tapi-common:context/tapi-topology:topology-context/topology={topology_uuid}/link={link_uuid}",
+                    &base_url
+                );
+
+                let link_value = match &device.auth {
+                    Auth::Basic(basic_auth) => HttpHandler::basic_request(&link_by_uuid_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                    Auth::Token(_) => HttpHandler::token_request(&link_by_uuid_url, token.as_str()).await?,
+                };
+
+                let link_array = link_value
+                    .get("tapi-topology:link")
+                    .ok_or(AppError::validation_error("Link Not Found"))?
+                    .as_array()
+                    .ok_or(AppError::validation_error("Invalid Link"))?;
+
+                for link in link_array {
+                    links.push(link.clone());
+                }
+
+            }
+
+            let mut connectivity_services: Vec<Value> = vec![];
+            let mut connections: Vec<Value> = vec![];
+
+            let connectivity_service_by_uuid_url =format!(
+                "{}/data/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service={service_uuid}",
+                &base_url
+            );
+
+            let connectivity_service_value = match &device.auth {
+                Auth::Basic(basic_auth) => HttpHandler::basic_request(&connectivity_service_by_uuid_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Token(_) => HttpHandler::token_request(&connectivity_service_by_uuid_url, token.as_str()).await?,
+            };
+
+            let connectivity_service_array = connectivity_service_value
+                .get("tapi-connectivity:connectivity-service")
+                .ok_or(AppError::validation_error("Connectivity Service Not Found"))?
+                .as_array()
+                .ok_or(AppError::validation_error("Invalid Connectivity Service"))?;
+
+            for connectivity_service in connectivity_service_array {
+                connectivity_services.push(connectivity_service.clone());
+            }
+
+            let connections_uuids_url =format!(
+                "{}/data/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service={service_uuid}?fields=connection(connection-uuid)",
+                &base_url
+            );
+
+            // Obtain the JSON of connections uuids based on the authentication method.
+            let connections_uuids_json = match &device.auth {
+                Auth::Basic(basic_auth) => HttpHandler::basic_request(&connections_uuids_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                Auth::Token(_) => HttpHandler::token_request(&connections_uuids_url, token.as_str()).await?,
+            };
+
+            // Parse the context and the connectivity_services UUID.
+            let connections_uuids = {
+                let connections_array = connections_uuids_json
+                    .pointer("/tapi-connectivity:connectivity-service")
+                    .ok_or(AppError::validation_error("Connections Context Not Found"))?
+                    .as_array()
+                    .ok_or(AppError::validation_error("Connections Context Not Found"))?;
+
+                if connections_array.len() > 1 {
+                    log::warn!("More than one Connections found, using the first one.");
+                }
+
+                connections_array[0]
+                    .pointer("/connection")
+                    .ok_or(AppError::validation_error("Connections Context Not Found"))?
+                    .as_array()
+                    .ok_or(AppError::validation_error("Invalid Connections"))?
+            };
+
+            for connection_uuid_value in connections_uuids {
+                let connection_uuid = connection_uuid_value
+                    .get("connection-uuid")
+                    .ok_or(AppError::validation_error("Connection UUID Not Found"))?
+                    .as_str()
+                    .ok_or(AppError::validation_error("Invalid str UUID"))?;
+
+                let connection_by_uuid_url =format!(
+                    "{}/data/tapi-common:context/tapi-connectivity:connectivity-context/connection={connection_uuid}",
+                    &base_url
+                );
+
+                let connections_value = match &device.auth {
+                    Auth::Basic(basic_auth) => HttpHandler::basic_request(&connection_by_uuid_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                    Auth::Token(_) => HttpHandler::token_request(&connection_by_uuid_url, token.as_str()).await?,
+                };
+                let connections_array = connections_value
+                    .get("tapi-connectivity:connection")
+                    .ok_or(AppError::validation_error("Connection Not Found"))?
+                    .as_array()
+                    .ok_or(AppError::validation_error("Invalid Connection UUID"))?;
+                for connection in connections_array {
+                    connections.push(connection.clone());
+                }
+
+            }
 
             // Construct the topology hashmap.
             let mut topology_hashmap: Map<String, Value> = Map::new();
             topology_hashmap.insert(
                 "link".to_string(),
-                link_json.get("tapi-topology:link").ok_or(AppError::validation_error("tapi-topology:link Not Found"))?.clone(),
+                Value::Array(links),
             );
             topology_hashmap.insert(
                 "node".to_string(),
-                node_json.get("tapi-topology:node").ok_or(AppError::validation_error("tapi-topology:node Not Found"))?.clone(),
+                Value::Array(nodes),
             );
+
+            topology_hashmap.extend(topology_fields.clone());
 
             let topology_object: Value = Value::Object(topology_hashmap);
             let topology: Value = Value::Array(vec![topology_object]);
 
-            // Retrieve the connections.
-            let connections = match &device.auth {
-                Auth::Basic(basic_auth) => HttpHandler::basic_request(&connections_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
-                Auth::Token(_) => HttpHandler::token_request(&connections_url, token.as_str()).await?,
-            }
-            .as_array()
-            .ok_or(AppError::validation_error("Connections cannot convert into array"))?
-            .clone();
-
-            // Construct the JSON for services.
-            let service_url = format!(
-                "https://{}{}/restconf/data/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service={}",
-                &device.ip, &device.port.map(|s| format!(":{}", s)).unwrap_or_default(), service_uuid
-            );
-
-            let service_json = match &device.auth {
-                Auth::Basic(basic_auth) => HttpHandler::basic_request(&service_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
-                Auth::Token(_) => HttpHandler::token_request(&service_url, token.as_str()).await?,
-            };
-
-            let connectivity_service = &service_json
-                .get("tapi-connectivity:connectivity-service")
-                .ok_or(AppError::validation_error("Service Data Not Found"))?
-                .as_array()
-                .unwrap()[0];
-
-
-            // Return the constructed context.
             Ok(Context {
+                connectivity_service: Value::Array(connectivity_services),
                 connections,
-                connectivity_service: connectivity_service.clone(),
                 topology,
             })
-        }
-        .await
-        {
-            // If the `async` block executes successfully, continue normally.
+
+        } .await {
             Ok(context) => Ok(context),
             Err(_) => {
-                // If an error occurs, execute the `else` block.
-                let json = match &device.auth {
-                    Auth::Basic(basic_auth) => HttpHandler::basic_request(&context_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
-                    Auth::Token(_) => HttpHandler::token_request(&context_url, token.as_str()).await?,
-                };
+                match async {
+                    // Obtain the JSON of topologies based on the authentication method.
+                    let topology_uuids_json = match &device.auth {
+                        Auth::Basic(basic_auth) => HttpHandler::basic_request(&topology_by_uuid_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                        Auth::Token(_) => HttpHandler::token_request(&topology_by_uuid_url, token.as_str()).await?,
+                    };
+                    // Parse the context and the topology UUID.
+                    let topologies = topology_uuids_json
+                        .pointer("/tapi-topology:topology-context/topology")
+                        .ok_or(AppError::validation_error("Topology Context Not Found"))?
+                        .as_array()
+                        .ok_or(AppError::validation_error("Invalid Topology"))?;
+                    // Verify that there is exactly one topology UUID.
+                    if topologies.len() != 1 {
+                        return Err(AppError::validation_error("There is more or less than one topology uuid"));
+                    }
+                    let topology_uuid = topologies[0]
+                        .get("uuid")
+                        .ok_or(AppError::validation_error("Topology UUID Not Found"))?
+                        .as_str()
+                        .ok_or(AppError::validation_error("Invalid str UUID"))?;
+                    // Construct the URLs for links and nodes.
+                    let link_url = format!(
+                        "https://{}{}/tapi/data/tapi-common:context/tapi-topology:topology-context/topology={}/link",
+                        &device.ip, &device.port.map(|s| format!(":{}", s)).unwrap_or_default(), topology_uuid
+                    );
+                    let nodes_url = format!(
+                        "https://{}{}/tapi/data/tapi-common:context/tapi-topology:topology-context/topology={}/node",
+                        &device.ip, &device.port.map(|s| format!(":{}", s)).unwrap_or_default(), topology_uuid
+                    );
 
-                context_by_context_json(json, service_uuid)
+                    // Retrieve the data for links and nodes.
+                    let link_json = match &device.auth {
+                        Auth::Basic(basic_auth) => HttpHandler::basic_request(&link_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                        Auth::Token(_) => HttpHandler::token_request(&link_url, token.as_str()).await?,
+                    };
+
+                    let node_json = match &device.auth {
+                        Auth::Basic(basic_auth) => HttpHandler::basic_request(&nodes_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                        Auth::Token(_) => HttpHandler::token_request(&nodes_url, token.as_str()).await?,
+                    };
+
+                    // Construct the topology hashmap.
+                    let mut topology_hashmap: Map<String, Value> = Map::new();
+                    topology_hashmap.insert(
+                        "link".to_string(),
+                        link_json.get("tapi-topology:link").ok_or(AppError::validation_error("tapi-topology:link Not Found"))?.clone(),
+                    );
+                    topology_hashmap.insert(
+                        "node".to_string(),
+                        node_json.get("tapi-topology:node").ok_or(AppError::validation_error("tapi-topology:node Not Found"))?.clone(),
+                    );
+
+                    let topology_object: Value = Value::Object(topology_hashmap);
+                    let topology: Value = Value::Array(vec![topology_object]);
+
+                    // Retrieve the connections.
+                    let connections = match &device.auth {
+                        Auth::Basic(basic_auth) => HttpHandler::basic_request(&connections_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                        Auth::Token(_) => HttpHandler::token_request(&connections_url, token.as_str()).await?,
+                    }
+                    .as_array()
+                    .ok_or(AppError::validation_error("Connections cannot convert into array"))?
+                    .clone();
+
+                    // Construct the JSON for services.
+                    let service_url = format!(
+                        "{}/data/tapi-common:context/tapi-connectivity:connectivity-context/connectivity-service={}",
+                        &base_url, service_uuid
+                    );
+
+                    let service_json = match &device.auth {
+                        Auth::Basic(basic_auth) => HttpHandler::basic_request(&service_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                        Auth::Token(_) => HttpHandler::token_request(&service_url, token.as_str()).await?,
+                    };
+
+                    let connectivity_service = service_json
+                        .get("tapi-connectivity:connectivity-service")
+                        .ok_or(AppError::validation_error("Service Data Not Found"))?;
+
+
+                    // Return the constructed context.
+                    Ok(Context {
+                        connectivity_service: connectivity_service.clone(),
+                        connections,
+                        topology,
+                    })
+                }
+                .await
+                {
+                    // If the `async` block executes successfully, continue normally.
+                    Ok(context) => Ok(context),
+                    Err(_) => {
+                        // If an error occurs, execute the `else` block.
+                        let json = match &device.auth {
+                            Auth::Basic(basic_auth) => HttpHandler::basic_request(&context_url, basic_auth.username.clone(), Some(basic_auth.password.clone())).await?,
+                            Auth::Token(_) => HttpHandler::token_request(&context_url, token.as_str()).await?,
+                        };
+
+                        context_by_context_json(json, service_uuid)
+                    }
+                }
             }
         }
     }
@@ -450,6 +773,7 @@ fn context_by_context_json(json: Value, service_uuid: &str) -> Result<Context, A
         .and_then(Value::as_array)
         .ok_or_else(|| AppError::validation_error("Cannot find connectivity-context"))?
         .clone();
+
     let connectivity_service = connectivity_services
         .iter()
         .find(|service| {

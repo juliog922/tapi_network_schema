@@ -35,7 +35,7 @@ async fn schema_by_service(
         let context = Requester::get_service_context(data_source, &service_uuid)
             .await
             .map_err(|err| {
-                log::error!("{}", err.to_string());
+                log::error!("{}", err);
                 error::ErrorNotAcceptable("Cannot extract Services from data_sources")
             })?;
         let topology = context.topology.clone();
@@ -49,7 +49,7 @@ async fn schema_by_service(
 
         let schema = build_schema(&service, &link_vector, &node_vector, &connection_vector)
             .map_err(|err| {
-                log::error!("{}", err.to_string());
+                log::error!("{}", err);
                 error::ErrorNotAcceptable("Cannot Build Services from data_sources")
             })?;
 
