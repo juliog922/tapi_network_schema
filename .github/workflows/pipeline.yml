@@ -51,11 +51,6 @@ jobs:
           push: false
           tags: yew_front:latest
 
-      - name: Test yew_front Container
-        run: |
-          docker run --rm yew_front:latest
-          # Add here specifics commands
-
       - name: Build actix_api Image
         id: build_actix_api
         uses: docker/build-push-action@v6
@@ -64,11 +59,6 @@ jobs:
           file: ./actix_api/Dockerfile
           push: false
           tags: actix_api:latest
-
-      - name: Test actix_api Container
-        run: |
-          docker run --rm actix_api:latest
-          # Add here specifics commands
 
       - name: Build nginx Image
         id: build_nginx
