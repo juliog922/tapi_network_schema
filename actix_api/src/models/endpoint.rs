@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::models::nodes::FrecuencyPair;
+use crate::models::nodes::{FrecuencyPair, McPool};
 
 use super::{connections::Connection, links::Link, nodes::Node};
 
@@ -29,7 +29,7 @@ pub struct Endpoint {
     pub link_uuid: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mc_pool: Option<Vec<FrecuencyPair>>,
+    pub mc_pool: Option<McPool>,
 
     /// Unique identifier for the endpoint.
     pub id: i32,
@@ -47,7 +47,7 @@ pub struct BaseEndpoint {
     pub lower_connection: Option<String>,
     pub link_uuid: Option<String>,
     pub layer_protocol_qualifier: Option<String>,
-    pub mc_pool: Option<Vec<FrecuencyPair>>,
+    pub mc_pool: Option<McPool>,
 
     /// INVENTORY ID (card id)
     pub inventory_id: Option<String>,

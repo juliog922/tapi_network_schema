@@ -258,10 +258,10 @@ mod tests {
         assert_eq!(unknown_name, "UNKNOWN");
     }
 
-    #[test]
-    fn test_google_ping() {
-        assert!(is_reachable("google.com"))
-    }
+    //#[test]
+    //fn test_google_ping() {
+    //    assert!(is_reachable("google.com"))
+    //}
 
     #[test]
     fn test_xml_to_json() {

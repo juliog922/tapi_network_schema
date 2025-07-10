@@ -100,6 +100,8 @@ pub fn node_vector_building(topology_json: &Value) -> Vec<Node> {
                     .get("tapi-photonic-media:media-channel-node-edge-point-spec")
                 {
                     if let Some(mc_pool_section) = media_spec.get("mc-pool") {
+                        let mut provisional_mc_pool: McPool = McPool::default();
+                        let mut mc_pool_exists: bool = false;
                         if let Some(occupied_spectrum_array) = mc_pool_section
                             .get("occupied-spectrum")
                             .and_then(Value::as_array)
@@ -117,9 +119,38 @@ pub fn node_vector_building(topology_json: &Value) -> Vec<Node> {
                                     });
                                 }
                             }
+                            mc_pool_exists = true;
+                            provisional_mc_pool.occupied_spectrum = Some(occupied_spectrum);
 
-                            mc_pool = Some(McPool { occupied_spectrum });
+                            
                         }
+
+                        if let Some(available_spectrum_array) = mc_pool_section
+                            .get("available-spectrum")
+                            .and_then(Value::as_array)
+                        {
+                            let mut available_spectrum = vec![];
+
+                            for item in available_spectrum_array {
+                                let upper = item.get("upper-frequency").and_then(Value::as_i64);
+                                let lower = item.get("lower-frequency").and_then(Value::as_i64);
+
+                                if let (Some(upper), Some(lower)) = (upper, lower) {
+                                    available_spectrum.push(FrecuencyPair {
+                                        upper_frequency: upper,
+                                        lower_frequency: lower,
+                                    });
+                                }
+                            }
+                            mc_pool_exists = true;
+                            provisional_mc_pool.available_spectrum = Some(available_spectrum);
+
+                            
+                        }
+                        if mc_pool_exists {
+                            mc_pool = Some(provisional_mc_pool);
+                        }
+                        
                     }
                 }
 
