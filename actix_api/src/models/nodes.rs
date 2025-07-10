@@ -20,9 +20,10 @@ pub struct OwnedNodeEdgePoint {
 }
 
 /// Represents an mc pool of an owned-node-edge-point.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
 pub struct McPool {
-    pub occupied_spectrum: Vec<FrecuencyPair>,
+    pub occupied_spectrum: Option<Vec<FrecuencyPair>>,
+    pub available_spectrum:Option< Vec<FrecuencyPair>>,
 }
 
 /// Represents an edge point owned by a node.
@@ -63,10 +64,8 @@ impl Node {
                 if owned_node_edge_point.node_edge_point_uuid == base_endpoint.node_edge_point_uuid
                 {
                     base_endpoint.inventory_id = Some(owned_node_edge_point.inventory_id.clone());
-                    base_endpoint.mc_pool = owned_node_edge_point
-                        .mc_pool
-                        .as_ref()
-                        .map(|mc| mc.occupied_spectrum.clone());
+                    base_endpoint.mc_pool = owned_node_edge_point.mc_pool.clone();
+                        
                     for connection_end_point in owned_node_edge_point.connection_end_points.iter() {
                         if base_endpoint.connection_end_point_uuid.is_none()
                             || base_endpoint.connection_end_point_uuid.clone().unwrap()
