@@ -3,6 +3,8 @@ use serde_json::Value;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use wasm_bindgen::JsCast;
+use web_sys::MouseEvent;
+use std::collections::BTreeSet;
 use yew::{platform::spawn_local, prelude::*};
 
 use crate::api::connection::get_schema;
@@ -70,6 +72,89 @@ fn highlight_class(
     }
 }
 
+pub fn render_spectrum_bar(mc_pool: &Value) -> Html {
+    
+
+    let mut freqs = BTreeSet::new();
+    let mut bands = vec![];
+
+    if let Some(available) = mc_pool.get("available_spectrum").and_then(|v| v.as_array()) {
+        for band in available {
+            if let (Some(lo), Some(hi)) = (
+                band.get("lower_frequency").and_then(|f| f.as_u64()),
+                band.get("upper_frequency").and_then(|f| f.as_u64()),
+            ) {
+                freqs.insert(lo);
+                freqs.insert(hi);
+                bands.push((lo, hi, "green"));
+            }
+        }
+    }
+
+    if let Some(occupied) = mc_pool.get("occupied_spectrum").and_then(|v| v.as_array()) {
+        for band in occupied {
+            if let (Some(lo), Some(hi)) = (
+                band.get("lower_frequency").and_then(|f| f.as_u64()),
+                band.get("upper_frequency").and_then(|f| f.as_u64()),
+            ) {
+                freqs.insert(lo);
+                freqs.insert(hi);
+                bands.push((lo, hi, "red"));
+            }
+        }
+    }
+
+    let min = *freqs.iter().next().unwrap_or(&0);
+    let max = *freqs.iter().rev().next().unwrap_or(&1);
+    let range = max - min;
+
+    html! {
+        <div style="margin-top: 16px; padding-bottom: 10px;">
+            <style>
+                {"
+                    .band {
+                        transition: transform 0.2s ease-in-out;
+                        will-change: transform;
+                    }
+                    .band:hover {
+                        transform: scaleY(1.15);
+                        z-index: 10;
+                    }
+                "}
+            </style>
+            <div style="position: relative; height: 40px; border: 1px solid #ccc; background: #fff; border-radius: 6px; overflow: hidden;">
+                {
+                    for bands.iter().map(|(lo, hi, color)| {
+                        let left = ((*lo - min) * 100 / range) as usize;
+                        let width = ((*hi - *lo) * 100 / range) as usize;
+
+                        html! {
+                            <div
+                                title={format!("{} - {}", lo, hi)}
+                                class="band"
+                                style={format!(
+                                    "\
+                                    position: absolute;\
+                                    left: {}%;\
+                                    width: {}%;\
+                                    height: 100%;\
+                                    background: {};\
+                                    opacity: 0.65;\
+                                    border-radius: 4px;\
+                                    cursor: pointer;\
+                                    ",
+                                    left, width, color
+                                )}
+                            />
+                        }
+                    })
+                }
+            </div>
+        </div>
+    }
+}
+
+
 /// A Yew functional component that displays nodes and their endpoints.
 ///
 /// This component renders a list of nodes and their associated endpoints. It handles hover, click,
@@ -130,6 +215,30 @@ pub fn nodes(props: &NodesProps) -> Html {
     // State hooks for managing hover data, selected endpoint, and highlighted endpoints
     let hover_data = use_state(|| "Hover over an endpoint to see details".to_string());
     let is_modal_open = use_state(|| false);
+    let show_spectrum = use_state(|| false);
+
+    let parsed_json: Value = serde_json::from_str(&*hover_data).unwrap_or(Value::Null);
+    let mc_pool_opt = parsed_json.get("mc_pool");
+
+    let spectrum_button = if mc_pool_opt.is_some() {
+        let show_spectrum = show_spectrum.clone();
+        Some(html! {
+            <button onclick={Callback::from(move |_| show_spectrum.set(true))}>
+                { "Available Spectrum" }
+            </button>
+        })
+    } else {
+        None
+    };
+
+    let spectrum_bar = if *show_spectrum && mc_pool_opt.is_some() {
+        let mc_pool = mc_pool_opt.unwrap();
+        // construir barra a partir de mc_pool JSON
+        render_spectrum_bar(mc_pool)
+    } else {
+        html! {}
+    };
+    
 
     let selected_value = use_state(|| Option::<Value>::None);
     let highlighted_link_uuids = use_state(HashSet::<String>::new);
@@ -667,10 +776,13 @@ pub fn nodes(props: &NodesProps) -> Html {
                         <div class="modal-body">
                             <h2>{"Endpoint Details:\n"}</h2>
                             <div>{ Html::from_html_unchecked(format_json(&serde_json::from_str(&hover_data).unwrap_or(Value::Null)).into()) }</div>
+                            { spectrum_button }
+                            { spectrum_bar }
                         </div>
                     </div>
                 </div>
             }
+            
         </div>
     }
 }
